@@ -5,7 +5,7 @@ PASS  payload lives at grammar/ — package 0.3.1
 PASS  AGENTS.md stackVersion matches installed grammar — doc says v50-r11, package says v50-r11
 PASS  CLAUDE.md stackVersion matches installed grammar — doc says v50-r11, package says v50-r11
 PASS  installed spyne satisfies frameworkCompat — spyne 0.26.7 vs ">=0.25"
-FAIL  no @spynejs/kb references in tracked source — RECORD/verification/A0/README.md
+PASS  no @spynejs/kb references in tracked source — 97 files scanned
 
-@spynejs/grammar 0.3.1 (v50-r11): 7/8 checks passed
-exit: 1
+@spynejs/grammar 0.3.1 (v50-r11): 8/8 checks passed
+exit: 0
