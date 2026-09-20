@@ -1,0 +1,194 @@
+<frame id="4:4" name="rare-metal-catalog" x="1287" y="-286" width="1440" height="1652.3333740234375">
+  <frame id="4:5" name="header-block" x="80" y="100" width="1280" height="143">
+    <frame id="4:6" name="Frame" x="0" y="0" width="1280" height="119">
+      <text id="4:7" name="METEORIC &amp; ASTEROIDAL SAMPLES" x="0" y="0" width="1280" height="16" />
+      <text id="4:8" name="main-title" x="0" y="24" width="1280" height="66" />
+      <text id="4:9" name="sub-title" x="0" y="98" width="1280" height="21" />
+    </frame>
+    <line id="4:10" name="Line" x="0" y="143" width="1280" height="0" />
+  </frame>
+  <frame id="4:11" name="filter-row" x="80" y="291" width="1280" height="40">
+    <frame id="4:12" name="filter-dropdowns" x="0" y="0" width="454" height="40">
+      <frame id="4:13" name="filter-dropdown" x="0" y="0" width="223" height="40">
+        <text id="4:14" name="Metal type:" x="16" y="11.5" width="68" height="17" />
+        <text id="4:15" name="All Specimens" x="96" y="11.5" width="87" height="17" />
+        <frame id="4:139" name="chevron-down" x="195" y="14" width="12" height="12" />
+      </frame>
+      <frame id="4:17" name="filter-dropdown" x="239" y="0" width="215" height="40">
+        <text id="4:18" name="Origin asteroid:" x="16" y="11.5" width="91" height="17" />
+        <text id="4:19" name="All Fields" x="119" y="11.5" width="56" height="17" />
+        <frame id="4:142" name="chevron-down" x="187" y="14" width="12" height="12" />
+      </frame>
+    </frame>
+    <frame id="4:21" name="Frame" x="1106" y="12" width="174" height="16">
+      <text id="4:22" name="SHOWING:" x="0" y="0" width="58" height="16" />
+      <text id="4:23" name="6 ARCHIVED LOTS" x="66" y="0" width="108" height="16" />
+    </frame>
+  </frame>
+  <frame id="4:24" name="catalog-grid" x="80" y="379" width="1280" height="1087.3333740234375">
+    <frame id="4:25" name="grid-row-1" x="0" y="0" width="1280" height="531.6666870117188">
+      <frame id="4:26" name="product-card" x="0" y="0" width="410.6666564941406" height="531.6666870117188">
+        <frame id="4:27" name="image-container" x="16" y="16" width="378.6666564941406" height="378.6666259765625">
+          <rounded-rectangle id="4:28" name="product-image" x="0" y="0" width="378.6666564941406" height="378.6666259765625" />
+        </frame>
+        <frame id="4:29" name="product-meta" x="16" y="410.6666259765625" width="378.6666564941406" height="105">
+          <frame id="4:30" name="Frame" x="0" y="0" width="378.6666564941406" height="45">
+            <text id="4:31" name="product-name" x="0" y="0" width="378.6666564941406" height="27" />
+            <frame id="4:32" name="Frame" x="0" y="31" width="378.6666564941406" height="14">
+              <text id="4:33" name="101955 BENNU" x="0" y="0" width="80" height="14" />
+              <rounded-rectangle id="4:34" name="Rectangle" x="88" y="5.5" width="3" height="3" />
+              <text id="4:35" name="12.44g" x="99" y="0" width="40" height="14" />
+            </frame>
+          </frame>
+          <line id="4:36" name="Line" x="0" y="57" width="378.6666564941406" height="0" />
+          <frame id="4:37" name="Frame" x="0" y="69" width="378.6666564941406" height="36">
+            <frame id="4:38" name="Frame" x="0" y="0" width="58" height="36">
+              <text id="4:39" name="VALUATION" x="0" y="0" width="53" height="13" />
+              <text id="4:40" name="$4,250" x="0" y="15" width="58" height="21" />
+            </frame>
+            <frame id="4:41" name="add-to-cart-btn" x="281.6666564941406" y="2" width="97" height="32">
+              <frame id="4:145" name="plus" x="16" y="9" width="14" height="14" />
+              <text id="4:43" name="Acquire" x="36" y="8" width="45" height="16" />
+            </frame>
+          </frame>
+        </frame>
+      </frame>
+      <frame id="4:44" name="product-card" x="434.6666564941406" y="0" width="410.66668701171875" height="531.6666870117188">
+        <frame id="4:45" name="image-container" x="16" y="16" width="378.66668701171875" height="378.66668701171875">
+          <rounded-rectangle id="4:46" name="product-image" x="0" y="0" width="378.66668701171875" height="378.66668701171875" />
+        </frame>
+        <frame id="4:47" name="product-meta" x="16" y="410.66668701171875" width="378.66668701171875" height="105">
+          <frame id="4:48" name="Frame" x="0" y="0" width="378.66668701171875" height="45">
+            <text id="4:49" name="product-name" x="0" y="0" width="378.66668701171875" height="27" />
+            <frame id="4:50" name="Frame" x="0" y="31" width="378.66668701171875" height="14">
+              <text id="4:51" name="16 PSYCHE" x="0" y="0" width="60" height="14" />
+              <rounded-rectangle id="4:52" name="Rectangle" x="68" y="5.5" width="3" height="3" />
+              <text id="4:53" name="84.10g" x="79" y="0" width="40" height="14" />
+            </frame>
+          </frame>
+          <line id="4:54" name="Line" x="0" y="57" width="378.66668701171875" height="0" />
+          <frame id="4:55" name="Frame" x="0" y="69" width="378.66668701171875" height="36">
+            <frame id="4:56" name="Frame" x="0" y="0" width="58" height="36">
+              <text id="4:57" name="VALUATION" x="0" y="0" width="53" height="13" />
+              <text id="4:58" name="$9,800" x="0" y="15" width="58" height="21" />
+            </frame>
+            <frame id="4:59" name="add-to-cart-btn" x="281.66668701171875" y="2" width="97" height="32">
+              <frame id="4:148" name="plus" x="16" y="9" width="14" height="14" />
+              <text id="4:61" name="Acquire" x="36" y="8" width="45" height="16" />
+            </frame>
+          </frame>
+        </frame>
+      </frame>
+      <frame id="4:62" name="product-card" x="869.3333740234375" y="0" width="410.66668701171875" height="531.6666870117188">
+        <frame id="4:63" name="image-container" x="16" y="16" width="378.66668701171875" height="378.66668701171875">
+          <rounded-rectangle id="4:64" name="product-image" x="0" y="0" width="378.66668701171875" height="378.66668701171875" />
+        </frame>
+        <frame id="4:65" name="product-meta" x="16" y="410.66668701171875" width="378.66668701171875" height="105">
+          <frame id="4:66" name="Frame" x="0" y="0" width="378.66668701171875" height="45">
+            <text id="4:67" name="product-name" x="0" y="0" width="378.66668701171875" height="27" />
+            <frame id="4:68" name="Frame" x="0" y="31" width="378.66668701171875" height="14">
+              <text id="4:69" name="511 DAVIDA" x="0" y="0" width="66" height="14" />
+              <rounded-rectangle id="4:70" name="Rectangle" x="74" y="5.5" width="3" height="3" />
+              <text id="4:71" name="5.21g" x="85" y="0" width="33" height="14" />
+            </frame>
+          </frame>
+          <line id="4:72" name="Line" x="0" y="57" width="378.66668701171875" height="0" />
+          <frame id="4:73" name="Frame" x="0" y="69" width="378.66668701171875" height="36">
+            <frame id="4:74" name="Frame" x="0" y="0" width="68" height="36">
+              <text id="4:75" name="VALUATION" x="0" y="0" width="53" height="13" />
+              <text id="4:76" name="$12,150" x="0" y="15" width="68" height="21" />
+            </frame>
+            <frame id="4:77" name="add-to-cart-btn" x="281.66668701171875" y="2" width="97" height="32">
+              <frame id="4:151" name="plus" x="16" y="9" width="14" height="14" />
+              <text id="4:79" name="Acquire" x="36" y="8" width="45" height="16" />
+            </frame>
+          </frame>
+        </frame>
+      </frame>
+    </frame>
+    <frame id="4:80" name="grid-row-2" x="0" y="555.6666870117188" width="1280" height="531.6666870117188">
+      <frame id="4:81" name="product-card" x="0" y="0" width="410.6666564941406" height="531.6666870117188">
+        <frame id="4:82" name="image-container" x="16" y="16" width="378.6666564941406" height="378.6666259765625">
+          <rounded-rectangle id="4:83" name="product-image" x="0" y="0" width="378.6666564941406" height="378.6666259765625" />
+        </frame>
+        <frame id="4:84" name="product-meta" x="16" y="410.6666259765625" width="378.6666564941406" height="105">
+          <frame id="4:85" name="Frame" x="0" y="0" width="378.6666564941406" height="45">
+            <text id="4:86" name="product-name" x="0" y="0" width="378.6666564941406" height="27" />
+            <frame id="4:87" name="Frame" x="0" y="31" width="378.6666564941406" height="14">
+              <text id="4:88" name="25143 ITOKAWA" x="0" y="0" width="86" height="14" />
+              <rounded-rectangle id="4:89" name="Rectangle" x="94" y="5.5" width="3" height="3" />
+              <text id="4:90" name="110.50g" x="105" y="0" width="47" height="14" />
+            </frame>
+          </frame>
+          <line id="4:91" name="Line" x="0" y="57" width="378.6666564941406" height="0" />
+          <frame id="4:92" name="Frame" x="0" y="69" width="378.6666564941406" height="36">
+            <frame id="4:93" name="Frame" x="0" y="0" width="58" height="36">
+              <text id="4:94" name="VALUATION" x="0" y="0" width="53" height="13" />
+              <text id="4:95" name="$6,400" x="0" y="15" width="58" height="21" />
+            </frame>
+            <frame id="4:96" name="add-to-cart-btn" x="281.6666564941406" y="2" width="97" height="32">
+              <frame id="4:154" name="plus" x="16" y="9" width="14" height="14" />
+              <text id="4:98" name="Acquire" x="36" y="8" width="45" height="16" />
+            </frame>
+          </frame>
+        </frame>
+      </frame>
+      <frame id="4:99" name="product-card" x="434.6666564941406" y="0" width="410.66668701171875" height="531.6666870117188">
+        <frame id="4:100" name="image-container" x="16" y="16" width="378.66668701171875" height="378.66668701171875">
+          <rounded-rectangle id="4:101" name="product-image" x="0" y="0" width="378.66668701171875" height="378.66668701171875" />
+        </frame>
+        <frame id="4:102" name="product-meta" x="16" y="410.66668701171875" width="378.66668701171875" height="105">
+          <frame id="4:103" name="Frame" x="0" y="0" width="378.66668701171875" height="45">
+            <text id="4:104" name="product-name" x="0" y="0" width="378.66668701171875" height="27" />
+            <frame id="4:105" name="Frame" x="0" y="31" width="378.66668701171875" height="14">
+              <text id="4:106" name="433 EROS" x="0" y="0" width="53" height="14" />
+              <rounded-rectangle id="4:107" name="Rectangle" x="61" y="5.5" width="3" height="3" />
+              <text id="4:108" name="36.25g" x="72" y="0" width="40" height="14" />
+            </frame>
+          </frame>
+          <line id="4:109" name="Line" x="0" y="57" width="378.66668701171875" height="0" />
+          <frame id="4:110" name="Frame" x="0" y="69" width="378.66668701171875" height="36">
+            <frame id="4:111" name="Frame" x="0" y="0" width="58" height="36">
+              <text id="4:112" name="VALUATION" x="0" y="0" width="53" height="13" />
+              <text id="4:113" name="$3,100" x="0" y="15" width="58" height="21" />
+            </frame>
+            <frame id="4:114" name="add-to-cart-btn" x="281.66668701171875" y="2" width="97" height="32">
+              <frame id="4:157" name="plus" x="16" y="9" width="14" height="14" />
+              <text id="4:116" name="Acquire" x="36" y="8" width="45" height="16" />
+            </frame>
+          </frame>
+        </frame>
+      </frame>
+      <frame id="4:117" name="product-card" x="869.3333740234375" y="0" width="410.66668701171875" height="531.6666870117188">
+        <frame id="4:118" name="image-container" x="16" y="16" width="378.66668701171875" height="378.66668701171875">
+          <rounded-rectangle id="4:119" name="product-image" x="0" y="0" width="378.66668701171875" height="378.66668701171875" />
+        </frame>
+        <frame id="4:120" name="product-meta" x="16" y="410.66668701171875" width="378.66668701171875" height="105">
+          <frame id="4:121" name="Frame" x="0" y="0" width="378.66668701171875" height="45">
+            <text id="4:122" name="product-name" x="0" y="0" width="378.66668701171875" height="27" />
+            <frame id="4:123" name="Frame" x="0" y="31" width="378.66668701171875" height="14">
+              <text id="4:124" name="2 PALLAS" x="0" y="0" width="53" height="14" />
+              <rounded-rectangle id="4:125" name="Rectangle" x="61" y="5.5" width="3" height="3" />
+              <text id="4:126" name="55.02g" x="72" y="0" width="40" height="14" />
+            </frame>
+          </frame>
+          <line id="4:127" name="Line" x="0" y="57" width="378.66668701171875" height="0" />
+          <frame id="4:128" name="Frame" x="0" y="69" width="378.66668701171875" height="36">
+            <frame id="4:129" name="Frame" x="0" y="0" width="58" height="36">
+              <text id="4:130" name="VALUATION" x="0" y="0" width="53" height="13" />
+              <text id="4:131" name="$5,750" x="0" y="15" width="58" height="21" />
+            </frame>
+            <frame id="4:132" name="add-to-cart-btn" x="281.66668701171875" y="2" width="97" height="32">
+              <frame id="4:160" name="plus" x="16" y="9" width="14" height="14" />
+              <text id="4:134" name="Acquire" x="36" y="8" width="45" height="16" />
+            </frame>
+          </frame>
+        </frame>
+      </frame>
+    </frame>
+  </frame>
+  <frame id="4:135" name="editorial-footnote" x="80" y="1514.3333740234375" width="1280" height="38">
+    <text id="4:136" name="SECURE DISPATCH AND ASTEROIDAL PROVENANCE DOCUMENTATION ACCOMPANY EACH ORDER." x="0" y="24" width="508" height="14" />
+    <text id="4:137" name="SPECIMEN AUTHENTICITY REPORT [PDF]" x="1055" y="24" width="225" height="14" />
+  </frame>
+</frame>
