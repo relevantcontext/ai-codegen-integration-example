@@ -1,0 +1,164 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://spynejs.org/schema/app-model.schema.json",
+  "title": "SpyneJS App Model",
+  "description": "Contract for src/static/data/app.model.json — the shell's hydration tree. Grammar per application-shell-bootstrap SCHEMA.md (hybrid ruling, 2026-08-11): SpyneJS-native tree, design-system slot at the pageItem leaf. Authored 2026-08-17 from the canonical instance (claude-code-spynejs-code-samples/canonical-app) — this file resolves the dangling schema reference carried by op:author-app-model-node since v21.",
+  "type": "object",
+  "required": ["text", "uiProps", "content"],
+  "additionalProperties": false,
+  "properties": {
+    "text": {
+      "type": "object",
+      "description": "Site-level text slots consumed by shell chrome.",
+      "properties": {
+        "header": { "type": "string" },
+        "footer": { "type": "string" }
+      },
+      "additionalProperties": { "type": "string" }
+    },
+    "uiProps": {
+      "type": "object",
+      "description": "Shell UI configuration. CSS custom-property keys (--*) pass through to the theme layer.",
+      "properties": {
+        "appTitle": { "type": "string" },
+        "header": { "type": "string" },
+        "footer": { "type": "string" },
+        "fontFamilyStr": { "type": "string" },
+        "fontFamilyLink": { "type": "string" },
+        "paletteColorStr": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "content": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/pageNode" }
+    }
+  },
+  "definitions": {
+    "pageNode": {
+      "type": "object",
+      "description": "A level-1 page. Route identity: pageId matches a level-1 key in config.channels.ROUTE.routes.routePath. Additional content fields ride the node (SCHEMA.md ...contentFields).",
+      "required": ["pageId", "title"],
+      "properties": {
+        "pageId": { "$ref": "#/definitions/routeIdentityKey" },
+        "pageType": { "type": "string" },
+        "title": { "type": "string" },
+        "desc": { "type": "string" },
+        "template": { "type": "string" },
+        "hero": { "$ref": "#/definitions/hero" },
+        "pageItems": { "type": "array", "items": { "$ref": "#/definitions/pageItem" } },
+        "content": { "type": "array", "items": { "$ref": "#/definitions/subpageNode" } }
+      },
+      "additionalProperties": true
+    },
+    "subpageNode": {
+      "type": "object",
+      "description": "A branch child. Route identity: pageId + topicId, matching the branch's route-config params (v0 pins branch routeName to topicId; see PHASE-1-CONTRACT.md open question OQ-1). Card-presentation fields (meta, ctaText, href, attrImage*) feed list/card rendering on the parent page.",
+      "required": ["pageId", "topicId", "title"],
+      "properties": {
+        "pageId": { "$ref": "#/definitions/routeIdentityKey" },
+        "topicId": { "$ref": "#/definitions/routeIdentityKey" },
+        "title": { "type": "string" },
+        "desc": { "type": "string" },
+        "meta": { "type": "string" },
+        "ctaText": { "type": "string" },
+        "href": { "type": "string" },
+        "attrImageSrc": { "type": "string" },
+        "attrImageAlt": { "type": "string" },
+        "template": { "type": "string" },
+        "hero": { "$ref": "#/definitions/hero" },
+        "pageItems": { "type": "array", "items": { "$ref": "#/definitions/pageItem" } }
+      },
+      "additionalProperties": true
+    },
+    "routeIdentityKey": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,31}$"
+    },
+    "hero": {
+      "type": "object",
+      "description": "Canonical field forms are attr*-prefixed for attribute-bound values (op:author-app-model-node modernization note); img and ctaHref are tolerated drift keys present in existing instances.",
+      "properties": {
+        "headline": { "type": "string" },
+        "subheadline": { "type": "string" },
+        "attrImageSrc": { "type": "string" },
+        "attrImageAlt": { "type": "string" },
+        "ctaText": { "type": "string" },
+        "ctaDesc": { "type": "string" },
+        "attrCtaHref": { "type": "string" },
+        "ctaHref": { "type": "string" },
+        "img": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "pageItem": {
+      "description": "NativeItem | ComponentItem — a pageItem is component-typed iff it has a component key (SCHEMA.md §1). Ordering = array order.",
+      "oneOf": [
+        { "$ref": "#/definitions/nativeItem" },
+        { "$ref": "#/definitions/componentItem" }
+      ]
+    },
+    "nativeItem": {
+      "type": "object",
+      "required": ["viewClass", "props"],
+      "not": { "required": ["component"] },
+      "properties": {
+        "viewClass": { "type": "string" },
+        "isPrototype": { "type": "boolean" },
+        "props": {
+          "type": "object",
+          "properties": {
+            "tagName": { "type": "string" },
+            "class": { "type": "string" },
+            "ariaLabel": { "type": "string" },
+            "template": { "type": "string" },
+            "templateName": { "type": "string" },
+            "styles": { "type": "string" },
+            "data": { "type": "object" }
+          },
+          "additionalProperties": true
+        },
+        "container": { "$ref": "#/definitions/container" }
+      },
+      "additionalProperties": true
+    },
+    "componentItem": {
+      "type": "object",
+      "required": ["component"],
+      "properties": {
+        "component": {
+          "type": "object",
+          "required": ["designSystem", "type"],
+          "properties": {
+            "designSystem": { "type": "string" },
+            "type": { "type": "string" }
+          },
+          "additionalProperties": true
+        },
+        "container": { "$ref": "#/definitions/container" }
+      },
+      "additionalProperties": false
+    },
+    "container": {
+      "type": "object",
+      "properties": {
+        "isEnabled": { "type": "boolean" },
+        "enabled": { "type": "boolean" },
+        "muted": { "type": "boolean" },
+        "selector": { "type": "string" },
+        "spacing": { "type": "string" },
+        "classOptions": {
+          "type": "object",
+          "properties": {
+            "variant": { "type": "string" },
+            "flush": { "type": "boolean" },
+            "bleed": { "type": "boolean" }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    }
+  }
+}

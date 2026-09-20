@@ -1,0 +1,29 @@
+@use '../tokens' as *;
+
+// Light theme — "slate" (understated, serious, formal, quiet, legal, architecture)
+// Generated from themes.json role map — WCAG-validated; edit theme_id in
+// src/index.js and re-run the pipeline to re-theme (never hand-edit hexes).
+
+$light-theme: (
+  bg-base: $color-neutral-0,
+  brand: $color-primary-700,
+  brand-contrast: $color-neutral-0,
+  bg: $color-neutral-50,
+  surface: $color-neutral-75,
+  paper: $color-neutral-0,
+  border: $color-neutral-500,
+  text-primary: $color-neutral-900,
+  text-secondary: $color-neutral-600,
+  text-inverse: $color-neutral-0,
+  text-muted: $color-neutral-600,
+  text-link: $color-primary-700,
+  text-visited: $color-primary-700,
+  success: $color-supporting-1-800,
+  on-success: $color-neutral-0,
+  info: $color-supporting-2-800,
+  error: $color-supporting-3-600,
+  warn: $color-supporting-4-800,
+  danger: $color-supporting-3-600,
+  on-danger: $color-neutral-0,
+  nav-link: $color-primary-700,
+);

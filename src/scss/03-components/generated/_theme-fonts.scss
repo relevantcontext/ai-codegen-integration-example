@@ -1,0 +1,59 @@
+// Generated theme fonts — self-hosted woff2 (OFL), no CDN at runtime.
+// Pairing: archivo-worksans (Archivo / Work Sans / Roboto Mono)
+
+// Configured by app.scss via `with ($STATIC_DIR: $STATIC_DIR)` — mode-aware
+// static asset prefix from the shell's sass-loader additionalData.
+$STATIC_DIR: './static/' !default;
+
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('#{$STATIC_DIR}fonts/archivo-400.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('#{$STATIC_DIR}fonts/archivo-700.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Work Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('#{$STATIC_DIR}fonts/work-sans-400.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Work Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('#{$STATIC_DIR}fonts/work-sans-700.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Roboto Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('#{$STATIC_DIR}fonts/roboto-mono-400.woff2') format('woff2');
+}
+
+main#app#app {
+  --font-sans: 'Work Sans', 'Helvetica Neue', Arial, sans-serif;
+  --font-serif: 'Archivo', Georgia, serif;
+  --font-mono: 'Roboto Mono', Menlo, monospace;
+}
+
+main#app h1,
+main#app h2,
+main#app h3,
+main#app h4 {
+  font-family: var(--font-serif);
+}

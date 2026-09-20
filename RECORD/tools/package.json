@@ -1,0 +1,12 @@
+{
+  "name": "poc-record-tools",
+  "private": true,
+  "type": "module",
+  "description": "Record tooling for the Assembly POC. Not app code; kept apart so the generated package.json is untouched.",
+  "scripts": {
+    "screenshot": "node screenshot.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1"
+  }
+}

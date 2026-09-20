@@ -1,0 +1,135 @@
+// Products — Tailwind PRODUCT LIST layout: bare rounded image; below it one
+// row with name + variant stacked left (small, light) and price right
+// (small, medium). NO card chrome, NO hover — never reads as a clickable
+// panel (nav cards own that affordance).
+.page-item--products {
+  --cols: 3;
+
+  .products-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-block-end: 2.5rem;
+  }
+
+  .products-title {
+    margin-block-end: 0.5rem;
+  }
+
+  .products-subtitle {
+    max-inline-size: 560px;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    line-height: 1.5;
+
+    &:empty {
+      display: none;
+    }
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--cols), 1fr);
+    gap: 2.5rem 1.5rem;
+  }
+
+  .product-tile {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+  }
+
+  .product-media {
+    aspect-ratio: 1 / 1;
+    border-radius: 0.25rem 0.25rem 0 0;
+    overflow: hidden;
+    background: var(--surface);
+  }
+
+  .product-img {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  // caption bar: tinted background + padding lifts text contrast and keeps
+  // it off the edges, without card chrome (no border, no shadow, no hover)
+  .product-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 0.7rem 0.85rem 0.8rem;
+    background: var(--paper);
+    border-radius: 0 0 0.25rem 0.25rem;
+  }
+
+  .product-name {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--text-secondary);
+  }
+
+  .product-variant {
+    margin: 0.25rem 0 0;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    color: var(--text-muted);
+
+    &:empty {
+      display: none;
+    }
+  }
+
+  .product-price {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--text-primary);
+    white-space: nowrap;
+
+    &:empty {
+      display: none;
+    }
+  }
+
+  @media (max-width: 900px) {
+    --cols: 2;
+  }
+  @media (max-width: 520px) {
+    --cols: 1;
+  }
+}
+
+/* House gotcha: main#app h3/p typography (ID specificity) overrides the
+   class-level type treatment — the list text rules must match that scope. */
+main#app .page-item--products {
+  .product-name {
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--text-primary);
+    margin: 0;
+  }
+
+  .product-variant {
+    font-size: 0.875rem;
+    line-height: 1.4;
+    color: var(--text-muted);
+    margin: 0.25rem 0 0;
+  }
+
+  .product-price {
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--text-primary);
+    margin: 0;
+  }
+}

@@ -1,0 +1,29 @@
+@use '../tokens' as *;
+
+// Dark theme — "slate"
+// Generated from themes.json role map — WCAG-validated; edit theme_id in
+// src/index.js and re-run the pipeline to re-theme (never hand-edit hexes).
+
+$dark-theme: (
+  bg-base: $color-neutral-950,
+  brand: $color-primary-300,
+  brand-contrast: $color-neutral-950,
+  bg: $color-neutral-900,
+  surface: $color-neutral-850,
+  paper: $color-neutral-800,
+  border: $color-neutral-500,
+  text-primary: $color-neutral-100,
+  text-secondary: $color-neutral-200,
+  text-inverse: $color-neutral-950,
+  text-muted: $color-neutral-300,
+  text-link: $color-primary-200,
+  text-visited: $color-primary-300,
+  success: $color-supporting-1-300,
+  on-success: $color-neutral-950,
+  info: $color-supporting-2-300,
+  error: $color-supporting-3-300,
+  warn: $color-supporting-4-300,
+  danger: $color-supporting-3-300,
+  on-danger: $color-neutral-950,
+  nav-link: $color-primary-200,
+);

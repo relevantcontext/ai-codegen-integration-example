@@ -1,0 +1,46 @@
+{
+  "stage": "A0",
+  "viewport": {
+    "width": 1280,
+    "height": 800
+  },
+  "build": "production (dist/)",
+  "ok": true,
+  "routes": [
+    {
+      "href": "/",
+      "file": "home.png",
+      "title": "code-assembly-alpha",
+      "ok": true,
+      "errors": []
+    },
+    {
+      "href": "/shop",
+      "file": "shop.png",
+      "title": "code-assembly-alpha",
+      "ok": true,
+      "errors": []
+    },
+    {
+      "href": "/about",
+      "file": "about.png",
+      "title": "code-assembly-alpha",
+      "ok": true,
+      "errors": []
+    },
+    {
+      "href": "/cart",
+      "file": "cart.png",
+      "title": "code-assembly-alpha",
+      "ok": true,
+      "errors": []
+    },
+    {
+      "href": "/about/contact",
+      "file": "about-contact.png",
+      "title": "code-assembly-alpha",
+      "ok": true,
+      "errors": []
+    }
+  ]
+}

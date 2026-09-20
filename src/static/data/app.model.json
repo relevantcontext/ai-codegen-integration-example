@@ -1,0 +1,398 @@
+{
+  "text": {
+    "header": "Asteroid Metals Co.",
+    "footer": "Asteroid Metals Co. — Certified origin, verified purity, measurable rarity."
+  },
+  "uiProps": {
+    "appTitle": "Asteroid Metals Co.",
+    "header": " Logo",
+    "footer": "Company License",
+    "--selected-font": "Work Sans",
+    "fontFamilyStr": "'Work Sans', sans-serif;",
+    "--selected-palette": "slate"
+  },
+  "content": [
+    {
+      "pageId": "home",
+      "pageType": "landing",
+      "title": "Rare Metals from Asteroid Origins",
+      "desc": "Certified samples of rare metals recovered from asteroids — iridium, platinum, palladium, and more, with verified origin and purity.",
+      "navLabel": "Home",
+      "template": "section-template.html",
+      "hero": {
+        "headline": "Rare Metals from Asteroid Origins",
+        "subheadline": "Certified samples of rare metals recovered from asteroids — iridium, platinum, palladium, and more, with verified origin and purity.",
+        "attrImageSrc": "imgs/pexels-15826216.jpeg",
+        "attrImageAlt": "polished metallic meteorite sample on black velvet display, dramatic museum lighting, scientific precision mood",
+        "ctaText": "Explore the Collection",
+        "ctaDesc": "Each sample includes origin documentation, spectral analysis, and chain-of-custody verification.",
+        "attrCtaHref": "/shop"
+      },
+      "pageItems": [
+        {
+          "viewClass": "ViewStream",
+          "props": {
+            "ariaLabel": "section title",
+            "class": "section-title my-12",
+            "template": "<h2>{{headline}}</h2><p>{{subheadline}}</p>",
+            "data": {
+              "headline": "Rare Metals from Asteroid Origins",
+              "subheadline": "Certified samples of rare metals recovered from asteroids — iridium, platinum, palladium, and more, with verified origin and purity."
+            }
+          },
+          "container": {
+            "isEnabled": false,
+            "selector": ".page-heading"
+          }
+        },
+        {
+          "isPrototype": false,
+          "viewClass": "ViewStream",
+          "props": {
+            "ariaLabel": "Key statistics",
+            "template": "stats-band.tmpl.html",
+            "data": {
+              "items": [
+                {
+                  "value": "6",
+                  "label": "verified origins"
+                },
+                {
+                  "value": "99.97%",
+                  "label": "avg. purity"
+                },
+                {
+                  "value": "4.5B",
+                  "label": "years old"
+                }
+              ]
+            }
+          },
+          "container": {
+            "enabled": true,
+            "spacing": "default"
+          }
+        },
+        {
+          "isPrototype": false,
+          "viewClass": "ViewStream",
+          "props": {
+            "tagName": "section",
+            "ariaLabel": "Call to action",
+            "template": "cta-banner.tmpl.html",
+            "data": {
+              "headline": "Browse the complete collection",
+              "text": "Filter by metal type or asteroid of origin. Every sample ships with full documentation.",
+              "ctaText": "View products",
+              "attrPageId": "shop",
+              "attrCtaHref": "/shop"
+            }
+          },
+          "container": {
+            "enabled": true,
+            "spacing": "default"
+          }
+        }
+      ]
+    },
+    {
+      "pageId": "shop",
+      "pageType": "shop",
+      "title": "Metal Samples Catalog",
+      "desc": "Browse and filter certified asteroid metal samples by metal type and origin. Each listing includes purity assay, mass, and provenance documentation.",
+      "navLabel": "Products",
+      "template": "section-template.html",
+      "pageItems": [
+        {
+          "viewClass": "ViewStream",
+          "props": {
+            "ariaLabel": "section title",
+            "class": "section-title my-12",
+            "template": "<h2>{{headline}}</h2><p>{{subheadline}}</p>",
+            "data": {
+              "headline": "Metal Samples Catalog",
+              "subheadline": "Browse and filter certified asteroid metal samples by metal type and origin. Each listing includes purity assay, mass, and provenance documentation."
+            }
+          },
+          "container": {
+            "isEnabled": false,
+            "selector": ".page-heading"
+          }
+        },
+        {
+          "isPrototype": false,
+          "viewClass": "ViewStream",
+          "props": {
+            "ariaLabel": "Products",
+            "template": "products.tmpl.html",
+            "data": {
+              "title": "Certified Asteroid Metal Samples",
+              "subtitle": "Filter by metal type or asteroid origin. All samples include spectral assay and chain-of-custody documentation.",
+              "products": [
+                {
+                  "name": "Iridium Nugget",
+                  "variant": "Ryugu fragment, 2.3g",
+                  "price": "$4,200",
+                  "attrImageSrc": "imgs/pexels-35497189.jpeg"
+                },
+                {
+                  "name": "Platinum Sponge",
+                  "variant": "Bennu regolith, 5.0g",
+                  "price": "$3,800",
+                  "attrImageSrc": "imgs/pexels-10187646.jpeg"
+                },
+                {
+                  "name": "Palladium Crystal",
+                  "variant": "Psyche core, 1.8g",
+                  "price": "$2,950",
+                  "attrImageSrc": "imgs/pexels-35497314.jpeg"
+                },
+                {
+                  "name": "Ruthenium Powder",
+                  "variant": "Itokawa dust, 3.5g",
+                  "price": "$1,875",
+                  "attrImageSrc": "imgs/pexels-9259962.jpeg"
+                },
+                {
+                  "name": "Osmium Bead",
+                  "variant": "Vesta crust, 0.9g",
+                  "price": "$5,600",
+                  "attrImageSrc": "imgs/pexels-4198921.jpeg"
+                },
+                {
+                  "name": "Rhenium Flake",
+                  "variant": "Ceres ejecta, 4.2g",
+                  "price": "$2,150",
+                  "attrImageSrc": "imgs/pexels-28215401.jpeg"
+                }
+              ]
+            }
+          },
+          "container": {
+            "enabled": true,
+            "spacing": "default"
+          }
+        }
+      ]
+    },
+    {
+      "pageId": "about",
+      "pageType": "about",
+      "title": "About Asteroid Metals Co.",
+      "desc": "How we source, verify, and deliver certified samples of rare metals recovered from asteroid missions and meteorite finds.",
+      "navLabel": "About",
+      "template": "section-template.html",
+      "pageItems": [
+        {
+          "viewClass": "ViewStream",
+          "props": {
+            "ariaLabel": "section title",
+            "class": "section-title my-12",
+            "template": "<h2>{{headline}}</h2><p>{{subheadline}}</p>",
+            "data": {
+              "headline": "About Asteroid Metals Co.",
+              "subheadline": "How we source, verify, and deliver certified samples of rare metals recovered from asteroid missions and meteorite finds."
+            }
+          },
+          "container": {
+            "isEnabled": false,
+            "selector": ".page-heading"
+          }
+        },
+        {
+          "isPrototype": false,
+          "viewClass": "ViewStream",
+          "props": {
+            "tagName": "article",
+            "ariaLabel": "Article Content",
+            "template": "article.tmpl.html",
+            "data": {
+              "headline": "Verified origin. Documented purity. Measurable rarity.",
+              "subheadline": "From asteroid to laboratory to your collection.",
+              "attrImageSrc": "imgs/pexels-30596894.jpeg",
+              "attrImageAlt": "Verified origin. Documented purity. Measurable rarity.",
+              "contentHTML": "<p>Asteroid Metals Co. partners with space agencies and certified meteorite dealers to source rare metals with documented origins. Every sample in our catalog includes spectral analysis, mass verification, and chain-of-custody documentation from recovery to delivery.</p><p>Our verification process combines non-destructive testing with isotopic analysis to confirm both elemental purity and extraterrestrial origin. Samples are sealed in inert atmospheres and shipped with full documentation suitable for research or private collection.</p>"
+            }
+          },
+          "container": {
+            "enabled": true,
+            "spacing": "default"
+          }
+        },
+        {
+          "isPrototype": false,
+          "viewClass": "ViewStream",
+          "props": {
+            "ariaLabel": "Frequently asked questions",
+            "template": "faq.tmpl.html",
+            "data": {
+              "title": "Common questions",
+              "items": [
+                {
+                  "q": "How do you verify asteroid origin?",
+                  "a": "We use isotopic analysis and spectral fingerprinting to match samples against known asteroid compositions. Documentation includes mission records for returned samples and witnessed falls for meteorite finds."
+                },
+                {
+                  "q": "What purity standards do you guarantee?",
+                  "a": "Every sample is assayed by inductively coupled plasma mass spectrometry. We report elemental purity to three significant figures, with full spectral data available upon request."
+                },
+                {
+                  "q": "Can these samples be used for research?",
+                  "a": "Yes. Our documentation package includes spectral data, mass verification, and origin certification suitable for academic citation. Contact us for institutional purchasing and larger quantities."
+                }
+              ]
+            }
+          },
+          "container": {
+            "enabled": true,
+            "spacing": "default"
+          }
+        }
+      ],
+      "content": [
+        {
+          "pageId": "about",
+          "topicId": "contact",
+          "title": "Contact Us",
+          "desc": "Questions about samples, documentation, or institutional orders? Reach our team directly.",
+          "navLabel": "Contact",
+          "meta": "",
+          "ctaText": "View",
+          "href": "/about/contact",
+          "attrImageSrc": "imgs/pexels-8442265.jpeg",
+          "attrImageAlt": "modern laboratory reception desk with sample displays, clean professional lighting, approachable technical environment",
+          "template": "section-template.html",
+          "hero": {
+            "headline": "Contact Us",
+            "subheadline": "Questions about samples, documentation, or institutional orders? Reach our team directly.",
+            "attrImageSrc": "imgs/pexels-8442265.jpeg",
+            "attrImageAlt": "modern laboratory reception desk with sample displays, clean professional lighting, approachable technical environment",
+            "ctaText": "Learn more",
+            "attrCtaHref": "/about"
+          },
+          "pageItems": [
+            {
+              "viewClass": "ViewStream",
+              "props": {
+                "ariaLabel": "section title",
+                "class": "section-title my-12",
+                "template": "<h2>{{headline}}</h2><p>{{subheadline}}</p>",
+                "data": {
+                  "headline": "Contact Us",
+                  "subheadline": "Questions about samples, documentation, or institutional orders? Reach our team directly."
+                }
+              },
+              "container": {
+                "isEnabled": false,
+                "selector": ".page-heading"
+              }
+            },
+            {
+              "isPrototype": false,
+              "viewClass": "ContactUsView",
+              "props": {
+                "class": "contact-us",
+                "template": "contact-us.tmpl.html",
+                "data": {
+                  "title": "Contact Asteroid Metals Co.",
+                  "subtitle": "Questions about sample availability, documentation, or institutional purchasing? We respond within one business day.",
+                  "formFields": [
+                    {
+                      "attrId": "contact-name",
+                      "label": "Name",
+                      "attrName": "name",
+                      "attrType": "text",
+                      "attrPlaceholder": "Your name",
+                      "attrRequired": true
+                    },
+                    {
+                      "attrId": "contact-email",
+                      "label": "Email",
+                      "attrName": "email",
+                      "attrType": "email",
+                      "attrPlaceholder": "you@example.com",
+                      "attrRequired": true
+                    }
+                  ],
+                  "submitLabel": "Send Message",
+                  "messageLabel": "Message",
+                  "attrMessagePlaceholder": "How can we help?"
+                }
+              },
+              "container": {
+                "enabled": true,
+                "spacing": "default"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageId": "cart",
+      "pageType": "generic",
+      "title": "Your Cart",
+      "desc": "Review your selected samples and proceed to request a quote. All orders include shipping and documentation.",
+      "navLabel": "Cart",
+      "template": "section-template.html",
+      "pageItems": [
+        {
+          "viewClass": "ViewStream",
+          "props": {
+            "ariaLabel": "section title",
+            "class": "section-title my-12",
+            "template": "<h2>{{headline}}</h2><p>{{subheadline}}</p>",
+            "data": {
+              "headline": "Your Cart",
+              "subheadline": "Review your selected samples and proceed to request a quote. All orders include shipping and documentation."
+            }
+          },
+          "container": {
+            "isEnabled": false,
+            "selector": ".page-heading"
+          }
+        },
+        {
+          "isPrototype": false,
+          "viewClass": "ViewStream",
+          "props": {
+            "tagName": "article",
+            "ariaLabel": "Article Content",
+            "template": "article.tmpl.html",
+            "data": {
+              "headline": "Cart and quote request",
+              "subheadline": "",
+              "attrImageSrc": "",
+              "attrImageAlt": "",
+              "contentHTML": "<p>Review your selected samples below. Because asteroid metal values fluctuate with availability and assay results, we provide confirmed quotes rather than fixed pricing. Submit your cart to receive a detailed quote including shipping, insurance, and estimated delivery timeline.</p><p>All shipments include temperature-controlled packaging, chain-of-custody documentation, and signature-required delivery. Institutional buyers may request additional certification or custom assay services.</p>"
+            }
+          },
+          "container": {
+            "enabled": true,
+            "spacing": "default"
+          }
+        },
+        {
+          "isPrototype": false,
+          "viewClass": "ViewStream",
+          "props": {
+            "tagName": "section",
+            "ariaLabel": "Call to action",
+            "template": "cta-banner.tmpl.html",
+            "data": {
+              "headline": "Continue browsing the collection",
+              "text": "Add more samples or return to the catalog to refine your selection.",
+              "ctaText": "Back to products",
+              "attrPageId": "shop",
+              "attrCtaHref": "/shop"
+            }
+          },
+          "container": {
+            "enabled": true,
+            "spacing": "default"
+          }
+        }
+      ]
+    }
+  ]
+}
