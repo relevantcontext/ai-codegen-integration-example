@@ -183,3 +183,16 @@ demanded. Grammar applied: `component-interaction-loop` (the record for this sta
 | 15 | Cart page styling | inferred | App tokens; the Figma frame covered the catalog only. |
 | 16 | Storefront scope | note | Cart mutations succeeded with the read scopes the token already had; `unauthenticated_write_checkouts` (named in the pin) was not needed and was not added. |
 
+### A3-r2 — fix after Frank's test of `alpha-A3` (2026-09-22)
+
+| # | Element | A3 status | A3-r2 status | What changed |
+|---|---|---|---|---|
+| 17 | Fallback tiles at birth (A2 decision "Fallback = birth data") | inferred | **withdrawn** | A defect: a tile retiring itself on its own birth replay crashes inside `addChannel` when the shop page mounts after the catalog exists. The channel now serves the fallback catalog itself (`channelShopify$OnModelReturned`: app-model products under `source: "fallback"` until Shopify answers); the view renders tiles only from `CHANNEL_SHOPIFY_CATALOG_EVENT`. |
+| 18 | Tile subscription to its spawning channel | inferred (plain) | **mapped to the card** | `['CHANNEL_SHOPIFY', true]` — `skip-replayed-birth-event`, the sanctioned form for a view spawned by a replaying channel's event that also listens to it for disposal. Visibility under the spawning event travels as birth data (`isVisible`), applied in `onRendered`. |
+| 19 | The double render at birth (A2 "accepted") | inferred | **removed** | No longer occurs: nothing renders before the channel speaks. |
+
+Grammar candidate (for the framework, not the app): a listener that disposes its own view
+while the channel is still inside `addChannel` (synchronous replay) leaves the framework
+touching a disposed view. The card's guidance already prevents it when followed; the failure
+mode deserves naming on `skip-replayed-birth-event` or `choose-replay-semantics`.
+

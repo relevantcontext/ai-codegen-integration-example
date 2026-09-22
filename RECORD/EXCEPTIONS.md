@@ -10,3 +10,4 @@ Framework, grammar, CLI, Shell, and `/RECORD/tools/` are material/tooling and ar
 | A1-r2 | — | none (redo driven by `prompts/A1-2.md`; no human code edits) | — |
 | A2 | — | none (the Storefront token was written into `src/index.js` by `RECORD/tools/shopify-config.mjs`, not by hand) | — |
 | A3 | — | none | — |
+| A3-r2 | — | none (fix model-written from Frank's defect report) | — |

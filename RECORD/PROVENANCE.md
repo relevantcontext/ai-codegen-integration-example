@@ -106,4 +106,7 @@ Format: artifact — what it is — origin — model / prompt / version — stag
 - `RECORD/tools/screenshot.mjs` — `--console` mode (option (a)) — tooling — A3
 - `RECORD/screenshots/A3/*.png` — five routes plus four Behavior Console frames, captured by the script — A3
 - `RECORD/verification/A3/A3.diff` — the stage diff, `alpha-A2`..`alpha-A3`, src/ only — A3
+- A3-r2 (model-written from Frank's defect report, 2026-09-22): `src/app/traits/channel/channel-shopify-traits.js` (fallback catalog served from the model), `src/app/traits/page/products-catalog-traits.js` (tiles only from the channel; `isVisible` birth data), `src/app/components/page-items/product-tile-item.js` (skip-first on `CHANNEL_SHOPIFY`), `src/app/traits/page/product-tile-traits.js` (`productTile$OnRendered`) — A3-r2
+- `RECORD/tools/screenshot.mjs` — in-app navigation pass added to the smoke test — tooling — A3-r2
+- `RECORD/screenshots/A3-r2/*.png`, `RECORD/verification/A3-r2/` — recaptured — A3-r2
 

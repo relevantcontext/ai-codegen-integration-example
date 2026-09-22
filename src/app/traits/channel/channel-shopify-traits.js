@@ -22,10 +22,26 @@ export class ChannelShopifyTraits extends SpyneTrait {
       this.channelShopify$OnSourcesReturned.bind(this),
     );
 
+    // the app model alone is enough for a catalog: the local products are
+    // served as the fallback the moment they exist, and stand until Shopify
+    // answers (or for good, if it never does)
+    const modelFilter = new ChannelPayloadFilter({ action: 'CHANNEL_FETCH_MODEL_RESPONSE_EVENT' });
+    this.getChannel('CHANNEL_FETCH_MODEL', modelFilter).subscribe(
+      this.channelShopify$OnModelReturned.bind(this),
+    );
+
     const filterSelectFilter = new ChannelPayloadFilter({ action: 'filter' });
     this.getChannel('CHANNEL_UI', filterSelectFilter).subscribe(
       this.channelShopify$OnFilterChange.bind(this),
     );
+  }
+
+  static channelShopify$OnModelReturned(e) {
+    if (this.props.catalog.source !== 'none') return;
+    const localProducts = ChannelShopifyTraits.channelShopify$LocalProducts(e.payload);
+    if (localProducts.length === 0) return;
+    this.props.catalog = { products: localProducts, source: 'fallback' };
+    this.channelShopify$SendCatalog(false);
   }
 
   static channelShopify$OnSourcesReturned(e) {

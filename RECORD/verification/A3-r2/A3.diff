@@ -1,0 +1,992 @@
+diff --git a/src/app/channels/channel-cart.js b/src/app/channels/channel-cart.js
+new file mode 100644
+index 0000000..3dd0660
+--- /dev/null
++++ b/src/app/channels/channel-cart.js
+@@ -0,0 +1,28 @@
++import { Channel } from 'spyne';
++import { ChannelCartTraits } from 'traits/channel/channel-cart-traits.js';
++
++// Cart domain channel — the Shopify cart as application state. Admits the
++// tiles' add-to-cart clicks from CHANNEL_UI, runs the Storefront cart
++// mutations (channels cannot push into ChannelFetch, so the request rides
++// ChannelFetchUtil inside the trait), rehydrates a cart id the storage
++// channel hands back at boot, and emits the conformed cart under its own
++// vocabulary. Replay: the cart is current state for any page that mounts.
++export class ChannelCart extends Channel {
++  constructor(name, props = {}) {
++    name = 'CHANNEL_CART';
++    props.replay = true;
++    props.traits = [ChannelCartTraits];
++    super(name, props);
++    this.props.cart = ChannelCartTraits.channelCart$EmptyCart();
++    this.props.queue = [];
++    this.props.busy = false;
++  }
++
++  onRegistered() {
++    this.channelCart$OnRegistered();
++  }
++
++  addRegisteredActions() {
++    return ['CHANNEL_CART_UPDATED_EVENT', 'CHANNEL_CART_ERROR_EVENT'];
++  }
++}
+diff --git a/src/app/channels/channel-shopify.js b/src/app/channels/channel-shopify.js
+index 9e1433b..ca4d991 100644
+--- a/src/app/channels/channel-shopify.js
++++ b/src/app/channels/channel-shopify.js
+@@ -4,9 +4,10 @@ import { ChannelShopifyTraits } from 'traits/channel/channel-shopify-traits.js';
+ // Shopify domain channel — the catalog's source of truth. Acquires the
+ // Storefront fetch (CHANNEL_FETCH_SHOPIFY) together with the app model
+ // (CHANNEL_FETCH_MODEL, for the local products' images and the development
+-// fallback), conforms both into one catalog payload, and emits it under its
+-// own vocabulary. Views only ever receive. Replay: a catalog is current
+-// state, so a shop page born after the fetch resolved gets it at once.
++// fallback), holds the filter state the catalog's selects broadcast, and
++// emits one complete catalog payload under its own vocabulary. Views only
++// ever receive. Replay: a catalog is current state, so a shop page born
++// after the fetch resolved (or after filters were set) gets it at once.
+ export class ChannelShopify extends Channel {
+   constructor(name, props = {}) {
+     name = 'CHANNEL_SHOPIFY';
+@@ -14,6 +15,7 @@ export class ChannelShopify extends Channel {
+     props.traits = [ChannelShopifyTraits];
+     super(name, props);
+     this.props.catalog = { products: [], source: 'none' };
++    this.props.filters = { metal: '', origin: '' };
+   }
+ 
+   onRegistered() {
+diff --git a/src/app/components/page-items/cart-view.js b/src/app/components/page-items/cart-view.js
+new file mode 100644
+index 0000000..4b46fc4
+--- /dev/null
++++ b/src/app/components/page-items/cart-view.js
+@@ -0,0 +1,31 @@
++import { ViewStream } from 'spyne';
++import { CartViewTraits } from 'traits/page/cart-view-traits.js';
++
++// The Cart page's cart: renders its chrome from the page-item data and
++// mirrors the cart channel — lines, subtotal, checkout link, empty state.
++// Lines carry no behavior of their own here, so they are a rendered region,
++// not nested views. The cart channel replays, so a freshly mounted cart page
++// shows the current cart at once.
++export class CartView extends ViewStream {
++  constructor(props = {}) {
++    props.class = 'cart-view';
++    props.traits = [CartViewTraits];
++    props.channels = ['CHANNEL_CART'];
++    super(props);
++  }
++
++  addActionListeners() {
++    return [
++      ['CHANNEL_CART_UPDATED_EVENT', 'cartView$OnCartEvent'],
++      ['CHANNEL_CART_ERROR_EVENT', 'cartView$OnCartError'],
++    ];
++  }
++
++  broadcastEvents() {
++    return [];
++  }
++
++  onRendered() {
++    this.cartView$OnRendered();
++  }
++}
+diff --git a/src/app/components/page-items/product-tile-item.js b/src/app/components/page-items/product-tile-item.js
+index 9dd72e1..26f2241 100644
+--- a/src/app/components/page-items/product-tile-item.js
++++ b/src/app/components/page-items/product-tile-item.js
+@@ -1,11 +1,15 @@
+-import { ViewStream, ChannelPayloadFilter } from 'spyne';
++import { ViewStream } from 'spyne';
++import { ProductTileTraits } from 'traits/page/product-tile-traits.js';
+ import ProductTileTmpl from './templates/product-tile.tmpl.html';
+ 
+-// One catalog tile. Born from a product record (fallback or Shopify), it
+-// declares its own add-to-cart broadcast — tiles are rendered after the
+-// catalog's binding pass, so each carries its own declaration — and retires
+-// itself when a catalog from a different source arrives: the fallback tiles
+-// leave when Shopify answers; Shopify tiles ignore their own birth event.
++// One catalog tile. Born from a catalog event's product record (fallback or
++// Shopify), it declares its own add-to-cart broadcast — tiles are rendered
++// after the catalog's binding pass, so each carries its own declaration. It
++// listens to the catalog channel to show or hide itself under the current
++// filters and to retire when a catalog from a different source arrives —
++// skipping the replay of the event that spawned it (its visibility under
++// that event rides its birth data) — and to the cart channel to mark itself
++// when its variant is in the cart.
+ export class ProductTileItem extends ViewStream {
+   constructor(props = {}) {
+     props.tagName = 'article';
+@@ -16,17 +20,16 @@ export class ProductTileItem extends ViewStream {
+       origin: props.data.origin,
+       source: props.data.source,
+     };
+-    props.channels = ['CHANNEL_SHOPIFY'];
++    props.traits = [ProductTileTraits];
++    props.channels = [['CHANNEL_SHOPIFY', true], 'CHANNEL_CART'];
+     props.template = ProductTileTmpl;
+     super(props);
+   }
+ 
+   addActionListeners() {
+-    const otherSourceFilter = new ChannelPayloadFilter({
+-      source: (source) => source !== this.props.data.source,
+-    });
+     return [
+-      ['CHANNEL_SHOPIFY_CATALOG_EVENT', 'disposeViewStream', otherSourceFilter],
++      ['CHANNEL_SHOPIFY_CATALOG_EVENT', 'productTile$OnCatalogEvent'],
++      ['CHANNEL_CART_UPDATED_EVENT', 'productTile$OnCartEvent'],
+     ];
+   }
+ 
+@@ -34,5 +37,7 @@ export class ProductTileItem extends ViewStream {
+     return [['.product-acquire', 'click']];
+   }
+ 
+-  onRendered() {}
++  onRendered() {
++    this.productTile$OnRendered();
++  }
+ }
+diff --git a/src/app/components/page-items/templates/cart.tmpl.html b/src/app/components/page-items/templates/cart.tmpl.html
+new file mode 100644
+index 0000000..00249b1
+--- /dev/null
++++ b/src/app/components/page-items/templates/cart.tmpl.html
+@@ -0,0 +1,20 @@
++<div class="page-item--cart">
++  <header class="cart-header">
++    <h2 class="cart-title">{{title}}</h2>
++    <p class="cart-subtitle">{{subtitle}}</p>
++  </header>
++
++  <p class="cart-empty">{{emptyText}}</p>
++
++  <ul class="cart-lines"></ul>
++
++  <footer class="cart-summary">
++    <p class="cart-total">
++      <span class="cart-total__label">{{subtotalLabel}}</span>
++      <span class="cart-total__value"></span>
++    </p>
++    <a class="cart-checkout btn btn-primary" href="#" rel="noopener">{{checkoutLabel}}</a>
++  </footer>
++
++  <p class="cart-error" role="status" aria-live="polite"></p>
++</div>
+diff --git a/src/app/traits/app/app-local-storage-traits.js b/src/app/traits/app/app-local-storage-traits.js
+index 12fbbc7..590c83a 100644
+--- a/src/app/traits/app/app-local-storage-traits.js
++++ b/src/app/traits/app/app-local-storage-traits.js
+@@ -105,6 +105,20 @@ export class AppLocalStorageTraits extends SpyneTrait {
+     this.getChannel('CHANNEL_APP', settinsPayloadFilter).subscribe(
+       this.localStorage$ChannelOnStatusSettingsEvent.bind(this),
+     );
++
++    // the cart id rides the cart channel's state; persisted here so a
++    // reload rehydrates the same Shopify cart
++    const cartUpdatedFilter = new ChannelPayloadFilter({
++      action: 'CHANNEL_CART_UPDATED_EVENT',
++    });
++
++    this.getChannel('CHANNEL_CART', cartUpdatedFilter).subscribe(
++      this.localStorage$ChannelOnCartEvent.bind(this),
++    );
++  }
++
++  static localStorage$ChannelOnCartEvent(e) {
++    this.localStorage$SetItem('shopifyCartId', e.payload.cartId ?? '');
+   }
+ 
+   static localStorage$ChannelOnStatusSettingsEvent(e) {
+diff --git a/src/app/traits/channel/channel-cart-traits.js b/src/app/traits/channel/channel-cart-traits.js
+new file mode 100644
+index 0000000..da992f4
+--- /dev/null
++++ b/src/app/traits/channel/channel-cart-traits.js
+@@ -0,0 +1,225 @@
++import {
++  SpyneTrait,
++  SpyneAppProperties,
++  ChannelPayloadFilter,
++  ChannelFetchUtil,
++} from 'spyne';
++
++const CART_FIELDS = `
++  id checkoutUrl totalQuantity
++  cost { subtotalAmount { amount currencyCode } }
++  lines(first: 50) {
++    nodes {
++      id quantity
++      merchandise {
++        ... on ProductVariant {
++          id title
++          price { amount currencyCode }
++          product { handle title }
++        }
++      }
++    }
++  }`;
++
++export class ChannelCartTraits extends SpyneTrait {
++  constructor(context) {
++    let traitPrefix = 'channelCart$';
++    super(context, traitPrefix);
++  }
++
++  // ---- structural: wiring -------------------------------------------------
++
++  static channelCart$OnRegistered() {
++    const addToCartFilter = new ChannelPayloadFilter({ action: 'add-to-cart' });
++    this.getChannel('CHANNEL_UI', addToCartFilter).subscribe(
++      this.channelCart$OnAddToCart.bind(this),
++    );
++
++    // the storage channel replays the persisted store at boot; a saved cart
++    // id means a cart to rehydrate
++    const storageInitFilter = new ChannelPayloadFilter({
++      action: 'CHANNEL_LOCAL_STORAGE_APP_SETTINGS_INITIALIZED_EVENT',
++    });
++    this.getChannel('CHANNEL_LOCAL_STORAGE', storageInitFilter).subscribe(
++      this.channelCart$OnStorageInit.bind(this),
++    );
++  }
++
++  static channelCart$OnStorageInit(e) {
++    const cartId = e.payload?.shopifyCartId;
++    if (cartId && !this.props.cart.cartId) {
++      this.channelCart$Enqueue({ type: 'load', cartId });
++    }
++  }
++
++  /** The tile's dataset is the payload: which variant, which product. */
++  static channelCart$OnAddToCart(e) {
++    const { variantId, productId } = e.payload;
++    if (!variantId) {
++      this.channelCart$SendError({
++        errorType: 'NO_VARIANT',
++        message: `Product "${productId}" has no Shopify variant to add.`,
++      });
++      return;
++    }
++    this.channelCart$Enqueue({ type: 'add', variantId, productId, quantity: 1 });
++  }
++
++  // ---- structural: one mutation at a time ---------------------------------
++
++  /**
++   * Cart mutations are ordered: a second Acquire before the first cart exists
++   * must add to that cart, not create another. Intents queue and run one at
++   * a time (concat semantics); each result is reconciled before the next fires.
++   */
++  static channelCart$Enqueue(intent) {
++    this.props.queue.push(intent);
++    this.channelCart$RunNext();
++  }
++
++  static channelCart$RunNext() {
++    if (this.props.busy || this.props.queue.length === 0) return;
++    const intent = this.props.queue.shift();
++    this.props.busy = true;
++
++    const { query, variables } = ChannelCartTraits.channelCart$RequestFor(
++      intent,
++      this.props.cart.cartId,
++    );
++    const { store, apiVersion, storefrontAccessToken } = SpyneAppProperties.config.shopify;
++
++    new ChannelFetchUtil(
++      {
++        url: `https://${store}/api/${apiVersion}/graphql.json`,
++        method: 'POST',
++        headers: {
++          'Content-Type': 'application/json',
++          'X-Shopify-Storefront-Access-Token': storefrontAccessToken,
++        },
++        body: { query, variables },
++      },
++      this.channelCart$OnMutationReturned.bind(this, intent),
++    );
++  }
++
++  static channelCart$OnMutationReturned(intent, response) {
++    const outcome = ChannelCartTraits.channelCart$ReconcileResponse(intent, response);
++
++    if (outcome.status === 'error') {
++      this.channelCart$SendError(outcome.error);
++    } else {
++      // 'confirmed' carries the server's cart; 'gone' (a stale saved id) resets
++      this.props.cart = outcome.cart;
++      this.channelCart$SendUpdated();
++    }
++
++    this.props.busy = false;
++    this.channelCart$RunNext();
++  }
++
++  static channelCart$SendUpdated() {
++    const cart = this.props.cart;
++    this.sendChannelPayload('CHANNEL_CART_UPDATED_EVENT', {
++      ...cart,
++      isEmpty: cart.lines.length === 0,
++    });
++  }
++
++  static channelCart$SendError(error = {}) {
++    this.sendChannelPayload('CHANNEL_CART_ERROR_EVENT', {
++      errorType: error.errorType ?? 'CART_ERROR',
++      message: error.message ?? 'The cart could not be updated.',
++      status: error.status,
++    });
++  }
++
++  // ---- pure: requests, reconciliation, conform ----------------------------
++
++  static channelCart$RequestFor(intent, cartId) {
++    if (intent.type === 'load') {
++      return {
++        query: `query ($id: ID!) { cart(id: $id) { ${CART_FIELDS} } }`,
++        variables: { id: intent.cartId },
++      };
++    }
++    const lines = [{ merchandiseId: intent.variantId, quantity: intent.quantity ?? 1 }];
++    if (cartId) {
++      return {
++        query: `mutation ($cartId: ID!, $lines: [CartLineInput!]!) {
++          cartLinesAdd(cartId: $cartId, lines: $lines) {
++            cart { ${CART_FIELDS} } userErrors { field message }
++          }
++        }`,
++        variables: { cartId, lines },
++      };
++    }
++    return {
++      query: `mutation ($input: CartInput!) {
++        cartCreate(input: $input) { cart { ${CART_FIELDS} } userErrors { field message } }
++      }`,
++      variables: { input: { lines } },
++    };
++  }
++
++  /** Typed outcome: confirmed (server cart), gone (stale id), error. */
++  static channelCart$ReconcileResponse(intent, response = {}) {
++    if (response.isChannelFetchError === true) {
++      return { status: 'error', error: response };
++    }
++    if (Array.isArray(response.errors) && response.errors.length) {
++      return {
++        status: 'error',
++        error: { errorType: 'GRAPHQL_ERROR', message: response.errors.map((x) => x.message).join('; ') },
++      };
++    }
++    const data = response.data ?? {};
++    const result = data.cartCreate ?? data.cartLinesAdd ?? { cart: data.cart, userErrors: [] };
++    if (Array.isArray(result.userErrors) && result.userErrors.length) {
++      return {
++        status: 'error',
++        error: { errorType: 'USER_ERROR', message: result.userErrors.map((x) => x.message).join('; ') },
++      };
++    }
++    if (!result.cart) {
++      return { status: 'gone', cart: ChannelCartTraits.channelCart$EmptyCart() };
++    }
++    return { status: 'confirmed', cart: ChannelCartTraits.channelCart$ConformCart(result.cart) };
++  }
++
++  static channelCart$EmptyCart() {
++    return { cartId: '', checkoutUrl: '', totalQuantity: 0, subtotal: '', lines: [] };
++  }
++
++  static channelCart$ConformCart(cart = {}) {
++    return {
++      cartId: cart.id ?? '',
++      checkoutUrl: cart.checkoutUrl ?? '',
++      totalQuantity: cart.totalQuantity ?? 0,
++      subtotal: ChannelCartTraits.channelCart$FormatMoney(cart.cost?.subtotalAmount),
++      lines: (cart.lines?.nodes ?? []).map((line) => ({
++        lineId: line.id,
++        quantity: line.quantity,
++        variantId: line.merchandise?.id ?? '',
++        variantTitle: line.merchandise?.title === 'Default Title' ? '' : (line.merchandise?.title ?? ''),
++        productId: line.merchandise?.product?.handle ?? '',
++        title: line.merchandise?.product?.title ?? '',
++        price: ChannelCartTraits.channelCart$FormatMoney(line.merchandise?.price),
++      })),
++    };
++  }
++
++  static channelCart$FormatMoney(money) {
++    if (!money) return '';
++    const amount = Number(money.amount);
++    try {
++      return new Intl.NumberFormat('en-US', {
++        style: 'currency',
++        currency: money.currencyCode,
++        minimumFractionDigits: Number.isInteger(amount) ? 0 : 2,
++        maximumFractionDigits: 2,
++      }).format(amount);
++    } catch {
++      return `${amount} ${money.currencyCode}`;
++    }
++  }
++}
+diff --git a/src/app/traits/channel/channel-shopify-traits.js b/src/app/traits/channel/channel-shopify-traits.js
+index f9aa9b5..b8d0941 100644
+--- a/src/app/traits/channel/channel-shopify-traits.js
++++ b/src/app/traits/channel/channel-shopify-traits.js
+@@ -1,4 +1,4 @@
+-import { SpyneTrait } from 'spyne';
++import { SpyneTrait, ChannelPayloadFilter } from 'spyne';
+ 
+ export class ChannelShopifyTraits extends SpyneTrait {
+   constructor(context) {
+@@ -12,50 +12,91 @@ export class ChannelShopifyTraits extends SpyneTrait {
+    * Both sources are boot-time fetches, so a snapshot merge is the sync
+    * point: the catalog is conformed once both have answered. A failed
+    * Storefront fetch still arrives here (as its conformed error payload) and
+-   * is routed to the error label; the view keeps the fallback it was born with.
++   * is routed to the error label, and the catalog falls back to the products
++   * authored in the app model. The filter selects broadcast into CHANNEL_UI;
++   * this channel admits them by their dataset action and holds the filter
++   * state, so every consumer reads one catalog payload.
+    */
+   static channelShopify$OnRegistered() {
+     this.mergeChannels(['CHANNEL_FETCH_SHOPIFY', 'CHANNEL_FETCH_MODEL']).subscribe(
+       this.channelShopify$OnSourcesReturned.bind(this),
+     );
++
++    // the app model alone is enough for a catalog: the local products are
++    // served as the fallback the moment they exist, and stand until Shopify
++    // answers (or for good, if it never does)
++    const modelFilter = new ChannelPayloadFilter({ action: 'CHANNEL_FETCH_MODEL_RESPONSE_EVENT' });
++    this.getChannel('CHANNEL_FETCH_MODEL', modelFilter).subscribe(
++      this.channelShopify$OnModelReturned.bind(this),
++    );
++
++    const filterSelectFilter = new ChannelPayloadFilter({ action: 'filter' });
++    this.getChannel('CHANNEL_UI', filterSelectFilter).subscribe(
++      this.channelShopify$OnFilterChange.bind(this),
++    );
++  }
++
++  static channelShopify$OnModelReturned(e) {
++    if (this.props.catalog.source !== 'none') return;
++    const localProducts = ChannelShopifyTraits.channelShopify$LocalProducts(e.payload);
++    if (localProducts.length === 0) return;
++    this.props.catalog = { products: localProducts, source: 'fallback' };
++    this.channelShopify$SendCatalog(false);
+   }
+ 
+   static channelShopify$OnSourcesReturned(e) {
+     const shopify = e['CHANNEL_FETCH_SHOPIFY'].payload;
+     const model = e['CHANNEL_FETCH_MODEL'].payload;
++    const localProducts = ChannelShopifyTraits.channelShopify$LocalProducts(model);
+ 
+-    if (shopify.isChannelFetchError === true) {
+-      const { errorType, message, status } = shopify;
++    const hasProducts = Array.isArray(shopify.products) && shopify.products.length > 0;
++    if (shopify.isChannelFetchError === true || !hasProducts) {
++      const { errorType = 'EMPTY_CATALOG', message = 'The Storefront API returned no published products.', status } = shopify;
++      this.props.catalog = { products: localProducts, source: 'fallback' };
+       this.sendChannelPayload('CHANNEL_SHOPIFY_ERROR_EVENT', {
+         errorType,
+         message,
+         status,
+         source: 'fallback',
+       });
++      this.channelShopify$SendCatalog(false);
+       return;
+     }
+ 
+-    // an empty catalog is "no data" too: the view keeps its fallback
+-    if (!Array.isArray(shopify.products) || shopify.products.length === 0) {
+-      this.sendChannelPayload('CHANNEL_SHOPIFY_ERROR_EVENT', {
+-        errorType: 'EMPTY_CATALOG',
+-        message: 'The Storefront API returned no published products.',
+-        source: 'fallback',
+-      });
+-      return;
+-    }
+-
+-    const localProducts = ChannelShopifyTraits.channelShopify$LocalProducts(model);
+     const products = ChannelShopifyTraits.channelShopify$MergeImages(
+       shopify.products,
+       localProducts,
+     );
+-
+     this.props.catalog = { products, source: 'shopify' };
++    this.channelShopify$SendCatalog(false);
++  }
++
++  /** A select changed: the dataset names the key, the element carries the value. */
++  static channelShopify$OnFilterChange(e) {
++    const { filterKey } = e.payload;
++    if (!filterKey) return;
++    const value = e.srcElement?.el?.value ?? '';
++    this.props.filters = { ...this.props.filters, [filterKey]: value };
++    this.channelShopify$SendCatalog(true);
++  }
++
++  /**
++   * One label, complete state on every emission: the channel replays, so a
++   * shop page born after any number of filter changes receives the products,
++   * the source, the filters and the visible set in a single payload.
++   */
++  static channelShopify$SendCatalog(isFilterUpdate = false) {
++    const { products, source } = this.props.catalog;
++    const filters = { ...this.props.filters };
++    const visible = ChannelShopifyTraits.channelShopify$ApplyFilters(products, filters);
+     this.sendChannelPayload('CHANNEL_SHOPIFY_CATALOG_EVENT', {
+       products,
+-      source: 'shopify',
+-      count: products.length,
++      source,
++      filters,
++      visibleIds: visible.map((p) => p.attrProductId),
++      count: visible.length,
++      total: products.length,
++      isFilterUpdate,
+     });
+   }
+ 
+@@ -121,6 +162,17 @@ export class ChannelShopifyTraits extends SpyneTrait {
+     }
+   }
+ 
++  // ---- pure: filtering ----------------------------------------------------
++
++  /** Empty filter values mean "all"; set values match the product's field exactly. */
++  static channelShopify$ApplyFilters(products = [], filters = {}) {
++    const active = Object.entries(filters).filter(([, value]) => value !== '' && value != null);
++    if (active.length === 0) return products;
++    return products.filter((product) =>
++      active.every(([key, value]) => String(product[key] ?? '') === String(value)),
++    );
++  }
++
+   // ---- pure: the local products and their images ---------------------------
+ 
+   /** The six products authored in app.model.json — the development fallback. */
+diff --git a/src/app/traits/page/cart-view-traits.js b/src/app/traits/page/cart-view-traits.js
+new file mode 100644
+index 0000000..b53e081
+--- /dev/null
++++ b/src/app/traits/page/cart-view-traits.js
+@@ -0,0 +1,43 @@
++import { SpyneTrait, DomElementTemplate } from 'spyne';
++
++const LINES_TMPL = `{{#lines}}
++<li class="cart-line" data-line-id="{{lineId}}">
++  <span class="cart-line__title">{{title}}</span>
++  <span class="cart-line__variant">{{variantTitle}}</span>
++  <span class="cart-line__qty">× {{quantity}}</span>
++  <span class="cart-line__price">{{price}}</span>
++</li>
++{{/lines}}`;
++
++export class CartViewTraits extends SpyneTrait {
++  constructor(context) {
++    let traitPrefix = 'cartView$';
++    super(context, traitPrefix);
++  }
++
++  /** Empty until the channel says otherwise (replay makes that immediate). */
++  static cartView$OnRendered() {
++    this.props.el.classList.add('is-empty');
++  }
++
++  static cartView$OnCartEvent(e) {
++    const { lines = [], subtotal = '', checkoutUrl = '', isEmpty } = e.payload;
++    const root = this.props.el;
++
++    this.props.el$('.cart-lines').el.innerHTML = new DomElementTemplate(
++      LINES_TMPL,
++      { lines },
++    ).renderToString();
++    this.props.el$('.cart-total__value').el.innerText = subtotal;
++
++    const checkout = this.props.el$('.cart-checkout').el;
++    if (checkout) checkout.href = checkoutUrl || '#';
++
++    this.props.el$('.cart-error').el.innerText = '';
++    root.classList.toggle('is-empty', isEmpty === true || lines.length === 0);
++  }
++
++  static cartView$OnCartError(e) {
++    this.props.el$('.cart-error').el.innerText = e.payload.message ?? '';
++  }
++}
+diff --git a/src/app/traits/page/page-item-core-traits.js b/src/app/traits/page/page-item-core-traits.js
+index 276c84f..8962a99 100644
+--- a/src/app/traits/page/page-item-core-traits.js
++++ b/src/app/traits/page/page-item-core-traits.js
+@@ -3,6 +3,7 @@ import { HeroView } from 'components/page-items/hero-view.js';
+ import { CardsContainerView } from 'components/page-items/cards-container-view.js';
+ import { FormContactUsView } from 'components/page-items/form-contact-us-view.js';
+ import { ProductsCatalogView } from 'components/page-items/products-catalog-view.js';
++import { CartView } from 'components/page-items/cart-view.js';
+ 
+ export class PageItemCoreTraits extends SpyneTrait {
+   constructor(context) {
+@@ -154,6 +155,7 @@ export class PageItemCoreTraits extends SpyneTrait {
+     const classLookup = {
+       ContactUsView: FormContactUsView,
+       ProductsCatalogView,
++      CartView,
+     };
+     return classLookup[viewClass] || ViewStream;
+   }
+diff --git a/src/app/traits/page/product-tile-traits.js b/src/app/traits/page/product-tile-traits.js
+new file mode 100644
+index 0000000..ec606ea
+--- /dev/null
++++ b/src/app/traits/page/product-tile-traits.js
+@@ -0,0 +1,39 @@
++import { SpyneTrait } from 'spyne';
++
++export class ProductTileTraits extends SpyneTrait {
++  constructor(context) {
++    let traitPrefix = 'productTile$';
++    super(context, traitPrefix);
++  }
++
++  /** Visibility under the spawning event arrives as birth data. */
++  static productTile$OnRendered() {
++    this.productTile$SetVisible(this.props.data.isVisible !== false);
++  }
++
++  /**
++   * One label, two outcomes, decided on the tile's own birth data: a catalog
++   * from another source means this tile's generation is over; the same
++   * source means the visible set may have changed. The birth replay is
++   * skipped at subscription, so every payload here is a later emission.
++   */
++  static productTile$OnCatalogEvent(e) {
++    const { source, visibleIds = [] } = e.payload;
++    if (source !== this.props.data.source) {
++      this.disposeViewStream();
++      return;
++    }
++    this.productTile$SetVisible(visibleIds.includes(this.props.data.attrProductId));
++  }
++
++  static productTile$SetVisible(isVisible) {
++    this.props.el.classList.toggle('is-filtered-out', !isVisible);
++  }
++
++  /** The cart is state; the tile mirrors whether its variant is in it. */
++  static productTile$OnCartEvent(e) {
++    const lines = e.payload.lines ?? [];
++    const inCart = lines.some((line) => line.variantId === this.props.data.attrVariantId);
++    this.props.el.classList.toggle('is-in-cart', inCart);
++  }
++}
+diff --git a/src/app/traits/page/products-catalog-traits.js b/src/app/traits/page/products-catalog-traits.js
+index 353ab3f..0c2a1af 100644
+--- a/src/app/traits/page/products-catalog-traits.js
++++ b/src/app/traits/page/products-catalog-traits.js
+@@ -12,20 +12,33 @@ export class ProductsCatalogTraits extends SpyneTrait {
+ 
+   // ---- structural: nesting, channel egress, region updates ---------------
+ 
+-  /** Birth data first: the local products are the development fallback. */
++  /**
++   * The chrome renders from birth data; the tiles come only from the catalog
++   * channel, which replays — so a page born after the catalog exists fills
++   * at once, and one born before fills when the channel's fallback (the
++   * app-model products) or the Shopify catalog arrives. Tiles are never
++   * born from birth data, so no tile is ever retired by its own birth replay.
++   */
+   static productsCatalog$OnRendered() {
+-    this.productsCatalog$RenderCatalog(this.props.data.products, 'fallback');
++    this.props.el.dataset.catalogSource = 'none';
+   }
+ 
+-  /** The Shopify catalog replaces the fallback; the fallback tiles retire themselves. */
++  /**
++   * The channel's payload is complete state. A new source means a new set
++   * of tiles (the previous generation retires itself); every payload syncs
++   * the selects and the count to the filters and the visible set.
++   */
+   static productsCatalog$OnCatalogEvent(e) {
+-    const { products, source } = e.payload;
+-    this.productsCatalog$RenderCatalog(products, source);
++    const { products, source, filters = {}, visibleIds = [], count } = e.payload;
++    if (this.props.el.dataset.catalogSource !== source) {
++      this.productsCatalog$RenderCatalog(products, source, visibleIds);
++    }
++    this.productsCatalog$SyncFilters(filters, count);
+   }
+ 
+-  static productsCatalog$RenderCatalog(products = [], source = 'fallback') {
++  static productsCatalog$RenderCatalog(products = [], source = 'fallback', visibleIds = []) {
+     const data = this.props.data;
+-    const tiles = ProductsCatalogTraits.productsCatalog$ShapeTiles(products, data, source);
++    const tiles = ProductsCatalogTraits.productsCatalog$ShapeTiles(products, data, source, visibleIds);
+     const metals = ProductsCatalogTraits.productsCatalog$UniqueValues(tiles, 'metal');
+     const origins = ProductsCatalogTraits.productsCatalog$UniqueValues(tiles, 'origin');
+ 
+@@ -35,27 +48,43 @@ export class ProductsCatalogTraits extends SpyneTrait {
+ 
+     this.productsCatalog$SetOptions('metal', data.metalFilterAll, metals);
+     this.productsCatalog$SetOptions('origin', data.originFilterAll, origins);
+-    this.props.el$('.products-count__value').el.innerText =
+-      `${tiles.length} ${data.showingUnit ?? ''}`.trim();
++    this.productsCatalog$SetCount(tiles.length);
+     this.props.el.dataset.catalogSource = source;
+   }
+ 
++  static productsCatalog$SyncFilters(filters = {}, count) {
++    Object.entries(filters).forEach(([key, value]) => {
++      const select = this.props.el$(`.products-filter__select[data-filter-key="${key}"]`).el;
++      if (select && select.value !== value) select.value = value;
++    });
++    if (typeof count === 'number') this.productsCatalog$SetCount(count);
++  }
++
++  static productsCatalog$SetCount(count = 0) {
++    this.props.el$('.products-count__value').el.innerText =
++      `${count} ${this.props.data.showingUnit ?? ''}`.trim();
++  }
++
+   // the select element persists (its change broadcast stays bound); only its
+   // options are regenerated from the current products
+   static productsCatalog$SetOptions(key, allLabel = '', options = []) {
+     const select = this.props.el$(`.products-filter__select[data-filter-key="${key}"]`).el;
+     if (!select) return;
++    const current = select.value;
+     select.innerHTML = new DomElementTemplate(OPTIONS_TMPL, { allLabel, options }).renderToString();
++    if (options.includes(current)) select.value = current;
+   }
+ 
+   // ---- pure: shaping ------------------------------------------------------
+ 
+   /**
+    * A tile's data is the product plus the catalog-level labels it renders
+-   * (each tile is its own template, so the labels ride along) plus the
+-   * source it came from, which is how a tile knows when to retire.
++   * (each tile is its own template, so the labels ride along), the source it
++   * came from (how a tile knows when to retire), and whether the current
++   * filters show it (the tile skips its birth replay, so the birth event's
++   * visible set rides its data instead).
+    */
+-  static productsCatalog$ShapeTiles(products = [], data = {}, source = 'fallback') {
++  static productsCatalog$ShapeTiles(products = [], data = {}, source = 'fallback', visibleIds = []) {
+     const labels = {
+       priceLabel: data.priceLabel,
+       addToCartLabel: data.addToCartLabel,
+@@ -63,7 +92,10 @@ export class ProductsCatalogTraits extends SpyneTrait {
+     };
+     return products.map((product) => {
+       const tile = safeClone(product);
+-      Object.assign(tile, labels, { source });
++      Object.assign(tile, labels, {
++        source,
++        isVisible: visibleIds.includes(product.attrProductId),
++      });
+       return tile;
+     });
+   }
+diff --git a/src/index.js b/src/index.js
+index 004a72f..bc546c3 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -13,6 +13,7 @@ import { ChannelMenuDrawer } from 'channels/channel-menu-drawer';
+ import { ChannelApp } from 'channels/channel-app.js';
+ import { ChannelLocalStorage } from 'channels/channel-local-storage.js';
+ import { ChannelShopify } from 'channels/channel-shopify.js';
++import { ChannelCart } from 'channels/channel-cart.js';
+ import { ChannelShopifyTraits } from 'traits/channel/channel-shopify-traits.js';
+ //plugins
+ 
+@@ -112,6 +113,7 @@ SpyneApp.registerChannel(
+   }),
+ );
+ SpyneApp.registerChannel(new ChannelShopify());
++SpyneApp.registerChannel(new ChannelCart());
+ 
+ const registerCmsChannels = () => {
+   const mapFn = SpyneApp.pluginsFn.mapCmsData || ((d) => d);
+diff --git a/src/scss/03-components/pages/page-items/_cart.scss b/src/scss/03-components/pages/page-items/_cart.scss
+new file mode 100644
+index 0000000..4593c1c
+--- /dev/null
++++ b/src/scss/03-components/pages/page-items/_cart.scss
+@@ -0,0 +1,111 @@
++// Cart — mirrors CHANNEL_CART. App tokens (the Figma frame did not cover the
++// cart page). Empty state and error are class/region driven by the view.
++.page-item--cart {
++  display: flex;
++  flex-direction: column;
++  gap: 1.5rem;
++
++  .cart-header {
++    display: flex;
++    flex-direction: column;
++    gap: 0.25rem;
++  }
++
++  .cart-subtitle {
++    margin: 0;
++    color: var(--text-muted);
++
++    &:empty {
++      display: none;
++    }
++  }
++
++  .cart-empty {
++    margin: 0;
++    color: var(--text-muted);
++  }
++
++  .cart-lines {
++    list-style: none;
++    margin: 0;
++    padding: 0;
++    display: flex;
++    flex-direction: column;
++    border-block-start: 1px solid var(--border);
++  }
++
++  .cart-line {
++    display: grid;
++    grid-template-columns: 1fr auto auto auto;
++    gap: 1rem;
++    align-items: baseline;
++    margin: 0;
++    padding: 0.75rem 0;
++    border-block-end: 1px solid var(--border);
++  }
++
++  .cart-line__variant {
++    color: var(--text-muted);
++
++    &:empty {
++      display: none;
++    }
++  }
++
++  .cart-line__qty {
++    color: var(--text-muted);
++    font-family: var(--font-mono);
++    font-size: 0.875rem;
++  }
++
++  .cart-line__price {
++    font-family: var(--font-mono);
++    font-weight: var(--fw-semibold);
++  }
++
++  .cart-summary {
++    display: flex;
++    align-items: center;
++    justify-content: space-between;
++    gap: 1rem;
++    flex-wrap: wrap;
++  }
++
++  .cart-total {
++    margin: 0;
++    display: flex;
++    gap: 0.5rem;
++    align-items: baseline;
++  }
++
++  .cart-total__label {
++    color: var(--text-muted);
++  }
++
++  .cart-total__value {
++    font-family: var(--font-mono);
++    font-size: 1.25rem;
++    font-weight: var(--fw-semibold);
++  }
++
++  .cart-error {
++    margin: 0;
++    color: var(--error);
++
++    &:empty {
++      display: none;
++    }
++  }
++}
++
++// the view toggles is-empty on its root from the cart channel's state
++.cart-view.is-empty {
++  .cart-lines,
++  .cart-summary {
++    display: none;
++  }
++}
++
++.cart-view:not(.is-empty) .cart-empty {
++  display: none;
++}
+diff --git a/src/scss/03-components/pages/page-items/_products.scss b/src/scss/03-components/pages/page-items/_products.scss
+index f43a8aa..a9f3255 100644
+--- a/src/scss/03-components/pages/page-items/_products.scss
++++ b/src/scss/03-components/pages/page-items/_products.scss
+@@ -160,6 +160,15 @@
+     gap: 24px;
+   }
+ 
++  // the tile toggles these from the catalog and cart channels
++  .product-tile.is-filtered-out {
++    display: none;
++  }
++
++  .product-tile.is-in-cart .product-acquire {
++    box-shadow: inset 0 0 0 2px var(--c-text);
++  }
++
+   .product-tile {
+     display: flex;
+     flex-direction: column;
+diff --git a/src/scss/03-components/pages/pages.scss b/src/scss/03-components/pages/pages.scss
+index a4357c8..f3ebe17 100644
+--- a/src/scss/03-components/pages/pages.scss
++++ b/src/scss/03-components/pages/pages.scss
+@@ -9,6 +9,7 @@
+ @use 'page-items/contact-us';
+ @use 'page-items/post-list';
+ @use 'page-items/products';
++@use 'page-items/cart';
+ @use 'page-items/split-feature';
+ @use 'page-items/cta-banner';
+ 
+diff --git a/src/static/data/app.model.json b/src/static/data/app.model.json
+index be93954..66de14d 100644
+--- a/src/static/data/app.model.json
++++ b/src/static/data/app.model.json
+@@ -390,6 +390,25 @@
+             "selector": ".page-heading"
+           }
+         },
++        {
++          "isPrototype": false,
++          "viewClass": "CartView",
++          "props": {
++            "ariaLabel": "Cart",
++            "template": "cart.tmpl.html",
++            "data": {
++              "title": "Your selected samples",
++              "subtitle": "",
++              "emptyText": "Your cart is empty. Add samples from the catalog to request a quote.",
++              "subtotalLabel": "Subtotal",
++              "checkoutLabel": "Proceed to checkout"
++            }
++          },
++          "container": {
++            "isEnabled": true,
++            "spacing": "default"
++          }
++        },
+         {
+           "isPrototype": false,
+           "viewClass": "ViewStream",

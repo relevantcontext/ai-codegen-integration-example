@@ -6,11 +6,16 @@ export class ProductTileTraits extends SpyneTrait {
     super(context, traitPrefix);
   }
 
+  /** Visibility under the spawning event arrives as birth data. */
+  static productTile$OnRendered() {
+    this.productTile$SetVisible(this.props.data.isVisible !== false);
+  }
+
   /**
    * One label, two outcomes, decided on the tile's own birth data: a catalog
    * from another source means this tile's generation is over; the same
-   * source means the visible set may have changed. (A tile's own replayed
-   * birth event lands here too — same source, so it only applies filters.)
+   * source means the visible set may have changed. The birth replay is
+   * skipped at subscription, so every payload here is a later emission.
    */
   static productTile$OnCatalogEvent(e) {
     const { source, visibleIds = [] } = e.payload;
@@ -18,7 +23,10 @@ export class ProductTileTraits extends SpyneTrait {
       this.disposeViewStream();
       return;
     }
-    const isVisible = visibleIds.includes(this.props.data.attrProductId);
+    this.productTile$SetVisible(visibleIds.includes(this.props.data.attrProductId));
+  }
+
+  static productTile$SetVisible(isVisible) {
     this.props.el.classList.toggle('is-filtered-out', !isVisible);
   }
 

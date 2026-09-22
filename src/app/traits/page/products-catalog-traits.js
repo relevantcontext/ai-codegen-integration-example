@@ -12,9 +12,15 @@ export class ProductsCatalogTraits extends SpyneTrait {
 
   // ---- structural: nesting, channel egress, region updates ---------------
 
-  /** Birth data first: the local products are the development fallback. */
+  /**
+   * The chrome renders from birth data; the tiles come only from the catalog
+   * channel, which replays — so a page born after the catalog exists fills
+   * at once, and one born before fills when the channel's fallback (the
+   * app-model products) or the Shopify catalog arrives. Tiles are never
+   * born from birth data, so no tile is ever retired by its own birth replay.
+   */
   static productsCatalog$OnRendered() {
-    this.productsCatalog$RenderCatalog(this.props.data.products, 'fallback');
+    this.props.el.dataset.catalogSource = 'none';
   }
 
   /**
@@ -23,16 +29,16 @@ export class ProductsCatalogTraits extends SpyneTrait {
    * the selects and the count to the filters and the visible set.
    */
   static productsCatalog$OnCatalogEvent(e) {
-    const { products, source, filters = {}, count } = e.payload;
+    const { products, source, filters = {}, visibleIds = [], count } = e.payload;
     if (this.props.el.dataset.catalogSource !== source) {
-      this.productsCatalog$RenderCatalog(products, source);
+      this.productsCatalog$RenderCatalog(products, source, visibleIds);
     }
     this.productsCatalog$SyncFilters(filters, count);
   }
 
-  static productsCatalog$RenderCatalog(products = [], source = 'fallback') {
+  static productsCatalog$RenderCatalog(products = [], source = 'fallback', visibleIds = []) {
     const data = this.props.data;
-    const tiles = ProductsCatalogTraits.productsCatalog$ShapeTiles(products, data, source);
+    const tiles = ProductsCatalogTraits.productsCatalog$ShapeTiles(products, data, source, visibleIds);
     const metals = ProductsCatalogTraits.productsCatalog$UniqueValues(tiles, 'metal');
     const origins = ProductsCatalogTraits.productsCatalog$UniqueValues(tiles, 'origin');
 
@@ -73,10 +79,12 @@ export class ProductsCatalogTraits extends SpyneTrait {
 
   /**
    * A tile's data is the product plus the catalog-level labels it renders
-   * (each tile is its own template, so the labels ride along) plus the
-   * source it came from, which is how a tile knows when to retire.
+   * (each tile is its own template, so the labels ride along), the source it
+   * came from (how a tile knows when to retire), and whether the current
+   * filters show it (the tile skips its birth replay, so the birth event's
+   * visible set rides its data instead).
    */
-  static productsCatalog$ShapeTiles(products = [], data = {}, source = 'fallback') {
+  static productsCatalog$ShapeTiles(products = [], data = {}, source = 'fallback', visibleIds = []) {
     const labels = {
       priceLabel: data.priceLabel,
       addToCartLabel: data.addToCartLabel,
@@ -84,7 +92,10 @@ export class ProductsCatalogTraits extends SpyneTrait {
     };
     return products.map((product) => {
       const tile = safeClone(product);
-      Object.assign(tile, labels, { source });
+      Object.assign(tile, labels, {
+        source,
+        isVisible: visibleIds.includes(product.attrProductId),
+      });
       return tile;
     });
   }

@@ -1,0 +1,32 @@
+> npm run build
+
+> code-assembly-alpha@0.1.0 build
+> webpack --mode production --env build
+
+WARNING in asset size limit: The following asset(s) exceed the recommended size limit (244 KiB).
+This can impact web performance.
+Assets: 
+  assets/static/imgs/design-header.png (386 KiB)
+  assets/static/imgs/pexels-4198921.jpeg (266 KiB)
+  assets/static/imgs/pexels-gosia-k-23254118-35356461.jpg (322 KiB)
+  assets/css/main.cf8f03b26e24f67637b3.css (329 KiB)
+
+WARNING in entrypoint size limit: The following entrypoint(s) combined asset size exceeds the recommended limit (244 KiB). This can impact web performance.
+Entrypoints:
+  index (588 KiB)
+      assets/js/vendor.7d4bb23545b27695d587.js
+      assets/css/main.cf8f03b26e24f67637b3.css
+      assets/js/index.82d76d15430cb16b7e6d.js
+
+WARNING in webpack performance recommendations: 
+You can limit the size of your bundles by using import() or require.ensure to lazy load some parts of your application.
+For more info visit https://webpack.js.org/guides/code-splitting/
+
+webpack compiled with 3 warnings
+ok    / -> home.png
+ok    /shop -> shop.png
+ok    /about -> about.png
+ok    /cart -> cart.png
+ok    /about/contact -> about-contact.png
+ok    in-app navigation (8 clicks)
+exit: 0

@@ -11,8 +11,10 @@
 //    RECORD/screenshots/<stage>/, named from the href: / -> home.png,
 //    /about/contact -> about-contact.png.
 // 4. Smoke test: every route must load with no console errors, page errors, or failed
-//    requests. Result goes to RECORD/verification/<stage>/route-smoke.json; exit 1 on
-//    any failure.
+//    requests — first as a full page load per route, then as ONE session that walks
+//    every nav link in-app (route swaps, replayed channels, views born late), which is
+//    where lifecycle faults hide. Result goes to RECORD/verification/<stage>/
+//    route-smoke.json; exit 1 on any failure.
 //
 // --console (option (a), ruled at A3): builds in DEVELOPMENT mode so dev-tools.js
 // loads, serves it, removes the CMS panel from the page (nothing else), drives the
@@ -183,12 +185,34 @@ for (const href of hrefs) {
   console.log(`${errors.length ? 'FAIL' : 'ok  '}  ${href} -> ${file}`);
 }
 
+// in-app navigation pass: one page, every nav link clicked in order, twice
+const navErrors = [];
+const navPage = await context.newPage();
+watch(navPage, navErrors);
+await navPage.goto(origin, { waitUntil: 'networkidle' });
+const walked = [];
+for (let round = 0; round < 2; round += 1) {
+  for (const href of hrefs.filter((h) => h !== '/')) {
+    const clicked = await navPage.evaluate((target) => {
+      const a = [...document.querySelectorAll('nav a[href], header a[href], aside a[href]')]
+        .find((el) => new URL(el.getAttribute('href'), location.origin).pathname === target);
+      a?.click();
+      return Boolean(a);
+    }, href);
+    await navPage.waitForTimeout(1500);
+    walked.push({ round: round + 1, href, clicked, landed: await navPage.evaluate(() => location.pathname) });
+  }
+}
+await navPage.close();
+const inApp = { ok: navErrors.length === 0, walked, errors: navErrors };
+console.log(`${inApp.ok ? 'ok  ' : 'FAIL'}  in-app navigation (${walked.length} clicks)${navErrors.length ? `: ${navErrors[0]}` : ''}`);
+
 await browser.close();
 server.close();
 
-const ok = results.every((r) => r.ok);
+const ok = results.every((r) => r.ok) && inApp.ok;
 fs.writeFileSync(
   path.join(verifyDir, 'route-smoke.json'),
-  JSON.stringify({ stage, viewport: VIEWPORT, build: 'production (dist/)', ok, routes: results }, null, 2) + '\n',
+  JSON.stringify({ stage, viewport: VIEWPORT, build: 'production (dist/)', ok, routes: results, inAppNavigation: inApp }, null, 2) + '\n',
 );
 process.exit(ok ? 0 : 1);
