@@ -68,3 +68,7 @@ Format: artifact — what it is — origin — model / prompt / version — stag
   - Route source: navLinks is a runtime CHANNEL_ROUTE payload, not a key in `app.model.json`, and is not reachable from outside the production bundle; the script reads the hrefs from the nav the app renders from navLinks. Nothing is hard-coded.
 - `RECORD/tools/package.json` + `package-lock.json` — Playwright 1.62.1 (pinned to the Chromium build already cached on the capture machine) — tooling — A0
 - `RECORD/screenshots/A0/*.png` — five routes, captured by the script — A0
+- `RECORD/tools/shopify-token.mjs` — mints/verifies the Storefront API token (client-credentials grant → Admin token → `storefrontAccessTokenCreate`, title `code-assembly-alpha`) — written by Claude Code (claude-fable-5-1), run by Frank with credentials in his shell only — 2026-09-22 — A2 prep
+- `RECORD/tools/shopify-seed.mjs` — seeds the six metals into the dev store via the Admin API (product type = metal, tag = origin, variant weight g = mass, variant price = price), drafts Shopify's sample products, verifies through the Storefront API — same authorship/run model — 2026-09-22 — A2 prep
+- Shopify: Dev Dashboard app `asteroid-metals-app`, installed on store `asteroid-metals.myshopify.com` (the brief named `81et1p-m2.myshopify.com`; the app was set up on a second store and the POC follows the app). Credentials live in `.env` (git-ignored, never read by the agent). Storefront token scopes: `unauthenticated_read_product_listings`, `unauthenticated_read_product_inventory`; API version 2026-04 — A2 prep
+

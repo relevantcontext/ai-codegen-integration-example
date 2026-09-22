@@ -60,7 +60,7 @@ same structure. "Layer name" is the Figma layer name exactly as it appears.
 | 26 | Add-to-cart label "Acquire" | 4:43 | `Acquire` | mapped | `{{addToCartLabel}}` ("Acquire") — new key, copy from the design. |
 | 27 | Footnote container | 4:135 | `editorial-footnote` | mapped | `<footer class="products-footnote">`. |
 | 28 | Footnote text | 4:136 | `SECURE DISPATCH AND ASTEROIDAL PROVENANCE DOCUMENTATION ACCOMPANY EACH ORDER.` | mapped | `{{footnoteText}}` — new key, copy from the design, uppercased in CSS. |
-| 29 | Footnote PDF link | 4:137 | `SPECIMEN AUTHENTICITY REPORT [PDF]` | **undefined** | `{{footnoteLinkText}}` rendered as a styled `<p>`, NOT an `<a>`: no target exists in the design and none was invented. Becomes a link when Frank supplies the target. |
+| 29 | Footnote PDF link | 4:137 | `SPECIMEN AUTHENTICITY REPORT [PDF]` | undefined → **removed (ruled)** | `{{footnoteLinkText}}` rendered as a styled `<p>`, NOT an `<a>`: no target exists in the design and none was invented. Becomes a link when Frank supplies the target. |
 
 ### A1 decisions the prompt left open (all inferred unless marked)
 
@@ -99,4 +99,8 @@ Frank's review note, recorded: the model kept the app's asteroid-metals content 
 frame's "Rare Earth & Heavy Metals" copy — confirmed as the intended reading ("the
 asteroid concept overrode the metals text in figma").
 
-Counts after r2: 20 mapped, 8 inferred, 1 undefined (the footnote PDF link, still unruled).
+Counts after r2: 20 mapped, 8 inferred, 1 undefined (the footnote PDF link).
+
+### Rulings after A1 (Frank, 2026-09-22)
+
+- **Element 29, footnote PDF link → removed.** The Figma agent invented a document that does not exist; Frank ruled it out. The link text key `footnoteLinkText`, its `<p>` and its styles are removed; the footnote text (element 28) stays. Final A1 counts: 20 mapped, 8 inferred, 0 undefined, 1 removed by ruling. Committed at the start of A2's history, not re-tagged.

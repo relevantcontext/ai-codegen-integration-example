@@ -10,3 +10,6 @@ dist/*
 src/tests/results/*
 !dist/.gitkeep
 src/scss/scripts/*
+
+# local secrets (Shopify client credentials) — never committed
+.env
