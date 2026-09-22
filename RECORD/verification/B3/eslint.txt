@@ -1,0 +1,5 @@
+
+> code-assembly-alpha@0.1.0 lint
+> eslint --config eslint.config.js src
+
+exit: 0

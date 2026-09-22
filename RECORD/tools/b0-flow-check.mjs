@@ -5,7 +5,8 @@ const { chromium } = require('playwright');
 const dist = new URL('../../dist', import.meta.url).pathname;
 const MIME = { '.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg','.jpeg':'image/jpeg','.woff2':'font/woff2' };
 const server = http.createServer((req,res)=>{ const u=decodeURIComponent(new URL(req.url,'http://x').pathname); let f=path.join(dist,u); if(!(fs.existsSync(f)&&fs.statSync(f).isFile())){ if(path.extname(u)){res.writeHead(404);return res.end();} f=path.join(dist,'index.html'); } res.writeHead(200,{'Content-Type':MIME[path.extname(f)]??'application/octet-stream'}); fs.createReadStream(f).pipe(res); });
-await new Promise(r=>server.listen(0,'127.0.0.1',r)); const origin=`http://127.0.0.1:${server.address().port}`;
+const remote = process.argv.includes('--url') ? process.argv[process.argv.indexOf('--url')+1].replace(/\/$/,'') : null;
+if (!remote) await new Promise(r=>server.listen(0,'127.0.0.1',r)); const origin = remote ?? `http://127.0.0.1:${server.address().port}`;
 const browser = await chromium.launch(); const page = await (await browser.newContext({viewport:{width:1280,height:800}})).newPage();
 const errors=[]; page.on('pageerror',e=>errors.push('pageerror: '+e.message)); page.on('console',m=>m.type()==='error'&&errors.push('console: '+m.text()));
 const out={};
@@ -51,4 +52,4 @@ out.contactSubmit = await page.$eval('.contact-us__form button[type=submit]', b=
 out.footer = await page.$eval('footer, .footer-content', f=>f.innerText.replace(/\s+/g,' ').trim().slice(0,80));
 out.errors = errors;
 console.log(JSON.stringify(out,null,1));
-await browser.close(); server.close();
+await browser.close(); if (!remote) server.close();

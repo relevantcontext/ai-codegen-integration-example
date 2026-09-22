@@ -1,0 +1,11 @@
+PASS  manifest files all present — 126 files
+PASS  manifest counts match payload — cards 91/91, records 32/32, manifest kinds card=91 record=32
+PASS  manifest entry points resolve — agents, spec, mentalModel, trees
+PASS  payload lives at grammar/ — package 0.3.1
+PASS  AGENTS.md stackVersion matches installed grammar — doc says v50-r11, package says v50-r11
+PASS  CLAUDE.md stackVersion matches installed grammar — doc says v50-r11, package says v50-r11
+PASS  installed spyne satisfies frameworkCompat — spyne 0.26.7 vs ">=0.25"
+PASS  no @spynejs/kb references in tracked source — 150 files scanned
+
+@spynejs/grammar 0.3.1 (v50-r11): 8/8 checks passed
+exit: 0

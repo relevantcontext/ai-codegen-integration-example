@@ -1,0 +1,8 @@
+> remote: https://dvlyqetb9espg.cloudfront.net (no build)
+ok    / -> home.png
+ok    /shop -> shop.png
+ok    /cart -> cart.png
+ok    /about -> about.png
+ok    /about/contact -> about-contact.png
+ok    in-app navigation (8 clicks)
+exit: 0

@@ -296,3 +296,19 @@ set) stays deferred.
 | 27 | Frame v2 section background | mapped | `#091725` on the catalog's page-item wrapper (`--c-section`); card, image-container, border, text and accent colours unchanged as in the frame. |
 | 28 | `uiProps.fontFamilyStr` blanked by the CMS write | noted | Unused by the app; left as written by the CMS. |
 
+## B3 — Production checks
+
+Prompt: `prompts/B3-1.md`. No external source enters; the log records what production-readiness
+changed and what the deploy found.
+
+| # | Element | Status | Note |
+|---|---|---|---|
+| 1 | Unreferenced images (14) | removed | `design-header.{jpg,png}`, six sample `pexels-photo-*` / `pexels-*` files, and the six Pexels product placeholders the Figma images replaced; their rows dropped from `image-manifest.json`. |
+| 2 | Unused page-item templates + stylesheets (4 + 4) | removed | post-list, split-feature, testimonials, where-we-are — Shell page-item library entries the app never referenced. A content author wanting those sections later re-adds them from the Shell. |
+| 3 | `apache-htaccess` | removed | Not used by an S3/CloudFront host. |
+| 4 | Generator docs, `schema/`, tests | kept | They document and check the app; `npm test` passes (its fixtures are the generator's, not this app's). |
+| 5 | `<link rel="icon">`, apple-touch-icon, `manifest.json` references | fixed | Pointed at files the generator never produced (404s in production). Replaced by one real favicon (`imgs/favicon.svg`, a neutral mark in the catalog's palette — inferred; Frank may replace) and the manifest link dropped. |
+| 6 | CloudFront SPA routing | mapped (ruled) | Mirrored from `E1K9CDJJHYXTE8`: root object + 403/404 → `/index.html`. |
+| 7 | Deploy to the real URL | partial | Live at the distribution URL; `https://justmetu.com` needs the Route53 alias moved from the S3 website endpoint to the distribution — **undefined**, Frank rules. |
+| 8 | Cart and checkout end to end | partial | Add → cart → checkout link verified on the live site; Shopify serves the storefront password page before checkout — **undefined**, Frank's store setting. |
+

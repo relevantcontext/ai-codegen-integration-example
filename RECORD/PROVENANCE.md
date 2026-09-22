@@ -146,3 +146,12 @@ Format: artifact — what it is — origin — model / prompt / version — stag
 - removed: `dm-serif-text-400.woff2`, `geist-*.woff2`, `geist-mono-*.woff2` and their licences — B0-r2
 - `RECORD/screenshots/B0-r2/*.png` — five routes + four console frames — B0-r2
 
+## B3 — production checks and deploy (model-written; agent: Claude Code, claude-fable-5-1; prompt `prompts/B3-1.md`)
+
+- removed: 14 images, 4 templates, 4 stylesheets, `apache-htaccess`; `image-manifest.json` rows for the replaced placeholders — B3
+- `src/index.tmpl.html` — icon/manifest links fixed; `src/static/imgs/favicon.svg` — new, model-drawn neutral mark — B3
+- `src/scss/03-components/pages/pages.scss` — unused imports dropped — B3
+- `RECORD/tools/screenshot.mjs`, `b0-flow-check.mjs` — `--url` mode for a deployed site; `RECORD/tools/b3-checkout-reach.mjs` — new — tooling — B3
+- Deploy: `aws s3 sync dist/ s3://justmetu.com/` (additive; prior `index.html` snapshotted as `index-2026-09-22-pre-poc.html`); CloudFront `E1YHBPGAEXA3TQ` updated (root object, 403/404 rewrites); invalidation `I1ULIRJ0CMP2X92GQQOIL4H74M` — run by Claude Code with Frank's AWS credentials from the inherited environment (`arn:aws:iam::176489335652:user/frankbatista`) — B3
+- `RECORD/screenshots/B3/` (local build), `RECORD/screenshots/B3-live/` (live URL incl. `checkout.png`) — B3
+

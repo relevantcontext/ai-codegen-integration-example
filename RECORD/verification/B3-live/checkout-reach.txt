@@ -1,0 +1,19 @@
+{
+ "site": "https://dvlyqetb9espg.cloudfront.net",
+ "cart": {
+  "lines": [
+   "Palladium Crystal"
+  ],
+  "subtotal": "$2,950",
+  "checkoutUrl": "https://asteroid-metals.myshopify.com/cart/c/hWNH8IlNZf0ddlLGNP387cuo?key=Ji7Vd17__ijaqOkhSzth2Gn7aMtBcXQFclNlNGxixr8OmU950EPZ1UIOhPPgBmFpoTkwr44WKJ7Z7_Mq6guMcL91yBGjgc7WRQ8Fdz7UGmssmyRJ1HviRF_hLQrUM4rBhQst4KNg2WZUVWcNt9jasw%3D%3D"
+ },
+ "checkoutStatus": 200,
+ "checkout": {
+  "url": "https://asteroid-metals.myshopify.com/password",
+  "title": "asteroid metals",
+  "hasProduct": false,
+  "hasTotal": false,
+  "passwordWall": true
+ },
+ "errors": []
+}

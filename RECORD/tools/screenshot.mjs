@@ -2,6 +2,8 @@
 //
 //   node RECORD/tools/screenshot.mjs <stage>            e.g. A0
 //   node RECORD/tools/screenshot.mjs <stage> --console  Behavior Console capture (A3+)
+//   node RECORD/tools/screenshot.mjs <stage> --url <origin>  same captures + smoke against a
+//                                                       deployed site (no build, no local server)
 //
 // 1. `npm run build` (production: dev-tools.js — CMS + Behavior Console — never loads,
 //    so every capture shows the app as a visitor sees it; no app code is touched).
@@ -32,6 +34,8 @@ import { chromium } from 'playwright';
 
 const stage = process.argv[2];
 const consoleMode = process.argv.includes('--console');
+const urlFlag = process.argv.indexOf('--url');
+const remoteOrigin = urlFlag > -1 ? process.argv[urlFlag + 1]?.replace(/\/$/, '') : null;
 if (!stage) {
   console.error('usage: node RECORD/tools/screenshot.mjs <stage>');
   process.exit(2);
@@ -83,7 +87,9 @@ const watch = (page, errors) => {
   page.on('response', (r) => r.status() >= 400 && errors.push(`http ${r.status()}: ${r.url()}`));
 };
 
-if (consoleMode) {
+if (remoteOrigin) {
+  console.log(`> remote: ${remoteOrigin} (no build)`);
+} else if (consoleMode) {
   console.log('> development build (dev tools on)');
   execSync('npx webpack --mode development --env build', {
     cwd: root, stdio: 'inherit', env: { ...process.env, NODE_ENV: 'development' },
@@ -96,8 +102,8 @@ if (consoleMode) {
 fs.mkdirSync(shotDir, { recursive: true });
 fs.mkdirSync(verifyDir, { recursive: true });
 
-const server = await serve();
-const origin = `http://127.0.0.1:${server.address().port}`;
+const server = remoteOrigin ? { close() {} } : await serve();
+const origin = remoteOrigin ?? `http://127.0.0.1:${server.address().port}`;
 const browser = await chromium.launch();
 const context = await browser.newContext({ viewport: VIEWPORT, colorScheme: 'light' });
 
@@ -213,6 +219,6 @@ server.close();
 const ok = results.every((r) => r.ok) && inApp.ok;
 fs.writeFileSync(
   path.join(verifyDir, 'route-smoke.json'),
-  JSON.stringify({ stage, viewport: VIEWPORT, build: 'production (dist/)', ok, routes: results, inAppNavigation: inApp }, null, 2) + '\n',
+  JSON.stringify({ stage, viewport: VIEWPORT, build: remoteOrigin ? `remote ${remoteOrigin}` : 'production (dist/)', ok, routes: results, inAppNavigation: inApp }, null, 2) + '\n',
 );
 process.exit(ok ? 0 : 1);
