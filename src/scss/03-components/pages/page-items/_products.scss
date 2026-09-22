@@ -261,11 +261,31 @@
   }
 
   .product-valuation {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
+    display: grid;
+    grid-template-columns: auto auto;
+    column-gap: 8px;
+    row-gap: 2px;
+    align-items: baseline;
     margin: 0;
     white-space: nowrap;
+  }
+
+  .product-valuation__label {
+    grid-column: 1 / -1;
+  }
+
+  // sale: the current price takes the accent, the compare-at price sits
+  // beside it struck through (the frame has no sale state; this follows its
+  // mono/accent vocabulary)
+  .product-price--was {
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--c-muted);
+    text-decoration: line-through;
+  }
+
+  .product-tile.is-on-sale .product-price:not(.product-price--was) {
+    color: var(--c-accent);
   }
 
   .product-valuation__label {

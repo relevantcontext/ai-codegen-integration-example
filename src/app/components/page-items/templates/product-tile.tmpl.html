@@ -11,6 +11,9 @@
     <p class="product-valuation">
       <span class="product-valuation__label">{{priceLabel}}</span>
       <span class="product-price">{{price}}</span>
+      {{#sale}}
+      <s class="product-price product-price--was">{{compareAtPrice}}</s>
+      {{/sale}}
     </p>
     <button
       type="button"

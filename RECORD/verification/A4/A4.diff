@@ -1,0 +1,107 @@
+diff --git a/src/app/components/page-items/product-tile-item.js b/src/app/components/page-items/product-tile-item.js
+index 26f2241..3713b8e 100644
+--- a/src/app/components/page-items/product-tile-item.js
++++ b/src/app/components/page-items/product-tile-item.js
+@@ -13,7 +13,8 @@ import ProductTileTmpl from './templates/product-tile.tmpl.html';
+ export class ProductTileItem extends ViewStream {
+   constructor(props = {}) {
+     props.tagName = 'article';
+-    props.class = 'product-tile';
++    // sale is a fact of the product record, so it is a birth-time class
++    props.class = props.data.isOnSale === true ? 'product-tile is-on-sale' : 'product-tile';
+     props.dataset = {
+       productId: props.data.attrProductId,
+       metal: props.data.metal,
+diff --git a/src/app/components/page-items/templates/product-tile.tmpl.html b/src/app/components/page-items/templates/product-tile.tmpl.html
+index 4a77101..758e1d8 100644
+--- a/src/app/components/page-items/templates/product-tile.tmpl.html
++++ b/src/app/components/page-items/templates/product-tile.tmpl.html
+@@ -11,6 +11,9 @@
+     <p class="product-valuation">
+       <span class="product-valuation__label">{{priceLabel}}</span>
+       <span class="product-price">{{price}}</span>
++      {{#sale}}
++      <s class="product-price product-price--was">{{compareAtPrice}}</s>
++      {{/sale}}
+     </p>
+     <button
+       type="button"
+diff --git a/src/app/traits/channel/channel-shopify-traits.js b/src/app/traits/channel/channel-shopify-traits.js
+index b8d0941..9b8f83f 100644
+--- a/src/app/traits/channel/channel-shopify-traits.js
++++ b/src/app/traits/channel/channel-shopify-traits.js
+@@ -109,7 +109,7 @@ export class ChannelShopifyTraits extends SpyneTrait {
+         nodes {
+           id handle title productType tags
+           featuredImage { url altText }
+-          variants(first: 1) { nodes { id price { amount currencyCode } weight weightUnit } }
++          variants(first: 1) { nodes { id price { amount currencyCode } compareAtPrice { amount currencyCode } weight weightUnit } }
+         }
+       }
+     }`;
+@@ -136,11 +136,24 @@ export class ChannelShopifyTraits extends SpyneTrait {
+       origin: Array.isArray(node.tags) && node.tags.length ? node.tags[0] : '',
+       mass: ChannelShopifyTraits.channelShopify$FormatMass(variant),
+       price: ChannelShopifyTraits.channelShopify$FormatPrice(variant?.price),
++      // presence = shape: `sale` exists only when there is a higher compare-at
++      // price, so the template's object section renders the struck price
++      // for sale items and nothing otherwise
++      ...ChannelShopifyTraits.channelShopify$SaleFields(variant),
+       attrImageSrc: node.featuredImage?.url ?? '',
+       attrImageAlt: node.featuredImage?.altText ?? node.title ?? '',
+     };
+   }
+ 
++  static channelShopify$SaleFields(variant) {
++    const price = Number(variant?.price?.amount);
++    const compareAt = Number(variant?.compareAtPrice?.amount);
++    const isOnSale = Number.isFinite(price) && Number.isFinite(compareAt) && compareAt > price;
++    return isOnSale
++      ? { isOnSale: true, sale: { compareAtPrice: ChannelShopifyTraits.channelShopify$FormatPrice(variant.compareAtPrice) } }
++      : { isOnSale: false };
++  }
++
+   static channelShopify$FormatMass(variant) {
+     if (!variant || variant.weight == null) return '';
+     const units = { GRAMS: 'g', KILOGRAMS: 'kg', OUNCES: 'oz', POUNDS: 'lb' };
+diff --git a/src/scss/03-components/pages/page-items/_products.scss b/src/scss/03-components/pages/page-items/_products.scss
+index a9f3255..525f835 100644
+--- a/src/scss/03-components/pages/page-items/_products.scss
++++ b/src/scss/03-components/pages/page-items/_products.scss
+@@ -261,13 +261,33 @@
+   }
+ 
+   .product-valuation {
+-    display: flex;
+-    flex-direction: column;
+-    gap: 2px;
++    display: grid;
++    grid-template-columns: auto auto;
++    column-gap: 8px;
++    row-gap: 2px;
++    align-items: baseline;
+     margin: 0;
+     white-space: nowrap;
+   }
+ 
++  .product-valuation__label {
++    grid-column: 1 / -1;
++  }
++
++  // sale: the current price takes the accent, the compare-at price sits
++  // beside it struck through (the frame has no sale state; this follows its
++  // mono/accent vocabulary)
++  .product-price--was {
++    font-size: 12px;
++    font-weight: 400;
++    color: var(--c-muted);
++    text-decoration: line-through;
++  }
++
++  .product-tile.is-on-sale .product-price:not(.product-price--was) {
++    color: var(--c-accent);
++  }
++
+   .product-valuation__label {
+     font-family: var(--catalog-font-sans);
+     font-size: 10px;

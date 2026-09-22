@@ -196,3 +196,25 @@ while the channel is still inside `addChannel` (synchronous replay) leaves the f
 touching a disposed view. The card's guidance already prevents it when followed; the failure
 mode deserves naming on `skip-replayed-birth-event` or `choose-replay-semantics`.
 
+## A4 — Evolve
+
+Prompt: `prompts/A4-1.md`. One change that crosses both sources: a Shopify field enters at the
+fetch boundary (A2's map) and lands in the Figma-derived tile (A1's template and styles), with
+A3's wiring untouched. Grammar applied: `fetch-conform-map`, `shape-data-for-logicless-template`
+(presence = shape), `conditional-via-object-section`, `author-template-bound-surface`,
+`author-dom-with-declared-roles`.
+
+| # | Element | Status | VBL target / note |
+|---|---|---|---|
+| 1 | Compare-at price from Shopify | mapped | `compareAtPrice { amount currencyCode }` added to the Storefront query; `channelShopify$SaleFields` at the conform map. |
+| 2 | "On sale" decision | inferred | `compareAt > price`, computed once at the boundary as `isOnSale`; a compare-at equal to or below the price is not a sale. |
+| 3 | Struck original price in the tile | mapped | `{{#sale}}<s class="product-price product-price--was">{{compareAtPrice}}</s>{{/sale}}` — the `sale` object exists only for sale items, so the section renders only then (presence = shape; no template logic). |
+| 4 | Tile "marks itself as on sale" | mapped | `is-on-sale` class set at construction from `isOnSale` (a fact of the product record, so birth-time, not a channel reaction). |
+| 5 | Sale styling | inferred | The Figma frame has no sale state. The current price takes the accent (#d4c3a3), the compare-at price sits beside it in muted mono, struck through; the valuation block became a two-column grid so both fit under the VALUATION label. |
+| 6 | Fallback products | inferred | The app-model products carry no compare-at price and never show as on sale — the fallback is unchanged. |
+| 7 | Cart lines | inferred | Not touched; a sale price in the cart was not asked for (the cart shows Shopify's line price, which is already the sale price). |
+| 8 | Everything that works now keeps working | mapped | Verified: full-load and in-app smoke green; A3's two console crosses recaptured on the evolved code with the new fields present in the catalog payload. |
+
+Acceptance: met. The A4 diff is 107 lines across four files; no channel, listener, or
+broadcast declaration changed.
+

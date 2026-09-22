@@ -109,7 +109,7 @@ export class ChannelShopifyTraits extends SpyneTrait {
         nodes {
           id handle title productType tags
           featuredImage { url altText }
-          variants(first: 1) { nodes { id price { amount currencyCode } weight weightUnit } }
+          variants(first: 1) { nodes { id price { amount currencyCode } compareAtPrice { amount currencyCode } weight weightUnit } }
         }
       }
     }`;
@@ -136,9 +136,22 @@ export class ChannelShopifyTraits extends SpyneTrait {
       origin: Array.isArray(node.tags) && node.tags.length ? node.tags[0] : '',
       mass: ChannelShopifyTraits.channelShopify$FormatMass(variant),
       price: ChannelShopifyTraits.channelShopify$FormatPrice(variant?.price),
+      // presence = shape: `sale` exists only when there is a higher compare-at
+      // price, so the template's object section renders the struck price
+      // for sale items and nothing otherwise
+      ...ChannelShopifyTraits.channelShopify$SaleFields(variant),
       attrImageSrc: node.featuredImage?.url ?? '',
       attrImageAlt: node.featuredImage?.altText ?? node.title ?? '',
     };
+  }
+
+  static channelShopify$SaleFields(variant) {
+    const price = Number(variant?.price?.amount);
+    const compareAt = Number(variant?.compareAtPrice?.amount);
+    const isOnSale = Number.isFinite(price) && Number.isFinite(compareAt) && compareAt > price;
+    return isOnSale
+      ? { isOnSale: true, sale: { compareAtPrice: ChannelShopifyTraits.channelShopify$FormatPrice(variant.compareAtPrice) } }
+      : { isOnSale: false };
   }
 
   static channelShopify$FormatMass(variant) {

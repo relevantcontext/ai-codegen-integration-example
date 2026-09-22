@@ -13,7 +13,8 @@ import ProductTileTmpl from './templates/product-tile.tmpl.html';
 export class ProductTileItem extends ViewStream {
   constructor(props = {}) {
     props.tagName = 'article';
-    props.class = 'product-tile';
+    // sale is a fact of the product record, so it is a birth-time class
+    props.class = props.data.isOnSale === true ? 'product-tile is-on-sale' : 'product-tile';
     props.dataset = {
       productId: props.data.attrProductId,
       metal: props.data.metal,

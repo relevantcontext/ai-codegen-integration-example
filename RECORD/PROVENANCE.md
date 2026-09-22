@@ -110,3 +110,15 @@ Format: artifact — what it is — origin — model / prompt / version — stag
 - `RECORD/tools/screenshot.mjs` — in-app navigation pass added to the smoke test — tooling — A3-r2
 - `RECORD/screenshots/A3-r2/*.png`, `RECORD/verification/A3-r2/` — recaptured — A3-r2
 
+## A4 — evolve (model-written; agent: Claude Code, claude-fable-5-1; prompt `prompts/A4-1.md`)
+
+- `RECORD/inputs/A4-shopify-products.json` — the catalog re-pinned with `compareAtPrice` after the sale data was seeded — `shopify-export.mjs A4`, run from Frank's terminal — A4
+- Shopify store: compare-at prices set on Iridium Nugget ($4,800) and Osmium Bead ($6,200) by `shopify-seed.mjs --sale` from Frank's terminal — A4
+- `src/app/traits/channel/channel-shopify-traits.js` — query + `channelShopify$SaleFields` at the conform map — A4
+- `src/app/components/page-items/templates/product-tile.tmpl.html` — `{{#sale}}` section with the struck compare-at price — A4
+- `src/app/components/page-items/product-tile-item.js` — birth-time `is-on-sale` class — A4
+- `src/scss/03-components/pages/page-items/_products.scss` — sale styling, valuation grid — A4
+- `RECORD/tools/shopify-seed.mjs` (`--sale`), `RECORD/tools/shopify-export.mjs` (stage argument, `compareAtPrice`) — tooling — A4
+- `RECORD/screenshots/A4/*.png` — five routes plus four Behavior Console frames, captured by the script — A4
+- `RECORD/verification/A4/A4.diff` — the stage diff, `alpha-A3-r2`..`alpha-A4`, src/ only — A4
+
