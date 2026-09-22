@@ -85,7 +85,7 @@ const config = {
   shopify: {
     store: 'asteroid-metals.myshopify.com',
     apiVersion: '2026-04',
-    storefrontAccessToken: 'REPLACE_WITH_STOREFRONT_ACCESS_TOKEN',
+    storefrontAccessToken: '1dbd6bb0d39df2850e10e42cf3f1eac2',
   },
 };
 

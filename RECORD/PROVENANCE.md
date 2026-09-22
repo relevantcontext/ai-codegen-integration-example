@@ -79,3 +79,14 @@ Format: artifact — what it is — origin — model / prompt / version — stag
 - `RECORD/inputs/A2-shopify-products.json` — pinned Shopify catalog: the unmodified Storefront API response for 6 products plus the request that produced it (endpoint, API version 2026-04, query) — A2
 - `RECORD/inputs/A2-shopify-raw/` (config.js, storefront-client.js, products.js, catalog.js, main.js, index.html) — the A2-1 vanilla integration, verbatim — Claude Code subagent (claude-fable-5-1) in a fresh context with cwd outside the repo, grammar not loaded, no repo files read, prompt `prompts/A2-1.md` — 2026-09-22 02:43, 65.6 s, 57,054 tokens (subagent usage as reported by the harness), 6 tool uses — A2
 
+## A2 — conversion (model-written; agent: Claude Code, claude-fable-5-1; prompt `prompts/A2-2.md`)
+
+- `src/app/channels/channel-shopify.js` — new domain channel `CHANNEL_SHOPIFY` (replay) — A2
+- `src/app/traits/channel/channel-shopify-traits.js` — new trait: the Storefront query, the conform map (Shopify → catalog product shape), the merge with the app model for images, catalog/error emission — A2
+- `src/app/components/page-items/product-tile-item.js` + `templates/product-tile.tmpl.html` — new: one nested view per product, own add-to-cart broadcast, self-retiring by source — A2
+- `src/app/components/page-items/products-catalog-view.js`, `src/app/traits/page/products-catalog-traits.js` — catalog listens to `CHANNEL_SHOPIFY`; renders fallback tiles at birth, channel tiles on the catalog event; regenerates select options and count via `el$` — A2
+- `src/app/components/page-items/templates/products.tmpl.html` — the tile loop removed (tiles are views); grid is an empty region — A2
+- `src/index.js` — `config.shopify` (store, API version, public Storefront token) and the registrations of `CHANNEL_FETCH_SHOPIFY` (POST GraphQL, conformed at its map) and `CHANNEL_SHOPIFY` — A2
+- `RECORD/tools/shopify-config.mjs` — writes the public Storefront token from Frank's environment into `config.shopify` in `src/index.js` (the build has no env injection; the agent never reads `.env`) — tooling, run from Frank's terminal — A2
+- `RECORD/screenshots/A2/*.png` — five routes, captured by the script; the shop capture is fed by the live Storefront API — A2
+
