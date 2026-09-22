@@ -309,6 +309,6 @@ changed and what the deploy found.
 | 4 | Generator docs, `schema/`, tests | kept | They document and check the app; `npm test` passes (its fixtures are the generator's, not this app's). |
 | 5 | `<link rel="icon">`, apple-touch-icon, `manifest.json` references | fixed | Pointed at files the generator never produced (404s in production). Replaced by one real favicon (`imgs/favicon.svg`, a neutral mark in the catalog's palette — inferred; Frank may replace) and the manifest link dropped. |
 | 6 | CloudFront SPA routing | mapped (ruled) | Mirrored from `E1K9CDJJHYXTE8`: root object + 403/404 → `/index.html`. |
-| 7 | Deploy to the real URL | partial | Live at the distribution URL; `https://justmetu.com` needs the Route53 alias moved from the S3 website endpoint to the distribution — **undefined**, Frank rules. |
-| 8 | Cart and checkout end to end | partial | Add → cart → checkout link verified on the live site; Shopify serves the storefront password page before checkout — **undefined**, Frank's store setting. |
+| 7 | Deploy to the real URL | mapped (r2) | Live at **https://justmetu.com** after the Route53 alias moved from the S3 website endpoint to the distribution on Frank's word. |
+| 8 | Cart and checkout end to end | partial (ruled) | Add → cart → hosted checkout reach verified on the live domain; the store keeps its password by Frank's ruling, so the test order past that page is his step. |
 

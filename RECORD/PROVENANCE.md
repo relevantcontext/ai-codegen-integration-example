@@ -154,4 +154,7 @@ Format: artifact — what it is — origin — model / prompt / version — stag
 - `RECORD/tools/screenshot.mjs`, `b0-flow-check.mjs` — `--url` mode for a deployed site; `RECORD/tools/b3-checkout-reach.mjs` — new — tooling — B3
 - Deploy: `aws s3 sync dist/ s3://justmetu.com/` (additive; prior `index.html` snapshotted as `index-2026-09-22-pre-poc.html`); CloudFront `E1YHBPGAEXA3TQ` updated (root object, 403/404 rewrites); invalidation `I1ULIRJ0CMP2X92GQQOIL4H74M` — run by Claude Code with Frank's AWS credentials from the inherited environment (`arn:aws:iam::176489335652:user/frankbatista`) — B3
 - `RECORD/screenshots/B3/` (local build), `RECORD/screenshots/B3-live/` (live URL incl. `checkout.png`) — B3
+- Route53 zone `Z3U2T3CJLK0LSX`: `justmetu.com` A alias → `dvlyqetb9espg.cloudfront.net` (change `C050555916PQL1LIP0WRS`) — run by Claude Code with Frank's AWS credentials on his word — B3-r2
+- `RECORD/verification/B3-live/`, `RECORD/screenshots/B3-live/` — re-run against https://justmetu.com — B3-r2
+- `RECORD/verification/B3/README.md` — written at B3-r3 (missed at B3 by a failed shell chain) — B3-r3
 
