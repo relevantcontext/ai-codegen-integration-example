@@ -6,3 +6,4 @@ Framework, grammar, CLI, Shell, and `/RECORD/tools/` are material/tooling and ar
 | Stage | File | Reason | Failed prompt |
 |-------|------|--------|---------------|
 | A0 | — | none | — |
+| A1 | — | none (all A1 code model-written from `prompts/A1-1.md`; Frank made no corrections) | — |

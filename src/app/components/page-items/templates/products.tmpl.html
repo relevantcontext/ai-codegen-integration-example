@@ -1,22 +1,92 @@
 <div class="page-item--products">
   <header class="products-header">
+    <p class="products-eyebrow">{{eyebrow}}</p>
     <h2 class="products-title">{{title}}</h2>
     <p class="products-subtitle">{{subtitle}}</p>
   </header>
+
+  <div class="products-toolbar">
+    <div class="products-filters">
+      <label class="products-filter">
+        <span class="products-filter__label">{{metalFilterLabel}}</span>
+        <select
+          class="products-filter__select"
+          name="filterMetal"
+          data-action="filter"
+          data-filter-key="metal"
+        >
+          <option value="">{{%metalFilterAll%}}</option>
+          {{#metalOptions}}
+          <option value="{{%.%}}">{{%.%}}</option>
+          {{/metalOptions}}
+        </select>
+      </label>
+      <label class="products-filter">
+        <span class="products-filter__label">{{originFilterLabel}}</span>
+        <select
+          class="products-filter__select"
+          name="filterOrigin"
+          data-action="filter"
+          data-filter-key="origin"
+        >
+          <option value="">{{%originFilterAll%}}</option>
+          {{#originOptions}}
+          <option value="{{%.%}}">{{%.%}}</option>
+          {{/originOptions}}
+        </select>
+      </label>
+    </div>
+    <p class="products-count">
+      <span class="products-count__label">{{showingLabel}}</span>
+      <span class="products-count__value"
+        >{{%resultCount%}} {{showingUnit}}</span
+      >
+    </p>
+  </div>
+
   <div class="products-grid">
     {{#products}}
-    <div class="product-tile">
+    <article
+      class="product-tile"
+      data-product-id="{{%attrProductId%}}"
+      data-metal="{{%metal%}}"
+      data-origin="{{%origin%}}"
+    >
       <div class="product-media">
-        <img class="product-img" alt="{{name}}" src="{{attrImageSrc}}" />
+        <img class="product-img" alt="{{attrImageAlt}}" src="{{attrImageSrc}}" />
       </div>
-      <div class="product-row">
-        <div class="product-copy">
-          <h3 class="product-name">{{name}}</h3>
-          <p class="product-variant">{{variant}}</p>
+      <div class="product-meta">
+        <h3 class="product-name">{{name}}</h3>
+        <p class="product-provenance">
+          <span class="product-origin">{{origin}}</span>
+          <span class="product-mass">{{mass}}</span>
+        </p>
+        <div class="product-row">
+          <p class="product-valuation">
+            <span class="product-valuation__label">{{priceLabel}}</span>
+            <span class="product-price">{{price}}</span>
+          </p>
+          <button
+            type="button"
+            class="btn btn-primary product-acquire"
+            data-action="add-to-cart"
+            data-product-id="{{%attrProductId%}}"
+          >
+            <img
+              class="product-acquire__icon"
+              src="{{attrAddToCartIconSrc}}"
+              alt=""
+            />
+            <span class="product-acquire__label">{{addToCartLabel}}</span>
+          </button>
         </div>
-        <p class="product-price">{{price}}</p>
       </div>
-    </div>
+    </article>
     {{/products}}
   </div>
+
+  <footer class="products-footnote">
+    <p class="products-footnote__text">{{footnoteText}}</p>
+    <p class="products-footnote__link">{{footnoteLinkText}}</p>
+  </footer>
 </div>

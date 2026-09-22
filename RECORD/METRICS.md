@@ -3,6 +3,7 @@
 | Stage | Wall time | Tokens | Model cost | Prompts | Human corrections | Verification result |
 |-------|-----------|--------|------------|---------|-------------------|------------------------|
 | A0 | not captured | not captured | not captured | 1 | 0 | PASS — check-grammar 8/8, eslint clean, production build ok, route smoke 5/5 (`verification/A0/`) |
-| A1 | input pull: 05:46–05:52 (includes waiting on the Figma pin confirmation); conversion: pending | input pull: not metered (interactive Claude Code session); conversion: pending | pending | 0 model prompts so far (the Figma agent prompt is recorded as provenance, `prompts/A1-0-figma.md`); MCP tool calls: 3 (`get_design_context`, `get_metadata`, `get_screenshot`) | 0 | pending |
+| A1 | input pull 05:46–05:52 (09-20); conversion 20:27–20:39 (09-21, prompt pinned → verification green) | not metered (interactive Claude Code session; no token/cost log available) | not metered | 1 model prompt (`prompts/A1-1.md`); MCP tool calls 3 (input pull) | 0 | PASS — check-grammar 8/8, eslint clean, schema valid, production build ok, route smoke 5/5 (`verification/A1/`) |
 
 A0: spyne-cli did not log time, tokens, cost, or generator model for the create-app run. From A1 on every field is captured before the stage closes.
+A1: tokens and cost were not metered — the conversion ran inside an interactive Claude Code session that exposes no per-task token or cost log. Recorded as "not metered" rather than estimated.

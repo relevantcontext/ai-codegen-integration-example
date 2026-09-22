@@ -121,55 +121,91 @@
         },
         {
           "isPrototype": false,
-          "viewClass": "ViewStream",
+          "viewClass": "ProductsCatalogView",
           "props": {
             "ariaLabel": "Products",
             "template": "products.tmpl.html",
             "data": {
+              "eyebrow": "Meteoric & Asteroidal Samples",
               "title": "Certified Asteroid Metal Samples",
               "subtitle": "Filter by metal type or asteroid origin. All samples include spectral assay and chain-of-custody documentation.",
+              "metalFilterLabel": "Metal type:",
+              "metalFilterAll": "All Specimens",
+              "originFilterLabel": "Origin asteroid:",
+              "originFilterAll": "All Fields",
+              "showingLabel": "Showing:",
+              "showingUnit": "archived lots",
+              "priceLabel": "Valuation",
+              "addToCartLabel": "Acquire",
+              "attrAddToCartIconSrc": "imgs/icon-plus.svg",
+              "footnoteText": "Secure dispatch and asteroidal provenance documentation accompany each order.",
+              "footnoteLinkText": "Specimen authenticity report [PDF]",
               "products": [
                 {
+                  "attrProductId": "iridium-nugget",
                   "name": "Iridium Nugget",
-                  "variant": "Ryugu fragment, 2.3g",
+                  "metal": "Iridium",
+                  "origin": "Ryugu",
+                  "mass": "2.3g",
                   "price": "$4,200",
-                  "attrImageSrc": "imgs/pexels-35497189.jpeg"
+                  "attrImageSrc": "imgs/pexels-35497189.jpeg",
+                  "attrImageAlt": "Iridium Nugget"
                 },
                 {
+                  "attrProductId": "platinum-sponge",
                   "name": "Platinum Sponge",
-                  "variant": "Bennu regolith, 5.0g",
+                  "metal": "Platinum",
+                  "origin": "Bennu",
+                  "mass": "5.0g",
                   "price": "$3,800",
-                  "attrImageSrc": "imgs/pexels-10187646.jpeg"
+                  "attrImageSrc": "imgs/pexels-10187646.jpeg",
+                  "attrImageAlt": "Platinum Sponge"
                 },
                 {
+                  "attrProductId": "palladium-crystal",
                   "name": "Palladium Crystal",
-                  "variant": "Psyche core, 1.8g",
+                  "metal": "Palladium",
+                  "origin": "Psyche",
+                  "mass": "1.8g",
                   "price": "$2,950",
-                  "attrImageSrc": "imgs/pexels-35497314.jpeg"
+                  "attrImageSrc": "imgs/pexels-35497314.jpeg",
+                  "attrImageAlt": "Palladium Crystal"
                 },
                 {
+                  "attrProductId": "ruthenium-powder",
                   "name": "Ruthenium Powder",
-                  "variant": "Itokawa dust, 3.5g",
+                  "metal": "Ruthenium",
+                  "origin": "Itokawa",
+                  "mass": "3.5g",
                   "price": "$1,875",
-                  "attrImageSrc": "imgs/pexels-9259962.jpeg"
+                  "attrImageSrc": "imgs/pexels-9259962.jpeg",
+                  "attrImageAlt": "Ruthenium Powder"
                 },
                 {
+                  "attrProductId": "osmium-bead",
                   "name": "Osmium Bead",
-                  "variant": "Vesta crust, 0.9g",
+                  "metal": "Osmium",
+                  "origin": "Vesta",
+                  "mass": "0.9g",
                   "price": "$5,600",
-                  "attrImageSrc": "imgs/pexels-4198921.jpeg"
+                  "attrImageSrc": "imgs/pexels-4198921.jpeg",
+                  "attrImageAlt": "Osmium Bead"
                 },
                 {
+                  "attrProductId": "rhenium-flake",
                   "name": "Rhenium Flake",
-                  "variant": "Ceres ejecta, 4.2g",
+                  "metal": "Rhenium",
+                  "origin": "Ceres",
+                  "mass": "4.2g",
                   "price": "$2,150",
-                  "attrImageSrc": "imgs/pexels-28215401.jpeg"
+                  "attrImageSrc": "imgs/pexels-28215401.jpeg",
+                  "attrImageAlt": "Rhenium Flake"
                 }
               ]
             }
           },
           "container": {
-            "enabled": true,
+            "isEnabled": true,
             "spacing": "default"
           }
         }

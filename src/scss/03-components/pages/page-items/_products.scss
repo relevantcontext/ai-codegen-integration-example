@@ -1,102 +1,285 @@
-// Products — Tailwind PRODUCT LIST layout: bare rounded image; below it one
-// row with name + variant stacked left (small, light) and price right
-// (small, medium). NO card chrome, NO hover — never reads as a clickable
-// panel (nav cards own that affordance).
+// Products catalog — converted from the Figma frame `rare-metal-catalog`
+// (RECORD/inputs/A1-figma-catalog.*). The design's absolute values map onto
+// the app's tokens so the section follows the theme in light and dark mode:
+// card surface -> --paper, hairlines -> --border, accent (#d4c3a3) -> --brand,
+// DM Serif Text -> --font-serif, Geist -> --font-sans, Geist Mono -> --font-mono.
+// Card chrome is deliberate here (the design draws bordered tiles); the
+// page-item wrapper still owns the section surface and padding.
 .page-item--products {
   --cols: 3;
+  --products-gap: 24px;
+  --tile-radius: 8px;
 
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+
+  // ---- header block ---------------------------------------------------
   .products-header {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    text-align: center;
-    margin-block-end: 2.5rem;
+    gap: 8px;
+    padding-block-end: 24px;
+    border-block-end: 1px solid var(--border);
+  }
+
+  .products-eyebrow {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: var(--fw-semibold);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--brand);
   }
 
   .products-title {
-    margin-block-end: 0.5rem;
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 1.5rem + 2vw, 3rem); // 48px at the design width
+    font-weight: var(--fw-regular);
+    line-height: 1.15;
+    color: var(--text);
   }
 
   .products-subtitle {
-    max-inline-size: 560px;
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.4;
     color: var(--text-muted);
-    font-size: 1.1rem;
-    line-height: 1.5;
+  }
 
-    &:empty {
-      display: none;
+  // ---- filter row -----------------------------------------------------
+  .products-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .products-filters {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .products-filter {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    block-size: 40px;
+    padding-inline: 16px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .products-filter__label {
+    color: var(--text-muted);
+  }
+
+  // the dropdown value + chevron live in a native select; the design's
+  // bordered box is the label, so the select itself is chrome-less
+  .products-filter__select {
+    inline-size: auto;
+    margin: 0;
+    padding: 0 1.25rem 0 0;
+    border: 0;
+    border-radius: 0;
+    background-color: transparent;
+    background-position: right center;
+    background-size: 0.75rem;
+    font-size: 13px;
+    font-weight: var(--fw-medium);
+    line-height: 1;
+    color: var(--text);
+    cursor: pointer;
+
+    &:focus {
+      box-shadow: none;
     }
   }
 
+  .products-count {
+    display: flex;
+    gap: 8px;
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .products-count__label {
+    color: var(--text-muted);
+  }
+
+  .products-count__value {
+    color: var(--text);
+  }
+
+  // ---- grid + tile ----------------------------------------------------
   .products-grid {
     display: grid;
-    grid-template-columns: repeat(var(--cols), 1fr);
-    gap: 2.5rem 1.5rem;
+    grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+    gap: var(--products-gap);
   }
 
   .product-tile {
     display: flex;
     flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: var(--tile-radius);
     text-align: left;
   }
 
   .product-media {
+    position: relative;
     aspect-ratio: 1 / 1;
-    border-radius: 0.25rem 0.25rem 0 0;
+    border-radius: 4px;
     overflow: hidden;
-    background: var(--surface);
+    background: var(--bg);
+
+    // the design darkens every product image by 25%
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.25);
+      pointer-events: none;
+    }
   }
 
   .product-img {
+    display: block;
     inline-size: 100%;
     block-size: 100%;
     object-fit: cover;
-    display: block;
   }
 
-  // caption bar: tinted background + padding lifts text contrast and keeps
-  // it off the edges, without card chrome (no border, no shadow, no hover)
-  .product-row {
+  .product-meta {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 1rem;
-    padding: 0.7rem 0.85rem 0.8rem;
-    background: var(--paper);
-    border-radius: 0 0 0.25rem 0.25rem;
+    flex-direction: column;
+    gap: 12px;
   }
 
   .product-name {
     margin: 0;
-    font-family: var(--font-sans);
-    font-size: 0.875rem;
-    font-weight: 400;
-    line-height: 1.4;
-    color: var(--text-secondary);
+    font-family: var(--font-serif);
+    font-size: 20px;
+    font-weight: var(--fw-regular);
+    line-height: 1.35;
+    color: var(--text);
   }
 
-  .product-variant {
-    margin: 0.25rem 0 0;
-    font-size: 0.875rem;
-    line-height: 1.4;
-    color: var(--text-muted);
+  .product-provenance {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: -8px 0 0;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1.3;
 
-    &:empty {
-      display: none;
+    // the 3px separator dot between origin and mass
+    .product-origin::after {
+      content: '';
+      display: inline-block;
+      inline-size: 3px;
+      block-size: 3px;
+      margin-inline-start: 8px;
+      border-radius: 1.5px;
+      background: var(--border);
+      vertical-align: middle;
     }
+  }
+
+  .product-origin {
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+
+  .product-mass {
+    color: var(--brand);
+  }
+
+  .product-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-block-start: 12px;
+    border-block-start: 1px solid var(--border);
+  }
+
+  .product-valuation {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  .product-valuation__label {
+    font-size: 10px;
+    text-transform: uppercase;
+    color: var(--text-muted);
   }
 
   .product-price {
-    margin: 0;
-    font-size: 0.875rem;
-    font-weight: 500;
-    line-height: 1.4;
-    color: var(--text-primary);
-    white-space: nowrap;
+    font-family: var(--font-mono);
+    font-size: 16px;
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+  }
 
-    &:empty {
-      display: none;
+  .product-acquire {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: var(--fw-semibold);
+    line-height: 1.3;
+  }
+
+  .product-acquire__icon {
+    display: block;
+    inline-size: 14px;
+    block-size: 14px;
+  }
+
+  // ---- footnote -------------------------------------------------------
+  .products-footnote {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding-block-start: 24px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+
+    p {
+      margin: 0;
     }
+  }
+
+  .products-footnote__text {
+    color: var(--text-muted);
+  }
+
+  .products-footnote__link {
+    color: var(--brand);
+    text-decoration: underline;
+    text-underline-position: from-font;
   }
 
   @media (max-width: 900px) {
@@ -107,29 +290,67 @@
   }
 }
 
-/* House gotcha: main#app h3/p typography (ID specificity) overrides the
-   class-level type treatment — the list text rules must match that scope. */
+/* House gotcha: main#app h2/h3/p typography (ID specificity) overrides the
+   class-level type treatment — the catalog's type rules must match that scope. */
 main#app .page-item--products {
-  .product-name {
-    font-size: 0.875rem;
-    font-weight: 400;
-    line-height: 1.4;
-    color: var(--text-primary);
+  .products-title {
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 1.5rem + 2vw, 3rem);
+    font-weight: var(--fw-regular);
+    line-height: 1.15;
     margin: 0;
   }
 
-  .product-variant {
-    font-size: 0.875rem;
+  .products-eyebrow,
+  .products-subtitle,
+  .products-count,
+  .product-provenance,
+  .product-valuation,
+  .products-footnote p {
+    margin: 0;
+  }
+
+  .products-subtitle {
+    font-size: 1rem;
     line-height: 1.4;
     color: var(--text-muted);
-    margin: 0.25rem 0 0;
   }
 
-  .product-price {
-    font-size: 0.875rem;
-    font-weight: 500;
-    line-height: 1.4;
-    color: var(--text-primary);
+  .product-name {
+    font-family: var(--font-serif);
+    font-size: 20px;
+    font-weight: var(--fw-regular);
+    line-height: 1.35;
+    color: var(--text);
     margin: 0;
+  }
+
+  .product-provenance {
+    margin-block-start: -8px;
+  }
+
+  // the design-system select rule (`main#app select`) outranks the class
+  // rule above; restate the chrome-less select at the same specificity so
+  // the label box is the only border
+  label.products-filter {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+    font-size: 13px;
+    font-weight: var(--fw-regular);
+  }
+
+  select.products-filter__select {
+    inline-size: auto;
+    margin: 0;
+    padding: 0 1.25rem 0 0;
+    border: 0;
+    border-radius: 0;
+    background-color: transparent;
+    background-position: right center;
+    background-size: 0.75rem;
+    font-size: 13px;
+    line-height: 1;
   }
 }

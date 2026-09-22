@@ -2,6 +2,7 @@ import { SpyneTrait, ViewStream, SpyneAppProperties } from 'spyne';
 import { HeroView } from 'components/page-items/hero-view.js';
 import { CardsContainerView } from 'components/page-items/cards-container-view.js';
 import { FormContactUsView } from 'components/page-items/form-contact-us-view.js';
+import { ProductsCatalogView } from 'components/page-items/products-catalog-view.js';
 
 export class PageItemCoreTraits extends SpyneTrait {
   constructor(context) {
@@ -152,6 +153,7 @@ export class PageItemCoreTraits extends SpyneTrait {
   static pageItemCore$GetViewClass(viewClass = 'ViewStream') {
     const classLookup = {
       ContactUsView: FormContactUsView,
+      ProductsCatalogView,
     };
     return classLookup[viewClass] || ViewStream;
   }

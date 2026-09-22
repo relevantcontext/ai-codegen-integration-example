@@ -32,32 +32,46 @@ same structure. "Layer name" is the Figma layer name exactly as it appears.
 
 | # | Element | Node | Layer name | Status | Target / note |
 |---|---------|------|------------|--------|---------------|
-| 1 | Section frame (dark background, 80/100 padding, 48 gap) | 4:4 | `rare-metal-catalog` | | |
-| 2 | Header block | 4:5 | `header-block` | | |
-| 3 | Eyebrow text | 4:7 | `METEORIC & ASTEROIDAL SAMPLES` | | |
-| 4 | Main title | 4:8 | `main-title` | | |
-| 5 | Sub-title | 4:9 | `sub-title` | | |
-| 6 | Header divider line | 4:10 | `Line` | | |
-| 7 | Filter row | 4:11 | `filter-row` | | |
-| 8 | Filter dropdown — metal type (label `Metal type:`, value `All Specimens`, chevron) | 4:13 (4:14, 4:15, 4:139) | `filter-dropdown` | | |
-| 9 | Filter dropdown — origin asteroid (label `Origin asteroid:`, value `All Fields`, chevron) | 4:17 (4:18, 4:19, 4:142) | `filter-dropdown` | | |
-| 10 | Result count (`SHOWING:` + `6 ARCHIVED LOTS`) | 4:21 (4:22, 4:23) | `Frame` | | |
-| 11 | Grid container | 4:24 | `catalog-grid` | | |
-| 12 | Two-row grid structure (3 tiles per row, 24 gap) | 4:25, 4:80 | `grid-row-1`, `grid-row-2` | | |
-| 13 | Tile | 4:26 | `product-card` | | |
-| 14 | Tile image container (square) | 4:27 | `image-container` | | |
-| 15 | Tile image (with 25% black overlay) | 4:28 | `product-image` | | |
-| 16 | Tile meta block | 4:29 | `product-meta` | | |
-| 17 | Product name | 4:31 | `product-name` | | |
-| 18 | Origin | 4:33 | `101955 BENNU` | | |
-| 19 | Origin/mass separator dot | 4:34 | `Rectangle` | | |
-| 20 | Mass | 4:35 | `12.44g` | | |
-| 21 | Tile divider line | 4:36 | `Line` | | |
-| 22 | VALUATION label | 4:39 | `VALUATION` | | |
-| 23 | Price | 4:40 | `$4,250` | | |
-| 24 | Add-to-cart button | 4:41 | `add-to-cart-btn` | | |
-| 25 | Add-to-cart plus icon | 4:145 | `plus` | | |
-| 26 | Add-to-cart label "Acquire" | 4:43 | `Acquire` | | |
-| 27 | Footnote container | 4:135 | `editorial-footnote` | | |
-| 28 | Footnote text | 4:136 | `SECURE DISPATCH AND ASTEROIDAL PROVENANCE DOCUMENTATION ACCOMPANY EACH ORDER.` | | |
-| 29 | Footnote PDF link | 4:137 | `SPECIMEN AUTHENTICITY REPORT [PDF]` | **undefined** | No link target exists in the design. Frank rules in A1. |
+| 1 | Section frame (dark background, 80/100 padding, 48 gap) | 4:4 | `rare-metal-catalog` | inferred | Section frame → the page-item wrapper (`container.isEnabled:true`) supplies surface and padding; the design's fixed 80/100 padding and #08080a background map to the app's `.page-item` contract, not to literal values. Legacy `enabled:true` corrected to canonical `isEnabled:true`. |
+| 2 | Header block | 4:5 | `header-block` | mapped | `<header class="products-header">` with the same three text children and the divider as a border. |
+| 3 | Eyebrow text | 4:7 | `METEORIC & ASTEROIDAL SAMPLES` | mapped | `{{eyebrow}}` — new data key. Copy taken from the design ("Meteoric & Asteroidal Samples"), stored natural-case, uppercased in CSS. |
+| 4 | Main title | 4:8 | `main-title` | mapped | `{{title}}` — existing key; app copy kept (see Decisions: existing content wins). |
+| 5 | Sub-title | 4:9 | `sub-title` | mapped | `{{subtitle}}` — existing key; app copy kept. |
+| 6 | Header divider line | 4:10 | `Line` | mapped | `border-block-end` on the header (Figma exported it as an SVG line asset; a hairline is a border in CSS). |
+| 7 | Filter row | 4:11 | `filter-row` | mapped | `.products-toolbar` — flex, space-between. |
+| 8 | Filter dropdown — metal type (label `Metal type:`, value `All Specimens`, chevron) | 4:13 (4:14, 4:15, 4:139) | `filter-dropdown` | inferred | Native `<select name="filterMetal" data-action="filter" data-filter-key="metal">` inside a bordered `<label>`; label copy `{{metalFilterLabel}}`, default option `{{metalFilterAll}}` from the design. Option list NOT in the design — derived from `products[].metal` by the trait. Chevron: the app's select chevron, not the Figma asset. Broadcasts `change` into CHANNEL_UI (declared); no listener until A3. |
+| 9 | Filter dropdown — origin asteroid (label `Origin asteroid:`, value `All Fields`, chevron) | 4:17 (4:18, 4:19, 4:142) | `filter-dropdown` | inferred | Same as 8 with `filterOrigin` / `data-filter-key="origin"`; options derived from `products[].origin`. |
+| 10 | Result count (`SHOWING:` + `6 ARCHIVED LOTS`) | 4:21 (4:22, 4:23) | `Frame` | inferred | `{{showingLabel}}` ("Showing:") + `{{resultCount}}` (derived: products.length) + `{{showingUnit}}` ("archived lots"). The design's literal "6" becomes a count. |
+| 11 | Grid container | 4:24 | `catalog-grid` | mapped | `.products-grid` — CSS grid. |
+| 12 | Two-row grid structure (3 tiles per row, 24 gap) | 4:25, 4:80 | `grid-row-1`, `grid-row-2` | inferred | The design's two explicit rows are one `{{#products}}` loop on a 3-column grid; row count follows the data. Responsive 2/1 columns below 900/520px added (design is desktop-only). |
+| 13 | Tile | 4:26 | `product-card` | mapped | `<article class="product-tile" data-product-id data-metal data-origin>` — dataset carries identity and filter keys for A3. |
+| 14 | Tile image container (square) | 4:27 | `image-container` | mapped | `.product-media` — square, 4px radius, clipped. |
+| 15 | Tile image (with 25% black overlay) | 4:28 | `product-image` | inferred | `{{attrImageSrc}}` — the app's six Pexels placeholders, not the Figma agent's images (per the input note; asset URLs expire in 7 days; images-by-search-intent-not-url). The 25% black overlay is a CSS `::after`. `{{attrImageAlt}}` = product name (new key; A0 bound `alt` to `name`). |
+| 16 | Tile meta block | 4:29 | `product-meta` | mapped | `.product-meta`. |
+| 17 | Product name | 4:31 | `product-name` | mapped | `{{name}}` — existing key. |
+| 18 | Origin | 4:33 | `101955 BENNU` | inferred | `{{origin}}` — new key (ruling 1). Layer named by content (`101955 BENNU`); read as origin from the prompt's "variant line (origin and mass)" and the asteroid names. Values for the six app products taken from the first word of the A0 `variant` string ("Ryugu fragment, 2.3g" → Ryugu). Uppercased in CSS. The design's catalog numbers (101955) are not in app data and were not invented. |
+| 19 | Origin/mass separator dot | 4:34 | `Rectangle` | mapped | `::after` 3px dot on `.product-origin`. |
+| 20 | Mass | 4:35 | `12.44g` | inferred | `{{mass}}` — new key (ruling 1). Layer named by content (`12.44g`); read as mass from the unit and the prompt. Values from the tail of the A0 `variant` string ("2.3g"). `variant` DROPPED — the design carries no other variant line, and origin+mass replace it. |
+| 21 | Tile divider line | 4:36 | `Line` | mapped | `border-block-start` on `.product-row`. |
+| 22 | VALUATION label | 4:39 | `VALUATION` | mapped | `{{priceLabel}}` ("Valuation") — new key, copy from the design, uppercased in CSS. Copied per-tile by the trait (engine: loop scope is item-only, see Decisions). |
+| 23 | Price | 4:40 | `$4,250` | inferred | `{{price}}` — existing key; layer named by content (`$4,250`); read as price from the currency format and the VALUATION label. App prices kept. |
+| 24 | Add-to-cart button | 4:41 | `add-to-cart-btn` | mapped | `<button type="button" class="btn btn-primary product-acquire" data-action="add-to-cart" data-product-id>` — broadcasts `click` into CHANNEL_UI (declared); no listener until A3. Uses the app's button tokens, so the accent colour is `--brand`, not #d4c3a3. |
+| 25 | Add-to-cart plus icon | 4:145 | `plus` | mapped | The Figma-exported `plus` SVG committed as `src/static/imgs/icon-plus.svg`, referenced through `{{attrAddToCartIconSrc}}` (html-loader resolves literal `src` paths as modules, so the path rides data like every other image in this app). |
+| 26 | Add-to-cart label "Acquire" | 4:43 | `Acquire` | mapped | `{{addToCartLabel}}` ("Acquire") — new key, copy from the design. |
+| 27 | Footnote container | 4:135 | `editorial-footnote` | mapped | `<footer class="products-footnote">`. |
+| 28 | Footnote text | 4:136 | `SECURE DISPATCH AND ASTEROIDAL PROVENANCE DOCUMENTATION ACCOMPANY EACH ORDER.` | mapped | `{{footnoteText}}` — new key, copy from the design, uppercased in CSS. |
+| 29 | Footnote PDF link | 4:137 | `SPECIMEN AUTHENTICITY REPORT [PDF]` | **undefined** | `{{footnoteLinkText}}` rendered as a styled `<p>`, NOT an `<a>`: no target exists in the design and none was invented. Becomes a link when Frank supplies the target. |
+
+### A1 decisions the prompt left open (all inferred unless marked)
+
+- **Class promoted.** The A0 catalog was a data-defined `ViewStream` page item. The design declares behavior (two dropdowns, add-to-cart), so the item was promoted per `prototype-in-data-then-promote`: `ProductsCatalogView` (`src/app/components/page-items/products-catalog-view.js`), entry in `PageItemCoreTraits.pageItemCore$GetViewClass`, `isPrototype:false` kept, template file kept. `broadcastEvents` declares the select `change` and button `click`; `addActionListeners` is empty — A3 adds the listeners. The view listens to no channel yet, so `props.channels` is not declared.
+- **Trait.** `ProductsCatalogTraits` (`productsCatalog$`) holds the one pure method the view needs now: `productsCatalog$ShapeCatalogData` derives `metalOptions`, `originOptions`, `resultCount` from `products` on a `safeClone`, and copies the per-tile labels onto each product. Called unbound in the constructor (pure register).
+- **Engine constraint found:** `DomElementTemplate` loop iterations substitute against the item alone (`substituteForItem`) — an outer key referenced inside `{{#products}}` renders empty. Fix was data shaping (copy the labels onto each item), not template logic. Candidate note for the grammar (`shape-data-for-logicless-template`).
+- **`metal` key added** beyond ruling 1's origin/mass: the metal filter needs it and the design carries metal only inside the product names. Values = first word of each A0 product name.
+- **Existing content wins.** Where the app already had a key (`title`, `subtitle`, `name`, `price`, `attrImageSrc`) the app's CMS-managed value stays; design copy fills only keys the app did not have. The design's six products are not app data (input note).
+- **Fonts mapped, not added.** DM Serif Text → `--font-serif` (Archivo), Geist → `--font-sans` (Work Sans), Geist Mono → `--font-mono` (Roboto Mono). The app self-hosts its fonts and makes no CDN requests; adding the design's fonts would need OFL files the record does not have.
+- **Colours are tokens.** #08080a/#111115/#222228/#8e8e93/#f3f4f6/#d4c3a3 → `--bg`/`--paper`/`--border`/`--text-muted`/`--text`/`--brand`. The design is dark-only; the app keeps its light/dark toggle and the catalog follows it. Record screenshots are light mode (the script's setting).
+- **Shopify preparation** = the product shape the template binds: `attrProductId` (slug, the future handle/variant id), `name`, `metal`, `origin`, `mass`, `price` (display string), `attrImageSrc`, `attrImageAlt`. A2's fetch channel conforms the Storefront response to this shape at its map; the template and view do not change. Filter options and count derive from whatever products arrive.
+- **CMS opt-out tokens** `{{%key%}}` used on every attribute-position binding and on `<option>` text, where a CMS wrapper element would break the markup. Text-content bindings stay plain.
+- **CMS editability** verified structurally (every visible string is a key under the shop node; shaping is `safeClone` in place). A click-through edit test was not run in A1 — B0 is the content pass.
+- **Skill deviation (deliberate):** the Figma design-to-code skill requires a fresh `get_design_context` call before coding; the record rule (pin every input) wins, so the conversion worked from `inputs/A1-figma-catalog.*` only.

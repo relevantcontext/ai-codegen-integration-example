@@ -36,6 +36,17 @@ Format: artifact — what it is — origin — model / prompt / version — stag
 - `inputs/A1-figma-catalog.metadata.xml` — `get_metadata` result for node `4:4` — Figma MCP — 2026-09-20 — A1
 - `inputs/A1-figma-catalog.png` — node `4:4` rendered at native 1440 × 1652 — Figma MCP `get_screenshot` (the inline screenshot in the `get_design_context` response cannot be written to disk) — 2026-09-20 — A1
 
+## A1 — conversion (model-written; agent: Claude Code, claude-fable-5-1; prompt `prompts/A1-1.md`)
+
+- `src/app/components/page-items/products-catalog-view.js` — new ViewStream (promoted catalog) — A1
+- `src/app/traits/page/products-catalog-traits.js` — new trait (data shaping) — A1
+- `src/app/traits/page/page-item-core-traits.js` — viewClass lookup entry added — A1
+- `src/app/components/page-items/templates/products.tmpl.html` — replaced, conformed from the Figma frame — A1
+- `src/scss/03-components/pages/page-items/_products.scss` — replaced, design values mapped to app tokens — A1
+- `src/static/data/app.model.json` — shop node: `viewClass` → `ProductsCatalogView`; catalog copy keys added (eyebrow, filter labels, showing label/unit, price label, add-to-cart label + icon path, footnote text/link text); `products[]` reshaped (`attrProductId`, `metal`, `origin`, `mass`, `attrImageAlt` added; `variant` dropped; values derived from A0 data, see CONVERSION-LOG) — model-authored — A1
+- `src/static/imgs/icon-plus.svg` — the frame's `plus` icon, exact bytes from the Figma MCP asset export (node 4:145) — A1
+- `RECORD/screenshots/A1/*.png` — five routes, captured by the script; the catalog before-state is `RECORD/screenshots/A0/shop.png` — A1
+
 ## Tooling (exempt from all-code-is-AI)
 
 - `RECORD/tools/screenshot.mjs` — stage screenshots + route smoke test — written by Claude Code (claude-fable-5-1) from the record brief v1, 2026-09-20 — A0
