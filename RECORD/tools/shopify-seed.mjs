@@ -3,6 +3,7 @@
 // code. Idempotent: products are matched by handle and updated in place.
 //
 //   set -a && source .env && set +a && node RECORD/tools/shopify-seed.mjs
+//   ... --sale   also sets compare-at prices on two variants (A4 data)
 //
 // Env: SHOPIFY_CLIENT_ID, SHOPIFY_CLIENT_SECRET; optional SHOPIFY_STORE
 //      (default asteroid-metals.myshopify.com), SHOPIFY_API_VERSION (2026-04),
@@ -22,6 +23,9 @@ const clientId = process.env.SHOPIFY_CLIENT_ID;
 const clientSecret = process.env.SHOPIFY_CLIENT_SECRET;
 
 // same six products as src/static/data/app.model.json (A1-r2)
+const SALE = { 'iridium-nugget': '4800', 'osmium-bead': '6200' }; // --sale: compare-at prices (A4)
+const saleMode = process.argv.includes('--sale');
+
 const PRODUCTS = [
   { handle: 'iridium-nugget',    title: 'Iridium Nugget',    metal: 'Iridium',   origin: 'Ryugu',   price: '4200', grams: 2.3 },
   { handle: 'platinum-sponge',   title: 'Platinum Sponge',   metal: 'Platinum',  origin: 'Bennu',   price: '3800', grams: 5.0 },
@@ -101,10 +105,10 @@ for (const p of PRODUCTS) {
         userErrors { field message }
       }
     }`,
-    { productId: product.id, variants: [{ id: variantId, price: p.price, inventoryItem: { measurement: { weight: { value: p.grams, unit: 'GRAMS' } } } }] },
+    { productId: product.id, variants: [{ id: variantId, price: p.price, ...(saleMode && SALE[p.handle] ? { compareAtPrice: SALE[p.handle] } : {}), inventoryItem: { measurement: { weight: { value: p.grams, unit: 'GRAMS' } } } }] },
   );
   userErrors(`variant ${p.handle}`, v.productVariantsBulkUpdate.userErrors);
-  console.log(`${verb}  ${p.handle}  type=${p.metal} tag=${p.origin} price=${p.price} weight=${p.grams}g`);
+  console.log(`${verb}  ${p.handle}  type=${p.metal} tag=${p.origin} price=${p.price}${saleMode && SALE[p.handle] ? ` compareAt=${SALE[p.handle]}` : ''} weight=${p.grams}g`);
 }
 
 // draft everything that is not one of ours
@@ -144,7 +148,7 @@ if (!sfToken) fail('storefront verify', 'no Storefront token — run shopify-tok
 const sf = await fetch(`https://${store}/api/${version}/graphql.json`, {
   method: 'POST',
   headers: { 'Content-Type': 'application/json', 'X-Shopify-Storefront-Access-Token': sfToken },
-  body: JSON.stringify({ query: `{ products(first: 20) { nodes { handle title productType tags variants(first: 1) { nodes { price { amount currencyCode } weight weightUnit } } } } }` }),
+  body: JSON.stringify({ query: `{ products(first: 20) { nodes { handle title productType tags variants(first: 1) { nodes { price { amount currencyCode } compareAtPrice { amount currencyCode } weight weightUnit } } } } }` }),
 });
 const sfBody = await sf.json().catch(() => ({}));
 if (!sf.ok || sfBody.errors) fail('storefront verify', { status: sf.status, errors: sfBody.errors });
@@ -152,5 +156,5 @@ const seen = sfBody.data.products.nodes;
 console.log(`storefront sees ${seen.length} product(s):`);
 for (const n of seen) {
   const v = n.variants.nodes[0];
-  console.log(`  ${n.handle}  type=${n.productType} tags=${n.tags.join('|')} price=${v?.price.amount} ${v?.price.currencyCode} weight=${v?.weight}${v?.weightUnit}`);
+  console.log(`  ${n.handle}  type=${n.productType} tags=${n.tags.join('|')} price=${v?.price.amount} ${v?.price.currencyCode}${v?.compareAtPrice ? ` compareAt=${v.compareAtPrice.amount}` : ''} weight=${v?.weight}${v?.weightUnit}`);
 }

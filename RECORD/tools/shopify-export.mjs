@@ -1,6 +1,7 @@
 // RECORD tooling — pin the Shopify catalog as A2's input. Not app code.
 //
-//   set -a && source .env && set +a && node RECORD/tools/shopify-export.mjs
+//   set -a && source .env && set +a && node RECORD/tools/shopify-export.mjs [stage]
+//   (stage defaults to A2; the file is RECORD/inputs/<stage>-shopify-products.json)
 //
 // Env: SHOPIFY_STOREFRONT_TOKEN; optional SHOPIFY_STORE, SHOPIFY_API_VERSION.
 // Reads every published product through the Storefront API — the same
@@ -21,7 +22,8 @@ if (!token) {
 }
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
-const out = path.join(root, 'RECORD/inputs/A2-shopify-products.json');
+const stage = process.argv[2] || 'A2';
+const out = path.join(root, `RECORD/inputs/${stage}-shopify-products.json`);
 const endpoint = `https://${store}/api/${version}/graphql.json`;
 const query = `{
   shop { name primaryDomain { url } }
@@ -30,7 +32,7 @@ const query = `{
       id handle title productType tags vendor description
       featuredImage { url altText width height }
       variants(first: 5) {
-        nodes { id title availableForSale price { amount currencyCode } weight weightUnit }
+        nodes { id title availableForSale price { amount currencyCode } compareAtPrice { amount currencyCode } weight weightUnit }
       }
     }
   }
