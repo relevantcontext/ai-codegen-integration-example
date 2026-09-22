@@ -218,3 +218,26 @@ A3's wiring untouched. Grammar applied: `fetch-conform-map`, `shape-data-for-log
 Acceptance: met. The A4 diff is 107 lines across four files; no channel, listener, or
 broadcast declaration changed.
 
+## B0 — Content pass
+
+Rule 2 of the record: everything a visitor reads must be editable through the CMS. The
+inventory below is the audit at `alpha-A4` — every template text node outside a `{{token}}`,
+every visitor-facing string authored in JS — with a status filled in by the stage
+(**moved** to data / **left** with reason / **undefined** for Frank). Copy itself is not
+changed by the model; copy review happens through the CMS.
+
+| # | Where | String | Status | Target / note |
+|---|---|---|---|---|
+| 1 | `contact-us.tmpl.html` | "Send Message" (submit button) | | The page item's data already carries `submitLabel`; the template does not bind it. |
+| 2 | `page-404.tmpl.html` | "It appears that something has gone awry. 404." | | The 404 page has no model node (`add404s: true`); the copy would have to reach it through the app's `text` block via the route/app payload. |
+| 3 | `form-contact-us-traits.js` | "Thanks, {name}." / "Thanks." (success title) | | Composed in code after submit. |
+| 4 | `form-contact-us-view.js` | "Your message has been sent. We will get back to you shortly." (default `successMessage`) | | Read from `props`, not from the page item's data; the data carries no such key. |
+| 5 | `channel-cart-traits.js` → Cart page `.cart-error` | "The cart could not be updated." / "Product "x" has no Shopify variant to add." / Shopify `userErrors` text | | System messages rendered to the visitor verbatim. |
+| 6 | `index.tmpl.html` | `<title>code-assembly-alpha</title>` (browser tab) | | Build-time HTML; `uiProps.appTitle` exists in data but nothing sets `document.title`. |
+| 7 | `index.tmpl.html` | `<noscript>` "You need to enable JavaScript to run this app." | | Build-time HTML for non-JS visitors. |
+| 8 | `ui-footer-view.tmpl.html` | "© 2025 Your Company Name" | | Template literal; at runtime the footer trait renders `text.footer` from data over it — not visible, but dead copy in a template. |
+| 9 | `ui-header-view.tmpl.html`, `nav-primary-view.tmpl.html`, `cards-container-view.js` | `aria-label="Home"`, `aria-label="Toggle Theme"`, `ariaLabel = 'cards'` | | Assistive text — read by screen readers, not shown. |
+| 10 | `page-item-core-traits.js` | "Missing Template" | | Developer fallback for an unresolved template name; never shown in a correct build. |
+| 11 | `products-catalog-traits.js` | count line `"${count} ${showingUnit}"` | | Number from state + unit from data — already editable. |
+| 12 | `cart-view-traits.js` lines | "× {{quantity}}" | | Punctuation + data. |
+
