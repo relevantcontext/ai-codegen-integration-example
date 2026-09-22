@@ -72,3 +72,9 @@ Format: artifact — what it is — origin — model / prompt / version — stag
 - `RECORD/tools/shopify-seed.mjs` — seeds the six metals into the dev store via the Admin API (product type = metal, tag = origin, variant weight g = mass, variant price = price), drafts Shopify's sample products, verifies through the Storefront API — same authorship/run model — 2026-09-22 — A2 prep
 - Shopify: Dev Dashboard app `asteroid-metals-app`, installed on store `asteroid-metals.myshopify.com` (the brief named `81et1p-m2.myshopify.com`; the app was set up on a second store and Frank confirmed `asteroid-metals` as the POC's store, 2026-09-22). Credentials live in `.env` (git-ignored, never read by the agent). Storefront token scopes: `unauthenticated_read_product_listings`, `unauthenticated_read_product_inventory`; API version 2026-04 — A2 prep
 - Shopify store seeded 2026-09-22 by `shopify-seed.mjs` (run from Frank's terminal): six products created (handles = the app's `attrProductId` slugs; product type = metal, tag = origin, variant price, variant weight in grams = mass), published to Online Store / Shop / Point of Sale; 15 Shopify sample products set to draft. Storefront API verified returning all six. App scopes at that point: write_inventory, write_orders, write_products, write_publications, unauthenticated_read_product_listings, unauthenticated_read_product_inventory — A2 prep
+
+## A2 — Shopify channel (input half)
+
+- `RECORD/tools/shopify-export.mjs` — pins the catalog through the Storefront API (same endpoint/token/fields the channel will use) — written by Claude Code (claude-fable-5-1), run from Frank's terminal — 2026-09-22 — A2
+- `RECORD/inputs/A2-shopify-products.json` — pinned Shopify catalog: the unmodified Storefront API response for 6 products plus the request that produced it (endpoint, API version 2026-04, query) — A2
+

@@ -1,0 +1,191 @@
+{
+  "pinnedAt": "2026-09-22T06:22:42.092Z",
+  "request": {
+    "endpoint": "https://asteroid-metals.myshopify.com/api/2026-04/graphql.json",
+    "apiVersion": "2026-04",
+    "header": "X-Shopify-Storefront-Access-Token",
+    "tokenTitle": "code-assembly-alpha",
+    "query": "{\n  shop { name primaryDomain { url } }\n  products(first: 50, sortKey: TITLE) {\n    nodes {\n      id handle title productType tags vendor description\n      featuredImage { url altText width height }\n      variants(first: 5) {\n        nodes { id title availableForSale price { amount currencyCode } weight weightUnit }\n      }\n    }\n  }\n}"
+  },
+  "response": {
+    "data": {
+      "shop": {
+        "name": "asteroid metals",
+        "primaryDomain": {
+          "url": "https://asteroid-metals.myshopify.com"
+        }
+      },
+      "products": {
+        "nodes": [
+          {
+            "id": "gid://shopify/Product/9526733373678",
+            "handle": "iridium-nugget",
+            "title": "Iridium Nugget",
+            "productType": "Iridium",
+            "tags": [
+              "Ryugu"
+            ],
+            "vendor": "Asteroid Metals Co.",
+            "description": "",
+            "featuredImage": null,
+            "variants": {
+              "nodes": [
+                {
+                  "id": "gid://shopify/ProductVariant/49618611175662",
+                  "title": "Default Title",
+                  "availableForSale": true,
+                  "price": {
+                    "amount": "4200.0",
+                    "currencyCode": "USD"
+                  },
+                  "weight": 2.3,
+                  "weightUnit": "GRAMS"
+                }
+              ]
+            }
+          },
+          {
+            "id": "gid://shopify/Product/9526733570286",
+            "handle": "osmium-bead",
+            "title": "Osmium Bead",
+            "productType": "Osmium",
+            "tags": [
+              "Vesta"
+            ],
+            "vendor": "Asteroid Metals Co.",
+            "description": "",
+            "featuredImage": null,
+            "variants": {
+              "nodes": [
+                {
+                  "id": "gid://shopify/ProductVariant/49618612879598",
+                  "title": "Default Title",
+                  "availableForSale": true,
+                  "price": {
+                    "amount": "5600.0",
+                    "currencyCode": "USD"
+                  },
+                  "weight": 0.9,
+                  "weightUnit": "GRAMS"
+                }
+              ]
+            }
+          },
+          {
+            "id": "gid://shopify/Product/9526733504750",
+            "handle": "palladium-crystal",
+            "title": "Palladium Crystal",
+            "productType": "Palladium",
+            "tags": [
+              "Psyche"
+            ],
+            "vendor": "Asteroid Metals Co.",
+            "description": "",
+            "featuredImage": null,
+            "variants": {
+              "nodes": [
+                {
+                  "id": "gid://shopify/ProductVariant/49618612814062",
+                  "title": "Default Title",
+                  "availableForSale": true,
+                  "price": {
+                    "amount": "2950.0",
+                    "currencyCode": "USD"
+                  },
+                  "weight": 1.8,
+                  "weightUnit": "GRAMS"
+                }
+              ]
+            }
+          },
+          {
+            "id": "gid://shopify/Product/9526733439214",
+            "handle": "platinum-sponge",
+            "title": "Platinum Sponge",
+            "productType": "Platinum",
+            "tags": [
+              "Bennu"
+            ],
+            "vendor": "Asteroid Metals Co.",
+            "description": "",
+            "featuredImage": null,
+            "variants": {
+              "nodes": [
+                {
+                  "id": "gid://shopify/ProductVariant/49618611306734",
+                  "title": "Default Title",
+                  "availableForSale": true,
+                  "price": {
+                    "amount": "3800.0",
+                    "currencyCode": "USD"
+                  },
+                  "weight": 5,
+                  "weightUnit": "GRAMS"
+                }
+              ]
+            }
+          },
+          {
+            "id": "gid://shopify/Product/9526733603054",
+            "handle": "rhenium-flake",
+            "title": "Rhenium Flake",
+            "productType": "Rhenium",
+            "tags": [
+              "Ceres"
+            ],
+            "vendor": "Asteroid Metals Co.",
+            "description": "",
+            "featuredImage": null,
+            "variants": {
+              "nodes": [
+                {
+                  "id": "gid://shopify/ProductVariant/49618612912366",
+                  "title": "Default Title",
+                  "availableForSale": true,
+                  "price": {
+                    "amount": "2150.0",
+                    "currencyCode": "USD"
+                  },
+                  "weight": 4.2,
+                  "weightUnit": "GRAMS"
+                }
+              ]
+            }
+          },
+          {
+            "id": "gid://shopify/Product/9526733537518",
+            "handle": "ruthenium-powder",
+            "title": "Ruthenium Powder",
+            "productType": "Ruthenium",
+            "tags": [
+              "Itokawa"
+            ],
+            "vendor": "Asteroid Metals Co.",
+            "description": "",
+            "featuredImage": null,
+            "variants": {
+              "nodes": [
+                {
+                  "id": "gid://shopify/ProductVariant/49618612846830",
+                  "title": "Default Title",
+                  "availableForSale": true,
+                  "price": {
+                    "amount": "1875.0",
+                    "currencyCode": "USD"
+                  },
+                  "weight": 3.5,
+                  "weightUnit": "GRAMS"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "extensions": {
+      "cost": {
+        "requestedQueryCost": 66
+      }
+    }
+  }
+}
