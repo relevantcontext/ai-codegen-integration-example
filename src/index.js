@@ -12,6 +12,8 @@ import { SpyneApp, ChannelFetch, SpyneAppProperties } from 'spyne';
 import { ChannelMenuDrawer } from 'channels/channel-menu-drawer';
 import { ChannelApp } from 'channels/channel-app.js';
 import { ChannelLocalStorage } from 'channels/channel-local-storage.js';
+import { ChannelShopify } from 'channels/channel-shopify.js';
+import { ChannelShopifyTraits } from 'traits/channel/channel-shopify-traits.js';
 //plugins
 
 //data fetch
@@ -76,6 +78,15 @@ const config = {
   // Theme judgment made at generation (see themes.json in the generator) —
   // edit theme_id / font_pairing_id and re-run the pipeline to re-theme.
   theme: {"theme_id":"slate","font_pairing_id":"archivo-worksans"},
+
+  // Shopify Storefront API — the catalog's commerce source. The access token
+  // is a public Storefront token (read-only, published data); it ships in the
+  // browser by design.
+  shopify: {
+    store: 'asteroid-metals.myshopify.com',
+    apiVersion: '2026-04',
+    storefrontAccessToken: 'REPLACE_WITH_STOREFRONT_ACCESS_TOKEN',
+  },
 };
 
 SpyneApp.init(config);
@@ -84,6 +95,23 @@ SpyneAppProperties.setProp('pageItemTemplateLookup', pageItemTemplateLookup);
 SpyneApp.registerChannel(new ChannelApp());
 SpyneApp.registerChannel(new ChannelLocalStorage());
 SpyneApp.registerChannel(new ChannelMenuDrawer());
+
+// commerce: the Storefront fetch, conformed at its boundary to the catalog's
+// product shape, and the domain channel that serves the catalog from it
+const { shopify } = config;
+SpyneApp.registerChannel(
+  new ChannelFetch('CHANNEL_FETCH_SHOPIFY', {
+    url: `https://${shopify.store}/api/${shopify.apiVersion}/graphql.json`,
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Shopify-Storefront-Access-Token': shopify.storefrontAccessToken,
+    },
+    body: JSON.stringify({ query: ChannelShopifyTraits.channelShopify$CatalogQuery() }),
+    map: ChannelShopifyTraits.channelShopify$ConformCatalog,
+  }),
+);
+SpyneApp.registerChannel(new ChannelShopify());
 
 const registerCmsChannels = () => {
   const mapFn = SpyneApp.pluginsFn.mapCmsData || ((d) => d);

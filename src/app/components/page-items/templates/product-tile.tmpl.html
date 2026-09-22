@@ -1,0 +1,26 @@
+<div class="product-media">
+  <img class="product-img" alt="{{attrImageAlt}}" src="{{attrImageSrc}}" />
+</div>
+<div class="product-meta">
+  <h3 class="product-name">{{name}}</h3>
+  <p class="product-provenance">
+    <span class="product-origin">{{origin}}</span>
+    <span class="product-mass">{{mass}}</span>
+  </p>
+  <div class="product-row">
+    <p class="product-valuation">
+      <span class="product-valuation__label">{{priceLabel}}</span>
+      <span class="product-price">{{price}}</span>
+    </p>
+    <button
+      type="button"
+      class="product-acquire"
+      data-action="add-to-cart"
+      data-product-id="{{%attrProductId%}}"
+      data-variant-id="{{%attrVariantId%}}"
+    >
+      <img class="product-acquire__icon" src="{{attrAddToCartIconSrc}}" alt="" />
+      <span class="product-acquire__label">{{addToCartLabel}}</span>
+    </button>
+  </div>
+</div>

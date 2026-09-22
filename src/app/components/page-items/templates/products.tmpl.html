@@ -16,9 +16,6 @@
           data-filter-key="metal"
         >
           <option value="">{{%metalFilterAll%}}</option>
-          {{#metalOptions}}
-          <option value="{{%.%}}">{{%.%}}</option>
-          {{/metalOptions}}
         </select>
       </label>
       <label class="products-filter">
@@ -30,60 +27,16 @@
           data-filter-key="origin"
         >
           <option value="">{{%originFilterAll%}}</option>
-          {{#originOptions}}
-          <option value="{{%.%}}">{{%.%}}</option>
-          {{/originOptions}}
         </select>
       </label>
     </div>
     <p class="products-count">
       <span class="products-count__label">{{showingLabel}}</span>
-      <span class="products-count__value"
-        >{{%resultCount%}} {{showingUnit}}</span
-      >
+      <span class="products-count__value"></span>
     </p>
   </div>
 
-  <div class="products-grid">
-    {{#products}}
-    <article
-      class="product-tile"
-      data-product-id="{{%attrProductId%}}"
-      data-metal="{{%metal%}}"
-      data-origin="{{%origin%}}"
-    >
-      <div class="product-media">
-        <img class="product-img" alt="{{attrImageAlt}}" src="{{attrImageSrc}}" />
-      </div>
-      <div class="product-meta">
-        <h3 class="product-name">{{name}}</h3>
-        <p class="product-provenance">
-          <span class="product-origin">{{origin}}</span>
-          <span class="product-mass">{{mass}}</span>
-        </p>
-        <div class="product-row">
-          <p class="product-valuation">
-            <span class="product-valuation__label">{{priceLabel}}</span>
-            <span class="product-price">{{price}}</span>
-          </p>
-          <button
-            type="button"
-            class="product-acquire"
-            data-action="add-to-cart"
-            data-product-id="{{%attrProductId%}}"
-          >
-            <img
-              class="product-acquire__icon"
-              src="{{attrAddToCartIconSrc}}"
-              alt=""
-            />
-            <span class="product-acquire__label">{{addToCartLabel}}</span>
-          </button>
-        </div>
-      </div>
-    </article>
-    {{/products}}
-  </div>
+  <div class="products-grid"></div>
 
   <footer class="products-footnote">
     <p class="products-footnote__text">{{footnoteText}}</p>

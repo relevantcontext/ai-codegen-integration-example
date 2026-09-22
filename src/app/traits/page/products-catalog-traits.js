@@ -1,4 +1,8 @@
-import { SpyneTrait, safeClone } from 'spyne';
+import { SpyneTrait, DomElementTemplate, safeClone } from 'spyne';
+import { ProductTileItem } from 'components/page-items/product-tile-item.js';
+
+const OPTIONS_TMPL = `<option value="">{{allLabel}}</option>
+{{#options}}<option value="{{.}}">{{.}}</option>{{/options}}`;
 
 export class ProductsCatalogTraits extends SpyneTrait {
   constructor(context) {
@@ -6,39 +10,62 @@ export class ProductsCatalogTraits extends SpyneTrait {
     super(context, traitPrefix);
   }
 
-  /**
-   * Shapes the catalog data for the logic-less template: the filter option
-   * lists and the result count are derived from the products rather than
-   * authored, so a product source with different metals or origins changes
-   * the dropdowns without a content edit. Derived keys are added on a
-   * safeClone so CMS proxy metadata on the authored keys survives.
-   */
-  static productsCatalog$ShapeCatalogData(data = {}) {
-    const shaped = safeClone(data);
-    const products = Array.isArray(shaped.products) ? shaped.products : [];
+  // ---- structural: nesting, channel egress, region updates ---------------
 
-    shaped.metalOptions = ProductsCatalogTraits.productsCatalog$UniqueValues(
-      products,
-      'metal',
-    );
-    shaped.originOptions = ProductsCatalogTraits.productsCatalog$UniqueValues(
-      products,
-      'origin',
-    );
-    shaped.resultCount = products.length;
+  /** Birth data first: the local products are the development fallback. */
+  static productsCatalog$OnRendered() {
+    this.productsCatalog$RenderCatalog(this.props.data.products, 'fallback');
+  }
 
-    // loop iterations substitute against the item alone (no parent-scope
-    // walk), so the per-tile labels authored once at the catalog level are
-    // copied onto each product for the template to reach
-    // (added in place on the cloned items so the array keeps its own metadata)
-    const tileKeys = ['priceLabel', 'addToCartLabel', 'attrAddToCartIconSrc'];
-    products.forEach((tile) => {
-      tileKeys.forEach((key) => {
-        tile[key] = shaped[key];
-      });
+  /** The Shopify catalog replaces the fallback; the fallback tiles retire themselves. */
+  static productsCatalog$OnCatalogEvent(e) {
+    const { products, source } = e.payload;
+    this.productsCatalog$RenderCatalog(products, source);
+  }
+
+  static productsCatalog$RenderCatalog(products = [], source = 'fallback') {
+    const data = this.props.data;
+    const tiles = ProductsCatalogTraits.productsCatalog$ShapeTiles(products, data, source);
+    const metals = ProductsCatalogTraits.productsCatalog$UniqueValues(tiles, 'metal');
+    const origins = ProductsCatalogTraits.productsCatalog$UniqueValues(tiles, 'origin');
+
+    tiles.forEach((tile) => {
+      this.appendView(new ProductTileItem({ data: tile }), '.products-grid');
     });
 
-    return shaped;
+    this.productsCatalog$SetOptions('metal', data.metalFilterAll, metals);
+    this.productsCatalog$SetOptions('origin', data.originFilterAll, origins);
+    this.props.el$('.products-count__value').el.innerText =
+      `${tiles.length} ${data.showingUnit ?? ''}`.trim();
+    this.props.el.dataset.catalogSource = source;
+  }
+
+  // the select element persists (its change broadcast stays bound); only its
+  // options are regenerated from the current products
+  static productsCatalog$SetOptions(key, allLabel = '', options = []) {
+    const select = this.props.el$(`.products-filter__select[data-filter-key="${key}"]`).el;
+    if (!select) return;
+    select.innerHTML = new DomElementTemplate(OPTIONS_TMPL, { allLabel, options }).renderToString();
+  }
+
+  // ---- pure: shaping ------------------------------------------------------
+
+  /**
+   * A tile's data is the product plus the catalog-level labels it renders
+   * (each tile is its own template, so the labels ride along) plus the
+   * source it came from, which is how a tile knows when to retire.
+   */
+  static productsCatalog$ShapeTiles(products = [], data = {}, source = 'fallback') {
+    const labels = {
+      priceLabel: data.priceLabel,
+      addToCartLabel: data.addToCartLabel,
+      attrAddToCartIconSrc: data.attrAddToCartIconSrc,
+    };
+    return products.map((product) => {
+      const tile = safeClone(product);
+      Object.assign(tile, labels, { source });
+      return tile;
+    });
   }
 
   static productsCatalog$UniqueValues(products = [], key) {

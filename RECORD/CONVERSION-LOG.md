@@ -104,3 +104,50 @@ Counts after r2: 20 mapped, 8 inferred, 1 undefined (the footnote PDF link).
 ### Rulings after A1 (Frank, 2026-09-22)
 
 - **Element 29, footnote PDF link → removed.** The Figma agent invented a document that does not exist; Frank ruled it out. The link text key `footnoteLinkText`, its `<p>` and its styles are removed; the footnote text (element 28) stays. Final A1 counts: 20 mapped, 8 inferred, 0 undefined, 1 removed by ruling. Committed at the start of A2's history, not re-tagged.
+
+## A2 — Shopify channel replaces local data
+
+Source: `inputs/A2-shopify-raw/` (the A2-1 vanilla integration) and `inputs/A2-shopify-products.json`
+(the pinned catalog). Prompt: `prompts/A2-2.md`. Grammar records/cards applied:
+`fetch-as-channel`, `fetch-conform-map`, `error-as-conformed-payload`, `acquire-and-conform`,
+`mint-channel-vs-ride-existing` (mint), `combine-sources-into-domain-payload`,
+`choose-merge-emission-mode` (snapshot), `wire-in-onRegistered`, `register-channel-action-vocabulary`,
+`choose-replay-semantics` (replay), `state-machine-in-channel`, `index-js-as-structural-spine`,
+`register-channel-upfront`, `declare-action-listeners`, `admit-by-payload-filter`,
+`dynamic-children-ingress` (nested views), `dispose-by-predicate-filter`, `name-views-by-role-suffix`,
+`address-region-by-el$`, `behavior-to-trait-not-view`, `author-in-correct-register`.
+
+### Elements of the vanilla integration
+
+| # | Vanilla element (A2-1) | Status | VBL target / note |
+|---|---|---|---|
+| 1 | `config.js` — `storefrontConfig { shopDomain, apiVersion, publicAccessToken }` | mapped | `config.shopify { store, apiVersion, storefrontAccessToken }` in `src/index.js` (configuration, per the prompt). |
+| 2 | `config.js` — `pageSize: 250` + cursor pagination in `fetchAllProducts` | inferred | Dropped. One request, `products(first: 250)`; the catalog is six products. A catalog past 250 would need a paged request — product intent, not present. |
+| 3 | `config.js` — `storefrontEndpoint()` | mapped | The `url` of `CHANNEL_FETCH_SHOPIFY`, built in `index.js`. |
+| 4 | `storefront-client.js` — `StorefrontError` class (network / HTTP / non-JSON / GraphQL errors) | inferred | Not carried. `ChannelFetch` conforms every failure into a flat payload under `CHANNEL_FETCH_SHOPIFY_ERROR_EVENT` (`errorType`, `status`, `message`); the class is the framework's job. GraphQL-level `errors` with HTTP 200 are not distinguished — logged as a gap. |
+| 5 | `storefront-client.js` — `storefrontQuery()`: POST, headers, JSON body, `data` extraction | mapped | `ChannelFetch('CHANNEL_FETCH_SHOPIFY', { url, method, headers, body, map })` registered in `index.js`; the request is a channel registration, not a call. |
+| 6 | `storefront-client.js` — "token not configured" guard | inferred | Dropped; a bad or missing token is the 401 error path, which the fallback already covers. |
+| 7 | `products.js` — `PRODUCTS_QUERY` (id, handle, title, productType, tags, first variant price/weight) | mapped | `ChannelShopifyTraits.channelShopify$CatalogQuery()`; `featuredImage` added (for element 20); `$first/$after` variables removed (element 2). |
+| 8 | `products.js` — `toCatalogProduct()` (flatten to id/handle/title/productType/tags/price/weight) | mapped | `channelShopify$ConformProduct`, run as the fetch `map` (conform once at the boundary). Shape changed to the catalog's A1 binding: `attrProductId` ← handle, `name` ← title, `metal` ← productType, `origin` ← tags[0], `mass` ← weight+unit, `price` ← formatted amount, `attrImageSrc/Alt` ← featuredImage. `attrVariantId` added for the cart (A3). |
+| 9 | `products.js` — `fetchAllProducts()` | mapped | `ChannelFetch` autofires at registration (`pause-fetch-vs-autofire`: boot data). |
+| 10 | `products.js` — `createProductList()` observable holder with `{ status, products, error }` and `subscribe()` | mapped | `ChannelShopify` (`CHANNEL_SHOPIFY`, replay) — durable catalog state in a channel, late subscribers get the current catalog. Status vocabulary became action labels: `CHANNEL_SHOPIFY_CATALOG_EVENT`, `CHANNEL_SHOPIFY_ERROR_EVENT`. |
+| 11 | `products.js` — `status: 'loading'` | inferred | No loading state: the six local products render at birth and stand until the channel answers. |
+| 12 | `catalog.js` — `formatPrice()` (Intl currency), `formatWeight()` (unit map) | mapped | `channelShopify$FormatPrice` / `channelShopify$FormatMass`, moved into the conform map (display strings are the catalog's contract: "$4,200", "2.3g"). |
+| 13 | `catalog.js` — `renderProduct()` (createElement per product, `dataset.handle`) | mapped | `product-tile.tmpl.html` + `ProductTileItem` (one nested view per product, dataset `productId/metal/origin/source`). |
+| 14 | `catalog.js` — `renderState()` error branch (message + Retry button) | **undefined** | Error → the view keeps its fallback; no message, no retry. Whether a visitor should see a retry or a notice is product intent — Frank rules. |
+| 15 | `catalog.js` — `renderState()` empty branch ("No products available.") | inferred | An empty catalog is treated as no data (`EMPTY_CATALOG` on the error label) so the fallback stands. |
+| 16 | `catalog.js` — `mountCatalog()`: `subscribe` → re-render on every state | mapped | `props.channels = ['CHANNEL_SHOPIFY']` + `addActionListeners` → `productsCatalog$OnCatalogEvent`. |
+| 17 | `catalog.js` — `section.addEventListener('click', …closest('[data-action="retry"]'))` (delegation) | inferred | Not carried (never `addEventListener`; delegation is not the idiom). Goes with element 14. |
+| 18 | `catalog.js` — `section.replaceChildren()` on every state | inferred | Replaced by lifecycle: tiles are views; the previous source's tiles dispose themselves when a catalog from another source arrives (`dispose-by-predicate-filter` on `payload.source`). |
+| 19 | `main.js` — `window.catalog` debug handle | inferred | Not carried; the Behavior Console shows the channel. |
+| 20 | (not in the vanilla code) product images | inferred | Shopify carries none for these products; `ChannelShopify` merges the app model's products by `attrProductId` to supply the Figma images (`combine-sources-into-domain-payload`: `mergeChannels(['CHANNEL_FETCH_SHOPIFY','CHANNEL_FETCH_MODEL'])`). A Storefront image wins when present. |
+| 21 | `index.html` + inline styles | inferred | Not carried; the A1 catalog template and styles stand. |
+
+### A2 decisions the prompt left open (inferred unless marked)
+
+- **Domain channel minted.** `CHANNEL_SHOPIFY` sits between the fetch and the view (`acquire-and-conform`); it holds the catalog (`props.catalog`), replays, and is where A3's filter state belongs. The view never sees `CHANNEL_FETCH_SHOPIFY`.
+- **Tiles became views.** The grammar's `dynamic-children-ingress` rules out re-rendering bound tiles by innerHTML (bindings are snapshot-direct); the default recipe is nested views. `ProductTileItem` declares its own `.product-acquire` click. The catalog keeps the selects (bound once; only their `<option>`s are regenerated via `el$`) and the count.
+- **Fallback = birth data.** The catalog renders its `app.model.json` products in `onRendered` (source `fallback`); `CHANNEL_SHOPIFY_CATALOG_EVENT` renders the Shopify products (source `shopify`) and the fallback tiles retire. On `CHANNEL_SHOPIFY_ERROR_EVENT` (fetch failure or empty catalog) nothing changes. If the page is born after the channel already emitted, replay delivers the catalog immediately after the fallback render — a brief double render, accepted.
+- **Token placement.** `config.shopify.storefrontAccessToken` in `index.js` — a public token by design. The generated build has no env injection; adding one is a build-config change and was not made.
+- **Snapshot merge.** Both sources are boot-time fetches, so `mergeChannels` with `emitOnce` (default) is the sync point; a refetch (A3/A4) would switch to the live mode.
+
