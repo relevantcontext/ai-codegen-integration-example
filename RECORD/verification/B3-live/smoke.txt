@@ -1,4 +1,4 @@
-> remote: https://dvlyqetb9espg.cloudfront.net (no build)
+> remote: https://justmetu.com (no build)
 ok    / -> home.png
 ok    /shop -> shop.png
 ok    /cart -> cart.png

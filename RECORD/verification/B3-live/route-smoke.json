@@ -4,7 +4,7 @@
     "width": 1280,
     "height": 800
   },
-  "build": "remote https://dvlyqetb9espg.cloudfront.net",
+  "build": "remote https://justmetu.com",
   "ok": true,
   "routes": [
     {
