@@ -77,4 +77,5 @@ Format: artifact — what it is — origin — model / prompt / version — stag
 
 - `RECORD/tools/shopify-export.mjs` — pins the catalog through the Storefront API (same endpoint/token/fields the channel will use) — written by Claude Code (claude-fable-5-1), run from Frank's terminal — 2026-09-22 — A2
 - `RECORD/inputs/A2-shopify-products.json` — pinned Shopify catalog: the unmodified Storefront API response for 6 products plus the request that produced it (endpoint, API version 2026-04, query) — A2
+- `RECORD/inputs/A2-shopify-raw/` (config.js, storefront-client.js, products.js, catalog.js, main.js, index.html) — the A2-1 vanilla integration, verbatim — Claude Code subagent (claude-fable-5-1) in a fresh context with cwd outside the repo, grammar not loaded, no repo files read, prompt `prompts/A2-1.md` — 2026-09-22 02:43, 65.6 s, 57,054 tokens (subagent usage as reported by the harness), 6 tool uses — A2
 
