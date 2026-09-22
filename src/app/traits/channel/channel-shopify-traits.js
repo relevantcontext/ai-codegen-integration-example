@@ -1,4 +1,4 @@
-import { SpyneTrait } from 'spyne';
+import { SpyneTrait, ChannelPayloadFilter } from 'spyne';
 
 export class ChannelShopifyTraits extends SpyneTrait {
   constructor(context) {
@@ -12,50 +12,75 @@ export class ChannelShopifyTraits extends SpyneTrait {
    * Both sources are boot-time fetches, so a snapshot merge is the sync
    * point: the catalog is conformed once both have answered. A failed
    * Storefront fetch still arrives here (as its conformed error payload) and
-   * is routed to the error label; the view keeps the fallback it was born with.
+   * is routed to the error label, and the catalog falls back to the products
+   * authored in the app model. The filter selects broadcast into CHANNEL_UI;
+   * this channel admits them by their dataset action and holds the filter
+   * state, so every consumer reads one catalog payload.
    */
   static channelShopify$OnRegistered() {
     this.mergeChannels(['CHANNEL_FETCH_SHOPIFY', 'CHANNEL_FETCH_MODEL']).subscribe(
       this.channelShopify$OnSourcesReturned.bind(this),
+    );
+
+    const filterSelectFilter = new ChannelPayloadFilter({ action: 'filter' });
+    this.getChannel('CHANNEL_UI', filterSelectFilter).subscribe(
+      this.channelShopify$OnFilterChange.bind(this),
     );
   }
 
   static channelShopify$OnSourcesReturned(e) {
     const shopify = e['CHANNEL_FETCH_SHOPIFY'].payload;
     const model = e['CHANNEL_FETCH_MODEL'].payload;
+    const localProducts = ChannelShopifyTraits.channelShopify$LocalProducts(model);
 
-    if (shopify.isChannelFetchError === true) {
-      const { errorType, message, status } = shopify;
+    const hasProducts = Array.isArray(shopify.products) && shopify.products.length > 0;
+    if (shopify.isChannelFetchError === true || !hasProducts) {
+      const { errorType = 'EMPTY_CATALOG', message = 'The Storefront API returned no published products.', status } = shopify;
+      this.props.catalog = { products: localProducts, source: 'fallback' };
       this.sendChannelPayload('CHANNEL_SHOPIFY_ERROR_EVENT', {
         errorType,
         message,
         status,
         source: 'fallback',
       });
+      this.channelShopify$SendCatalog(false);
       return;
     }
 
-    // an empty catalog is "no data" too: the view keeps its fallback
-    if (!Array.isArray(shopify.products) || shopify.products.length === 0) {
-      this.sendChannelPayload('CHANNEL_SHOPIFY_ERROR_EVENT', {
-        errorType: 'EMPTY_CATALOG',
-        message: 'The Storefront API returned no published products.',
-        source: 'fallback',
-      });
-      return;
-    }
-
-    const localProducts = ChannelShopifyTraits.channelShopify$LocalProducts(model);
     const products = ChannelShopifyTraits.channelShopify$MergeImages(
       shopify.products,
       localProducts,
     );
-
     this.props.catalog = { products, source: 'shopify' };
+    this.channelShopify$SendCatalog(false);
+  }
+
+  /** A select changed: the dataset names the key, the element carries the value. */
+  static channelShopify$OnFilterChange(e) {
+    const { filterKey } = e.payload;
+    if (!filterKey) return;
+    const value = e.srcElement?.el?.value ?? '';
+    this.props.filters = { ...this.props.filters, [filterKey]: value };
+    this.channelShopify$SendCatalog(true);
+  }
+
+  /**
+   * One label, complete state on every emission: the channel replays, so a
+   * shop page born after any number of filter changes receives the products,
+   * the source, the filters and the visible set in a single payload.
+   */
+  static channelShopify$SendCatalog(isFilterUpdate = false) {
+    const { products, source } = this.props.catalog;
+    const filters = { ...this.props.filters };
+    const visible = ChannelShopifyTraits.channelShopify$ApplyFilters(products, filters);
     this.sendChannelPayload('CHANNEL_SHOPIFY_CATALOG_EVENT', {
       products,
-      source: 'shopify',
-      count: products.length,
+      source,
+      filters,
+      visibleIds: visible.map((p) => p.attrProductId),
+      count: visible.length,
+      total: products.length,
+      isFilterUpdate,
     });
   }
 
@@ -119,6 +144,17 @@ export class ChannelShopifyTraits extends SpyneTrait {
     } catch {
       return `${amount} ${price.currencyCode}`;
     }
+  }
+
+  // ---- pure: filtering ----------------------------------------------------
+
+  /** Empty filter values mean "all"; set values match the product's field exactly. */
+  static channelShopify$ApplyFilters(products = [], filters = {}) {
+    const active = Object.entries(filters).filter(([, value]) => value !== '' && value != null);
+    if (active.length === 0) return products;
+    return products.filter((product) =>
+      active.every(([key, value]) => String(product[key] ?? '') === String(value)),
+    );
   }
 
   // ---- pure: the local products and their images ---------------------------

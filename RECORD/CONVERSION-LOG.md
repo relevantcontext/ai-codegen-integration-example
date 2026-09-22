@@ -151,3 +151,35 @@ Source: `inputs/A2-shopify-raw/` (the A2-1 vanilla integration) and `inputs/A2-s
 - **Token placement.** `config.shopify.storefrontAccessToken` in `index.js` — a public token by design. The generated build has no env injection; adding one is a build-config change and was not made.
 - **Snapshot merge.** Both sources are boot-time fetches, so `mergeChannels` with `emitOnce` (default) is the sync point; a refetch (A3/A4) would switch to the live mode.
 
+## A3 — Wiring
+
+Prompt: `prompts/A3-1.md` (rulings: Shopify cart; console capture option (a)). No external
+source enters at A3; the elements are the prompt's three requirements plus what wiring them
+demanded. Grammar applied: `component-interaction-loop` (the record for this stage),
+`acquire-and-conform`, `admit-by-payload-filter`, `dataset-as-payload`,
+`use-framework-ui-action-labels`, `state-machine-in-channel`, `choose-replay-semantics`
+(full-state payloads on one label), `declare-action-listeners` (one listener per label),
+`gate-interactivity-via-class-and-filter` (class as state surface), `dispose-vs-hide`,
+`retry-backoff-via-channelfetchutil` (channel-side fetch), `select-concurrency-operator`
+(ordered queue), `typed-reconciliation-outcome`, `persist-settings-via-storage-channel`,
+`live-mirror-via-el$`, `address-region-by-el$`, `behavior-to-trait-not-view`.
+
+| # | Requirement / element | Status | VBL target / note |
+|---|---|---|---|
+| 1 | Pulldowns filter the Shopify-fed list | mapped | `ChannelShopify` admits `CHANNEL_UI` by `{ action: "filter" }`, reads `filterKey` from the dataset and the value from the bound select, holds `props.filters`, re-emits `CHANNEL_SHOPIFY_CATALOG_EVENT` with `filters`, `visibleIds`, `count`, `total`, `isFilterUpdate`. |
+| 2 | Where filter state lives | inferred | In the domain channel, not the URL. `query-params-as-route-state` would make filters shareable, but the app routes by path and the grammar rules one capture type per app; a query-carrying route channel is a larger change than the prompt asked for. |
+| 3 | Filtered-out tiles | inferred | Hidden (`is-filtered-out` class, CSS `display: none`), not disposed: each tile decides for itself from `visibleIds` in `productTile$OnCatalogEvent`. `dispose-vs-hide` reserves hide for persistent/static UI; here the tiles carry behaviour and filters toggle quickly, so churn (dispose + re-nest per keystroke) was judged the worse trade. Logged as a tension with the card. |
+| 4 | Full-state payloads | inferred | One label carries everything (products, source, filters, visible set). A replay buffer holds one payload per channel, so a shop page born after filtering must get products *and* filters from the same emission; the previous A2 `source`-only predicate on the tile became a method that both retires and filters. |
+| 5 | A tile's Acquire reaches the cart | mapped | `ChannelCart` admits `CHANNEL_UI` by `{ action: "add-to-cart" }`; `variantId` and `productId` ride the button's dataset (placed at A2). |
+| 6 | The cart is a Shopify cart | mapped (ruled) | `cartCreate` / `cartLinesAdd` / `cart(id)` through `ChannelFetchUtil` inside the channel trait (channels cannot push into a `ChannelFetch`); the endpoint and token come from `config.shopify` via `SpyneAppProperties.config`. |
+| 7 | Ordering of cart mutations | inferred | Intents queue and run one at a time (concat semantics) so a second Acquire before the first cart exists adds to that cart instead of creating another. Plain-JS queue on the channel's props rather than raw RxJS. |
+| 8 | Reconciliation | inferred | Typed outcome: `confirmed` (server cart), `gone` (a saved id Shopify no longer knows → empty cart), `error` (transport, GraphQL, or `userErrors`) → `CHANNEL_CART_ERROR_EVENT`. No optimistic state: a cart line is not shown until Shopify confirms it. |
+| 9 | Cart id across page loads | inferred | `ChannelLocalStorage` subscribes to `CHANNEL_CART_UPDATED_EVENT` and persists `shopifyCartId` (the record's "storage subscribes and persists autonomously"); at boot the storage channel's initialised store reaches `ChannelCart`, which rehydrates by `cart(id)`. |
+| 10 | The Cart page shows the cart | mapped | `CartView` page item (`cart.tmpl.html`, `CartViewTraits`) listening to `CHANNEL_CART` (replay → immediate); lines, subtotal, checkout link, empty state, error line. Added to the cart node in `app.model.json` ahead of the existing article; its copy (title, empty text, labels) is CMS data. |
+| 11 | Cart lines as a rendered region | inferred | Lines carry no behaviour in this stage (no remove/quantity), so they are a `DomElementTemplate` render into `el$('.cart-lines')`, not nested views; the moment a line gets a control, `dynamic-children-ingress` makes them views. |
+| 12 | Tile reflects cart membership | inferred | Tiles also listen to `CHANNEL_CART_UPDATED_EVENT` and toggle `is-in-cart` (an inset ring on Acquire) — no copy change, so no CMS key. |
+| 13 | What a visitor sees on a cart error | **undefined** | The Cart page prints the channel's message in a status line; the catalog shows nothing. Whether the tile should react, and what copy, is product intent — Frank rules (this continues A2's element 14). |
+| 14 | Checkout | inferred | The Cart page's checkout link is Shopify's `checkoutUrl` (hosted checkout). Nothing beyond the link; B3 owns the end-to-end flow. |
+| 15 | Cart page styling | inferred | App tokens; the Figma frame covered the catalog only. |
+| 16 | Storefront scope | note | Cart mutations succeeded with the read scopes the token already had; `unauthenticated_write_checkouts` (named in the pin) was not needed and was not added. |
+

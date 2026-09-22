@@ -17,10 +17,17 @@ export class ProductsCatalogTraits extends SpyneTrait {
     this.productsCatalog$RenderCatalog(this.props.data.products, 'fallback');
   }
 
-  /** The Shopify catalog replaces the fallback; the fallback tiles retire themselves. */
+  /**
+   * The channel's payload is complete state. A new source means a new set
+   * of tiles (the previous generation retires itself); every payload syncs
+   * the selects and the count to the filters and the visible set.
+   */
   static productsCatalog$OnCatalogEvent(e) {
-    const { products, source } = e.payload;
-    this.productsCatalog$RenderCatalog(products, source);
+    const { products, source, filters = {}, count } = e.payload;
+    if (this.props.el.dataset.catalogSource !== source) {
+      this.productsCatalog$RenderCatalog(products, source);
+    }
+    this.productsCatalog$SyncFilters(filters, count);
   }
 
   static productsCatalog$RenderCatalog(products = [], source = 'fallback') {
@@ -35,9 +42,21 @@ export class ProductsCatalogTraits extends SpyneTrait {
 
     this.productsCatalog$SetOptions('metal', data.metalFilterAll, metals);
     this.productsCatalog$SetOptions('origin', data.originFilterAll, origins);
-    this.props.el$('.products-count__value').el.innerText =
-      `${tiles.length} ${data.showingUnit ?? ''}`.trim();
+    this.productsCatalog$SetCount(tiles.length);
     this.props.el.dataset.catalogSource = source;
+  }
+
+  static productsCatalog$SyncFilters(filters = {}, count) {
+    Object.entries(filters).forEach(([key, value]) => {
+      const select = this.props.el$(`.products-filter__select[data-filter-key="${key}"]`).el;
+      if (select && select.value !== value) select.value = value;
+    });
+    if (typeof count === 'number') this.productsCatalog$SetCount(count);
+  }
+
+  static productsCatalog$SetCount(count = 0) {
+    this.props.el$('.products-count__value').el.innerText =
+      `${count} ${this.props.data.showingUnit ?? ''}`.trim();
   }
 
   // the select element persists (its change broadcast stays bound); only its
@@ -45,7 +64,9 @@ export class ProductsCatalogTraits extends SpyneTrait {
   static productsCatalog$SetOptions(key, allLabel = '', options = []) {
     const select = this.props.el$(`.products-filter__select[data-filter-key="${key}"]`).el;
     if (!select) return;
+    const current = select.value;
     select.innerHTML = new DomElementTemplate(OPTIONS_TMPL, { allLabel, options }).renderToString();
+    if (options.includes(current)) select.value = current;
   }
 
   // ---- pure: shaping ------------------------------------------------------

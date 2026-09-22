@@ -160,6 +160,15 @@
     gap: 24px;
   }
 
+  // the tile toggles these from the catalog and cart channels
+  .product-tile.is-filtered-out {
+    display: none;
+  }
+
+  .product-tile.is-in-cart .product-acquire {
+    box-shadow: inset 0 0 0 2px var(--c-text);
+  }
+
   .product-tile {
     display: flex;
     flex-direction: column;

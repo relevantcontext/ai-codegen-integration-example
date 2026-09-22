@@ -90,3 +90,20 @@ Format: artifact — what it is — origin — model / prompt / version — stag
 - `RECORD/tools/shopify-config.mjs` — writes the public Storefront token from Frank's environment into `config.shopify` in `src/index.js` (the build has no env injection; the agent never reads `.env`) — tooling, run from Frank's terminal — A2
 - `RECORD/screenshots/A2/*.png` — five routes, captured by the script; the shop capture is fed by the live Storefront API — A2
 
+## A3 — wiring (model-written; agent: Claude Code, claude-fable-5-1; prompt `prompts/A3-1.md`)
+
+- `src/app/channels/channel-cart.js`, `src/app/traits/channel/channel-cart-traits.js` — new: the Shopify cart as a domain channel (queue, Storefront mutations via ChannelFetchUtil, typed reconciliation, conform) — A3
+- `src/app/traits/channel/channel-shopify-traits.js`, `src/app/channels/channel-shopify.js` — filter admission from CHANNEL_UI, filter state, full-state catalog payloads; fallback catalog held in the channel — A3
+- `src/app/traits/page/product-tile-traits.js` — new: the tile's catalog/cart reactions — A3
+- `src/app/components/page-items/product-tile-item.js` — listens to CHANNEL_SHOPIFY and CHANNEL_CART through the trait — A3
+- `src/app/traits/page/products-catalog-traits.js` — re-render on source change only; selects and count synced from the payload — A3
+- `src/app/components/page-items/cart-view.js`, `src/app/traits/page/cart-view-traits.js`, `templates/cart.tmpl.html`, `src/scss/03-components/pages/page-items/_cart.scss` — new: the Cart page's cart — A3
+- `src/app/traits/page/page-item-core-traits.js` — `CartView` lookup entry — A3
+- `src/app/traits/app/app-local-storage-traits.js` — persists `shopifyCartId` from the cart channel — A3
+- `src/index.js` — `CHANNEL_CART` registered — A3
+- `src/static/data/app.model.json` — cart node: `CartView` page item with CMS copy — A3
+- `src/scss/03-components/pages/page-items/_products.scss`, `pages.scss` — tile `is-filtered-out` / `is-in-cart` states; cart stylesheet wired — A3
+- `RECORD/tools/screenshot.mjs` — `--console` mode (option (a)) — tooling — A3
+- `RECORD/screenshots/A3/*.png` — five routes plus four Behavior Console frames, captured by the script — A3
+- `RECORD/verification/A3/A3.diff` — the stage diff, `alpha-A2`..`alpha-A3`, src/ only — A3
+

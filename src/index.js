@@ -13,6 +13,7 @@ import { ChannelMenuDrawer } from 'channels/channel-menu-drawer';
 import { ChannelApp } from 'channels/channel-app.js';
 import { ChannelLocalStorage } from 'channels/channel-local-storage.js';
 import { ChannelShopify } from 'channels/channel-shopify.js';
+import { ChannelCart } from 'channels/channel-cart.js';
 import { ChannelShopifyTraits } from 'traits/channel/channel-shopify-traits.js';
 //plugins
 
@@ -112,6 +113,7 @@ SpyneApp.registerChannel(
   }),
 );
 SpyneApp.registerChannel(new ChannelShopify());
+SpyneApp.registerChannel(new ChannelCart());
 
 const registerCmsChannels = () => {
   const mapFn = SpyneApp.pluginsFn.mapCmsData || ((d) => d);

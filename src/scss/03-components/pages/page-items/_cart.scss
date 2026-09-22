@@ -1,0 +1,111 @@
+// Cart — mirrors CHANNEL_CART. App tokens (the Figma frame did not cover the
+// cart page). Empty state and error are class/region driven by the view.
+.page-item--cart {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  .cart-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .cart-subtitle {
+    margin: 0;
+    color: var(--text-muted);
+
+    &:empty {
+      display: none;
+    }
+  }
+
+  .cart-empty {
+    margin: 0;
+    color: var(--text-muted);
+  }
+
+  .cart-lines {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    border-block-start: 1px solid var(--border);
+  }
+
+  .cart-line {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    gap: 1rem;
+    align-items: baseline;
+    margin: 0;
+    padding: 0.75rem 0;
+    border-block-end: 1px solid var(--border);
+  }
+
+  .cart-line__variant {
+    color: var(--text-muted);
+
+    &:empty {
+      display: none;
+    }
+  }
+
+  .cart-line__qty {
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+  }
+
+  .cart-line__price {
+    font-family: var(--font-mono);
+    font-weight: var(--fw-semibold);
+  }
+
+  .cart-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .cart-total {
+    margin: 0;
+    display: flex;
+    gap: 0.5rem;
+    align-items: baseline;
+  }
+
+  .cart-total__label {
+    color: var(--text-muted);
+  }
+
+  .cart-total__value {
+    font-family: var(--font-mono);
+    font-size: 1.25rem;
+    font-weight: var(--fw-semibold);
+  }
+
+  .cart-error {
+    margin: 0;
+    color: var(--error);
+
+    &:empty {
+      display: none;
+    }
+  }
+}
+
+// the view toggles is-empty on its root from the cart channel's state
+.cart-view.is-empty {
+  .cart-lines,
+  .cart-summary {
+    display: none;
+  }
+}
+
+.cart-view:not(.is-empty) .cart-empty {
+  display: none;
+}

@@ -105,6 +105,20 @@ export class AppLocalStorageTraits extends SpyneTrait {
     this.getChannel('CHANNEL_APP', settinsPayloadFilter).subscribe(
       this.localStorage$ChannelOnStatusSettingsEvent.bind(this),
     );
+
+    // the cart id rides the cart channel's state; persisted here so a
+    // reload rehydrates the same Shopify cart
+    const cartUpdatedFilter = new ChannelPayloadFilter({
+      action: 'CHANNEL_CART_UPDATED_EVENT',
+    });
+
+    this.getChannel('CHANNEL_CART', cartUpdatedFilter).subscribe(
+      this.localStorage$ChannelOnCartEvent.bind(this),
+    );
+  }
+
+  static localStorage$ChannelOnCartEvent(e) {
+    this.localStorage$SetItem('shopifyCartId', e.payload.cartId ?? '');
   }
 
   static localStorage$ChannelOnStatusSettingsEvent(e) {

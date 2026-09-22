@@ -392,6 +392,25 @@
         },
         {
           "isPrototype": false,
+          "viewClass": "CartView",
+          "props": {
+            "ariaLabel": "Cart",
+            "template": "cart.tmpl.html",
+            "data": {
+              "title": "Your selected samples",
+              "subtitle": "",
+              "emptyText": "Your cart is empty. Add samples from the catalog to request a quote.",
+              "subtotalLabel": "Subtotal",
+              "checkoutLabel": "Proceed to checkout"
+            }
+          },
+          "container": {
+            "isEnabled": true,
+            "spacing": "default"
+          }
+        },
+        {
+          "isPrototype": false,
           "viewClass": "ViewStream",
           "props": {
             "tagName": "article",

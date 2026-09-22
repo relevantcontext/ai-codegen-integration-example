@@ -1,6 +1,7 @@
 // RECORD tooling — stage screenshots + route smoke test. Not app code.
 //
-//   node RECORD/tools/screenshot.mjs <stage>        e.g. A0
+//   node RECORD/tools/screenshot.mjs <stage>            e.g. A0
+//   node RECORD/tools/screenshot.mjs <stage> --console  Behavior Console capture (A3+)
 //
 // 1. `npm run build` (production: dev-tools.js — CMS + Behavior Console — never loads,
 //    so every capture shows the app as a visitor sees it; no app code is touched).
@@ -12,6 +13,13 @@
 // 4. Smoke test: every route must load with no console errors, page errors, or failed
 //    requests. Result goes to RECORD/verification/<stage>/route-smoke.json; exit 1 on
 //    any failure.
+//
+// --console (option (a), ruled at A3): builds in DEVELOPMENT mode so dev-tools.js
+// loads, serves it, removes the CMS panel from the page (nothing else), drives the
+// shop page — pick a metal filter, click Acquire — and captures the Behavior Console
+// after each: behavior-console-filter.png and behavior-console.png. The console's
+// visible payload text is saved beside them. Run this BEFORE the production capture
+// (it leaves a development build in dist/).
 
 import fs from 'node:fs';
 import http from 'node:http';
@@ -21,6 +29,7 @@ import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 
 const stage = process.argv[2];
+const consoleMode = process.argv.includes('--console');
 if (!stage) {
   console.error('usage: node RECORD/tools/screenshot.mjs <stage>');
   process.exit(2);
@@ -72,8 +81,15 @@ const watch = (page, errors) => {
   page.on('response', (r) => r.status() >= 400 && errors.push(`http ${r.status()}: ${r.url()}`));
 };
 
-console.log('> npm run build');
-execSync('npm run build', { cwd: root, stdio: 'inherit' });
+if (consoleMode) {
+  console.log('> development build (dev tools on)');
+  execSync('npx webpack --mode development --env build', {
+    cwd: root, stdio: 'inherit', env: { ...process.env, NODE_ENV: 'development' },
+  });
+} else {
+  console.log('> npm run build');
+  execSync('npm run build', { cwd: root, stdio: 'inherit' });
+}
 
 fs.mkdirSync(shotDir, { recursive: true });
 fs.mkdirSync(verifyDir, { recursive: true });
@@ -95,6 +111,62 @@ const hrefs = await probe.evaluate(() => {
 });
 await probe.close();
 if (!hrefs.includes('/')) hrefs.unshift('/');
+
+if (consoleMode) {
+  const page = await context.newPage();
+  const errors = [];
+  watch(page, errors);
+  await page.goto(`${origin}/shop`, { waitUntil: 'networkidle' });
+  await page.waitForSelector('.product-tile[data-source="shopify"]', { timeout: 15000 });
+
+  // the CMS panel is the one development plugin that is not part of the receipt;
+  // its body class narrows the page, so it goes too. The console panel is
+  // enlarged for legibility — a capture-time size, nothing in the app.
+  await page.evaluate(() => {
+    document.querySelector('#spyne-plugin-json-cms')?.remove();
+    document.body.classList.remove('spyne-plugin-cms-mode');
+    const panel = document.querySelector('#spyne-plugin-console > div');
+    if (panel) { panel.style.width = '640px'; panel.style.height = '780px'; }
+  });
+  await page.waitForTimeout(500);
+
+  const showTab = (name) =>
+    page.evaluate((label) => {
+      const tab = [...document.querySelectorAll('#spyne-plugin-console p')]
+        .find((p) => p.textContent.trim() === label);
+      tab?.click();
+      return Boolean(tab);
+    }, name);
+  const consoleText = () =>
+    page.evaluate(() => document.querySelector('#spyne-plugin-console')?.innerText ?? '');
+  const notes = [];
+  const capture = async (tab, file, note) => {
+    await showTab(tab);
+    await page.waitForTimeout(400);
+    await page.screenshot({ path: path.join(shotDir, file) });
+    notes.push(`# ${note} — console tab ${tab} -> ${file}\n\n${await consoleText()}\n\n`);
+  };
+
+  // 1. the filter: UI event in, domain event out
+  await page.selectOption('.products-filter__select[data-filter-key="metal"]', { index: 1 });
+  await page.waitForTimeout(800);
+  await capture('UI', 'behavior-console-filter-ui.png', 'after selecting the first metal option');
+  await capture('SHOPIFY', 'behavior-console-filter.png', 'after selecting the first metal option');
+
+  // 2. add-to-cart: UI event in, cart event out (the click is dispatched in
+  //    page — the console panel overlaps the grid in this viewport)
+  await page.$eval('.product-tile:not(.is-filtered-out) .product-acquire', (btn) => btn.click());
+  await page.waitForTimeout(3500);
+  await capture('UI', 'behavior-console-acquire-ui.png', 'after clicking Acquire on the visible tile');
+  await capture('CART', 'behavior-console.png', 'after clicking Acquire on the visible tile');
+
+  fs.writeFileSync(path.join(verifyDir, 'behavior-console.txt'), notes.join(''));
+  console.log(`ok    console captures -> ${fs.readdirSync(shotDir).filter((f) => f.startsWith('behavior-console')).join(', ')}${errors.length ? ` (page errors: ${errors.length})` : ''}`);
+  await page.close();
+  await browser.close();
+  server.close();
+  process.exit(0);
+}
 
 const results = [];
 for (const href of hrefs) {

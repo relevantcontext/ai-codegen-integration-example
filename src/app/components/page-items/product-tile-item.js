@@ -1,11 +1,13 @@
-import { ViewStream, ChannelPayloadFilter } from 'spyne';
+import { ViewStream } from 'spyne';
+import { ProductTileTraits } from 'traits/page/product-tile-traits.js';
 import ProductTileTmpl from './templates/product-tile.tmpl.html';
 
 // One catalog tile. Born from a product record (fallback or Shopify), it
 // declares its own add-to-cart broadcast — tiles are rendered after the
-// catalog's binding pass, so each carries its own declaration — and retires
-// itself when a catalog from a different source arrives: the fallback tiles
-// leave when Shopify answers; Shopify tiles ignore their own birth event.
+// catalog's binding pass, so each carries its own declaration. It listens to
+// the catalog channel to show or hide itself under the current filters and to
+// retire when a catalog from a different source arrives, and to the cart
+// channel to mark itself when its variant is in the cart.
 export class ProductTileItem extends ViewStream {
   constructor(props = {}) {
     props.tagName = 'article';
@@ -16,17 +18,16 @@ export class ProductTileItem extends ViewStream {
       origin: props.data.origin,
       source: props.data.source,
     };
-    props.channels = ['CHANNEL_SHOPIFY'];
+    props.traits = [ProductTileTraits];
+    props.channels = ['CHANNEL_SHOPIFY', 'CHANNEL_CART'];
     props.template = ProductTileTmpl;
     super(props);
   }
 
   addActionListeners() {
-    const otherSourceFilter = new ChannelPayloadFilter({
-      source: (source) => source !== this.props.data.source,
-    });
     return [
-      ['CHANNEL_SHOPIFY_CATALOG_EVENT', 'disposeViewStream', otherSourceFilter],
+      ['CHANNEL_SHOPIFY_CATALOG_EVENT', 'productTile$OnCatalogEvent'],
+      ['CHANNEL_CART_UPDATED_EVENT', 'productTile$OnCartEvent'],
     ];
   }
 

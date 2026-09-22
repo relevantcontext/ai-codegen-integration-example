@@ -1,0 +1,284 @@
+# after selecting the first metal option — console tab UI -> behavior-console-filter-ui.png
+
+CHANNELS CONSOLE
+
+UI
+
+WINDOW
+
+ROUTE
+
+LIFECYCLE
+
+AI
+
+APP
+
+FETCH_MODEL
+
+LOCAL_STORAGE
+
+CART
+
+MENU_DRAWER
+
+FETCH_SHOPIFY
+
+SHOPIFY
+
+SPYNE_JSON_CMS_DATA
+
+{
+    "action": "CHANNEL_UI_CHANGE_EVENT",
+    "payload": {
+        "action": "filter",
+        "filterKey": "metal"
+    },
+    "event": {
+        "timeStamp": 1617.5,
+        "bubbles": true,
+        "type": "change"
+    },
+    "srcElement": {
+        "id": "uehpbig",
+        "vsid": "uehpbig",
+        "isLocalEvent": false,
+        "srcEvent": "change",
+        "el": "select.products-filter__select"
+    }
+}
+
+# after selecting the first metal option — console tab SHOPIFY -> behavior-console-filter.png
+
+CHANNELS CONSOLE
+
+UI
+
+WINDOW
+
+ROUTE
+
+LIFECYCLE
+
+AI
+
+APP
+
+FETCH_MODEL
+
+LOCAL_STORAGE
+
+CART
+
+MENU_DRAWER
+
+FETCH_SHOPIFY
+
+SHOPIFY
+
+SPYNE_JSON_CMS_DATA
+
+{
+    "action": "CHANNEL_SHOPIFY_CATALOG_EVENT",
+    "payload": {
+        "products": [
+            {
+                "attrProductId": "iridium-nugget",
+                "attrVariantId": "gid://shopify/ProductVariant/49618611175662",
+                "name": "Iridium Nugget",
+                "metal": "Iridium",
+                "origin": "Ryugu",
+                "mass": "2.3g",
+                "price": "$4,200",
+                "attrImageSrc": "imgs/figma-iridium-crystal-node.jpg",
+                "attrImageAlt": "Iridium Nugget"
+            },
+            {
+                "attrProductId": "osmium-bead",
+                "attrVariantId": "gid://shopify/ProductVariant/49618612879598",
+                "name": "Osmium Bead",
+                "metal": "Osmium",
+                "origin": "Vesta",
+                "mass": "0.9g",
+                "price": "$5,600",
+                "attrImageSrc": "imgs/figma-osmium-spherule.jpg",
+                "attrImageAlt": "Osmium Bead"
+            },
+            {
+                "attrProductId": "palladium-crystal",
+                "attrVariantId": "gid://shopify/ProductVariant/49618612814062",
+                "name": "Palladium Crystal",
+                "metal": "Palladium",
+                "origin": "Psyche",
+                "mass": "1.8g",
+                "price": "$2,950",
+                "attrImageSrc": "imgs/figma-palladium-dendrite.jpg",
+                "attrImageAlt": "Palladium Crystal"
+            },
+            {
+                "attrProductId": "platinum-sponge",
+                "attrVariantId": "gid://shopify/ProductVariant/49618611306734",
+                "name": "Platinum Sponge",
+                "metal": "Platinum",
+                "origin": "Bennu",
+                "mass": "5g",
+                "price": "$3,800",
+                "attrImageSrc": "imgs/figma-platinum-drusy-plate.jpg",
+                "attrImageAlt": "Platinum Sponge"
+            },
+            {
+                "attrProductId": "rhenium-flake",
+                "attrVariantId": "gid://shopify/ProductVariant/49618612912366",
+                "name": "Rhenium Flake",
+                "metal": "Rhenium",
+                "origin": "Ceres",
+                "mass": "4.2g",
+                "price": "$2,150",
+                "attrImageSrc": "imgs/figma-rhodium-filament.jpg",
+                "attrImageAlt": "Rhenium Flake"
+            },
+            {
+                "attrProductId": "ruthenium-powder",
+                "attrVariantId": "gid://shopify/ProductVariant/49618612846830",
+                "name": "Ruthenium Powder",
+                "metal": "Ruthenium",
+                "origin": "Itokawa",
+                "mass": "3.5g",
+                "price": "$1,875",
+                "attrImageSrc": "imgs/figma-ruthenium-aggregated-matrix.jpg",
+                "attrImageAlt": "Ruthenium Powder"
+            }
+        ],
+        "source": "shopify",
+        "filters": {
+            "metal": "Iridium",
+            "origin": ""
+        },
+        "visibleIds": [
+            "iridium-nugget"
+        ],
+        "count": 1,
+        "total": 6,
+        "isFilterUpdate": true
+    },
+    "event": {},
+    "srcElement": {}
+}
+
+# after clicking Acquire on the visible tile — console tab UI -> behavior-console-acquire-ui.png
+
+CHANNELS CONSOLE
+
+UI
+
+WINDOW
+
+ROUTE
+
+LIFECYCLE
+
+AI
+
+APP
+
+FETCH_MODEL
+
+LOCAL_STORAGE
+
+CART
+
+MENU_DRAWER
+
+FETCH_SHOPIFY
+
+SHOPIFY
+
+SPYNE_JSON_CMS_DATA
+
+{
+    "action": "CHANNEL_UI_CLICK_EVENT",
+    "payload": {
+        "action": "add-to-cart",
+        "productId": "iridium-nugget",
+        "variantId": "gid://shopify/ProductVariant/49618611175662"
+    },
+    "event": {
+        "clientX": 0,
+        "clientY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "movementX": 0,
+        "timeStamp": 3351.0999999940395,
+        "movementY": 0,
+        "bubbles": true,
+        "screenY": 0,
+        "screenX": 0,
+        "offsetX": 0,
+        "offsetY": 0,
+        "x": 0,
+        "y": 0,
+        "type": "click"
+    },
+    "srcElement": {
+        "id": "pactbgp",
+        "vsid": "pactbgp",
+        "isLocalEvent": false,
+        "srcEvent": "click",
+        "el": "button.product-acquire"
+    }
+}
+
+# after clicking Acquire on the visible tile — console tab CART -> behavior-console.png
+
+CHANNELS CONSOLE
+
+UI
+
+WINDOW
+
+ROUTE
+
+LIFECYCLE
+
+AI
+
+APP
+
+FETCH_MODEL
+
+LOCAL_STORAGE
+
+CART
+
+MENU_DRAWER
+
+FETCH_SHOPIFY
+
+SHOPIFY
+
+SPYNE_JSON_CMS_DATA
+
+{
+    "action": "CHANNEL_CART_UPDATED_EVENT",
+    "payload": {
+        "cartId": "gid://shopify/Cart/hWNH7L349dm8eW8wmet2sRCU?key=09fb27574b6b0391e6aad7848bd676c8",
+        "checkoutUrl": "https://asteroid-metals.myshopify.com/cart/c/hWNH7L349dm8eW8wmet2sRCU?key=JUZAjKZnKaEhZrUDdQLA8ys7Q3b_UIiRpZ642nNuX3l1a8XJ35X9OEO8ebJYDdmLFav1odC2v6CCpei49q1thk8XU9h0GtqLS__VUiawmOKw5d6JnY27SIqGc9e3W0ybndTODR0EgbprU_PFc2uCyQ%3D%3D",
+        "totalQuantity": 1,
+        "subtotal": "$4,200",
+        "lines": [
+            {
+                "lineId": "gid://shopify/CartLine/b0d94da6-4358-48e5-9174-b482122e24f7?cart=hWNH7L349dm8eW8wmet2sRCU",
+                "quantity": 1,
+                "variantId": "gid://shopify/ProductVariant/49618611175662",
+                "variantTitle": "",
+                "productId": "iridium-nugget",
+                "title": "Iridium Nugget",
+                "price": "$4,200"
+            }
+        ],
+        "isEmpty": false
+    },
+    "event": {},
+    "srcElement": {}
+}
+
