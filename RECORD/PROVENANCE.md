@@ -136,3 +136,13 @@ Format: artifact — what it is — origin — model / prompt / version — stag
 - `RECORD/verification/B0/cms-editable-keys.json` — CMS-wrapped strings per route (development build) — B0
 - `RECORD/screenshots/B0/*.png` — five routes, four console frames, the CMS click-through frame — B0
 
+## B0-r2 — update (model-written; agent: Claude Code, claude-fable-5-1; prompt `prompts/B0-2.md`)
+
+- `src/static/data/app.model.json` — shop title item removed **by Frank through the CMS** (content change); file re-indented — B0-r2
+- `src/index.js` — route order home, shop, cart, about — B0-r2
+- `RECORD/inputs/B0-figma-catalog-v2.md`, `.png` — frame v2 pull (`get_design_context`, `get_screenshot`, 1440 × 1626) — B0-r2
+- `src/static/fonts/inter-{400,500,600,700}.woff2` + `licenses/Inter.OFL.txt` — `@fontsource/inter` 5.3.0 (OFL), installed under `RECORD/tools`, files copied — B0-r2
+- `src/scss/03-components/pages/page-items/_products-assets.scss`, `_products.scss` — Inter, section background #091725 — B0-r2
+- removed: `dm-serif-text-400.woff2`, `geist-*.woff2`, `geist-mono-*.woff2` and their licences — B0-r2
+- `RECORD/screenshots/B0-r2/*.png` — five routes + four console frames — B0-r2
+

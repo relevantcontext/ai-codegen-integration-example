@@ -1,0 +1,4 @@
+> development build (dev tools on)
+webpack compiled successfully
+ok    console captures -> behavior-console-acquire-ui.png, behavior-console-filter-ui.png, behavior-console-filter.png, behavior-console.png
+exit: 0

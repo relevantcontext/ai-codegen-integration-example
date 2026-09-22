@@ -1,0 +1,100 @@
+{
+  "stage": "B0-r2",
+  "viewport": {
+    "width": 1280,
+    "height": 800
+  },
+  "build": "production (dist/)",
+  "ok": true,
+  "routes": [
+    {
+      "href": "/",
+      "file": "home.png",
+      "title": "Asteroid Metals Co.",
+      "ok": true,
+      "errors": []
+    },
+    {
+      "href": "/shop",
+      "file": "shop.png",
+      "title": "Asteroid Metals Co.",
+      "ok": true,
+      "errors": []
+    },
+    {
+      "href": "/cart",
+      "file": "cart.png",
+      "title": "Asteroid Metals Co.",
+      "ok": true,
+      "errors": []
+    },
+    {
+      "href": "/about",
+      "file": "about.png",
+      "title": "Asteroid Metals Co.",
+      "ok": true,
+      "errors": []
+    },
+    {
+      "href": "/about/contact",
+      "file": "about-contact.png",
+      "title": "Asteroid Metals Co.",
+      "ok": true,
+      "errors": []
+    }
+  ],
+  "inAppNavigation": {
+    "ok": true,
+    "walked": [
+      {
+        "round": 1,
+        "href": "/shop",
+        "clicked": true,
+        "landed": "/shop"
+      },
+      {
+        "round": 1,
+        "href": "/cart",
+        "clicked": true,
+        "landed": "/cart"
+      },
+      {
+        "round": 1,
+        "href": "/about",
+        "clicked": true,
+        "landed": "/about"
+      },
+      {
+        "round": 1,
+        "href": "/about/contact",
+        "clicked": true,
+        "landed": "/about/contact"
+      },
+      {
+        "round": 2,
+        "href": "/shop",
+        "clicked": true,
+        "landed": "/shop"
+      },
+      {
+        "round": 2,
+        "href": "/cart",
+        "clicked": true,
+        "landed": "/cart"
+      },
+      {
+        "round": 2,
+        "href": "/about",
+        "clicked": true,
+        "landed": "/about"
+      },
+      {
+        "round": 2,
+        "href": "/about/contact",
+        "clicked": true,
+        "landed": "/about/contact"
+      }
+    ],
+    "errors": []
+  }
+}

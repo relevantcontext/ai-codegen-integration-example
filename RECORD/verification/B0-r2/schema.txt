@@ -1,0 +1,2 @@
+app.model.json vs schema/app-model.schema.json: VALID
+exit: 0

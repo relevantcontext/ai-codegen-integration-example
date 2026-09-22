@@ -1,14 +1,15 @@
 // Products catalog — converted from the Figma frame `rare-metal-catalog`
-// (RECORD/inputs/A1-figma-catalog.*). Per the A1-2 ruling the styles ARE the
-// design's: its colours, type, spacing and dark surface are used as drawn, in
-// both app colour schemes. The design values are held as custom properties
-// on the section root; the typefaces come from _products-assets.scss.
+// (RECORD/inputs/A1-figma-catalog.*, updated at B0-2 from
+// RECORD/inputs/B0-figma-catalog-v2.*). Per the A1-2 ruling the styles ARE
+// the design's: its colours, type, spacing and dark surface are used as
+// drawn, in both app colour schemes. The design values are held as custom
+// properties on the section root; the typeface comes from _products-assets.scss.
 .page-view .page-item--catalog {
   // the page-item wrapper carries the frame's own surface and padding
   --pi-padding: 100px 80px;
   --pi-radius: 0;
   --pi-shadow: none;
-  background: #08080a;
+  background: #091725;
   color: #f3f4f6;
 
   @media (max-width: 900px) {
@@ -20,6 +21,7 @@
 }
 
 .page-item--products {
+  --c-section: #091725;
   --c-bg: #08080a;
   --c-card: #111115;
   --c-border: #222228;
@@ -230,7 +232,7 @@
     margin: 0;
     font-family: var(--catalog-font-serif);
     font-size: 20px;
-    font-weight: 400;
+    font-weight: 700;
     line-height: normal;
     color: var(--c-text);
   }
@@ -420,7 +422,7 @@ main#app .page-item--products {
   .product-name {
     font-family: var(--catalog-font-serif);
     font-size: 20px;
-    font-weight: 400;
+    font-weight: 700;
     line-height: normal;
     color: var(--c-text);
     margin: 0;

@@ -14,3 +14,4 @@ Framework, grammar, CLI, Shell, and `/RECORD/tools/` are material/tooling and ar
 | A4 | — | none | — |
 | B0 | — | none | — |
 | B1 | — | none (record only) | — |
+| B0-r2 | — | none (Frank's shop-title removal was a CMS content change, not a code edit) | — |

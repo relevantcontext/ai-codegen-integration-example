@@ -286,3 +286,13 @@ Frank's ruling, 2026-09-22: the six Figma-generated product images brought in at
 they are not catalog placeholders and were not in B1's scope as ruled. B2 (generated product
 set) stays deferred.
 
+### B0-2 — update after confirmation (Frank, 2026-09-22; `prompts/B0-2.md`)
+
+| # | Element | Status | Note |
+|---|---|---|---|
+| 24 | Shop page duplicate section title | content change (Frank, via CMS) | The generated "Metal Samples Catalog" title item above the catalog removed by Frank through the CMS; the catalog's own heading remains. Not a code edit; not an exception. |
+| 25 | About as the last nav item | mapped | Route config order (`route-as-data`: nav derives from the ROUTE tree). |
+| 26 | Frame v2 typeface | mapped | Inter (400/500/600/700) replaces DM Serif Text / Geist / Geist Mono; `--catalog-font-*` all resolve to Inter; product names Bold per the frame. |
+| 27 | Frame v2 section background | mapped | `#091725` on the catalog's page-item wrapper (`--c-section`); card, image-container, border, text and accent colours unchanged as in the frame. |
+| 28 | `uiProps.fontFamilyStr` blanked by the CMS write | noted | Unused by the app; left as written by the CMS. |
+

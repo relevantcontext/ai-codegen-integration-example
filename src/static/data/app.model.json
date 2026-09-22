@@ -8,7 +8,7 @@
     "header": " Logo",
     "footer": "Company License",
     "--selected-font": "Work Sans",
-    "fontFamilyStr": "'Work Sans', sans-serif;",
+    "fontFamilyStr": "",
     "--selected-palette": "slate"
   },
   "content": [
@@ -103,22 +103,6 @@
       "navLabel": "Products",
       "template": "section-template.html",
       "pageItems": [
-        {
-          "viewClass": "ViewStream",
-          "props": {
-            "ariaLabel": "section title",
-            "class": "section-title my-12",
-            "template": "<h2>{{headline}}</h2><p>{{subheadline}}</p>",
-            "data": {
-              "headline": "Metal Samples Catalog",
-              "subheadline": "Browse and filter certified asteroid metal samples by metal type and origin. Each listing includes purity assay, mass, and provenance documentation."
-            }
-          },
-          "container": {
-            "isEnabled": false,
-            "selector": ".page-heading"
-          }
-        },
         {
           "isPrototype": false,
           "viewClass": "ProductsCatalogView",

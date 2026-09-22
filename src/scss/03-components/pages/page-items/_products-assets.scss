@@ -1,37 +1,23 @@
-// Products catalog assets — the Figma frame's typefaces, self-hosted like the
-// theme fonts (woff2, OFL; licences in static/fonts/licenses/), and the
+// Products catalog assets — the Figma frame's typeface (v2: Inter), self-hosted
+// like the theme fonts (woff2, OFL; licence in static/fonts/licenses/), and the
 // frame's chevron icon for the filter selects. Configured by app.scss via
 // `with ($STATIC_DIR: $STATIC_DIR)` because url() is not rewritten by webpack.
 $STATIC_DIR: './static/' !default;
 
-@font-face {
-  font-family: 'DM Serif Text';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('#{$STATIC_DIR}fonts/dm-serif-text-400.woff2') format('woff2');
-}
-
-@each $w in 400, 500, 600 {
+@each $w in 400, 500, 600, 700 {
   @font-face {
-    font-family: 'Geist';
+    font-family: 'Inter';
     font-style: normal;
     font-weight: $w;
     font-display: swap;
-    src: url('#{$STATIC_DIR}fonts/geist-#{$w}.woff2') format('woff2');
-  }
-  @font-face {
-    font-family: 'Geist Mono';
-    font-style: normal;
-    font-weight: $w;
-    font-display: swap;
-    src: url('#{$STATIC_DIR}fonts/geist-mono-#{$w}.woff2') format('woff2');
+    src: url('#{$STATIC_DIR}fonts/inter-#{$w}.woff2') format('woff2');
   }
 }
 
 main#app .page-item--products {
-  --catalog-font-serif: 'DM Serif Text', Georgia, serif;
-  --catalog-font-sans: 'Geist', 'Helvetica Neue', Arial, sans-serif;
-  --catalog-font-mono: 'Geist Mono', Menlo, monospace;
+  --catalog-font: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  --catalog-font-serif: var(--catalog-font);
+  --catalog-font-sans: var(--catalog-font);
+  --catalog-font-mono: var(--catalog-font);
   --catalog-chevron: url('#{$STATIC_DIR}imgs/icon-chevron-down.svg');
 }

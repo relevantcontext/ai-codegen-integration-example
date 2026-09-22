@@ -64,13 +64,13 @@ const config = {
                 "routeName": "pageId",
                 "home": "",
                 "shop": "shop",
+                "cart": "cart",
                 "about": {
                     "routePath": {
                         "routeName": "topicId",
                         "contact": "contact"
                     }
-                },
-                "cart": "cart"
+                }
             }
         }
     },
