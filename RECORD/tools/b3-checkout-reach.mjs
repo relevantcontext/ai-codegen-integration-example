@@ -1,3 +1,5 @@
+// RECORD tooling — on a deployed site: add a product, open the cart, follow the hosted
+// checkout link and report what Shopify serves. Usage: node RECORD/tools/b3-checkout-reach.mjs <origin>
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
