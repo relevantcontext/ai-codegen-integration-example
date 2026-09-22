@@ -1,0 +1,36 @@
+<span class="cart-line__title">{{title}}</span>
+<span class="cart-line__variant">{{variantTitle}}</span>
+<span class="cart-line__qty" role="group" aria-label="{{%attrQuantityGroupLabel%}}">
+  <button
+    type="button"
+    class="cart-line__qty-btn"
+    data-action="cart-line"
+    data-line-action="decrement"
+    data-line-id="{{%lineId%}}"
+    aria-label="{{%attrDecrementLabel%}}"
+  >
+    −
+  </button>
+  <span class="cart-line__qty-value" aria-live="polite">{{quantity}}</span>
+  <button
+    type="button"
+    class="cart-line__qty-btn"
+    data-action="cart-line"
+    data-line-action="increment"
+    data-line-id="{{%lineId%}}"
+    aria-label="{{%attrIncrementLabel%}}"
+  >
+    +
+  </button>
+</span>
+<span class="cart-line__price">{{price}}</span>
+<button
+  type="button"
+  class="cart-line__remove"
+  data-action="cart-line"
+  data-line-action="remove"
+  data-line-id="{{%lineId%}}"
+  aria-label="{{%attrRemoveLabel%}}"
+>
+  {{removeLabel}}
+</button>

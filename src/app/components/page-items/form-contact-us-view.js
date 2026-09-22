@@ -15,8 +15,12 @@ export class FormContactUsView extends ViewStream {
      */
     props.apiUrl = 'http://localhost:52931/mock/contact';
 
-    // Shown beneath the greeting once a submission succeeds.
+    // Shown once a submission succeeds — author copy, so it lives in the page
+    // item's data (successTitle, successMessage); these are the developer
+    // defaults when the data carries none.
+    props.successTitle = props.data?.successTitle || props.successTitle || 'Thanks';
     props.successMessage =
+      props.data?.successMessage ||
       props.successMessage ||
       'Your message has been sent. We will get back to you shortly.';
 

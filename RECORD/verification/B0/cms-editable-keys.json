@@ -1,0 +1,287 @@
+{
+  "capturedAt": "2026-09-22T14:25:43.099Z",
+  "build": "development (CMS plugin on)",
+  "note": "spyne-cms-item elements found under main#app per route: the strings the CMS can edit in place. The first pass read /about/contact as 0 items (same-context navigation timing); a fresh-context re-read at 1.5 s and 6 s gave the 11 keys recorded here, including the newly bound submitLabel.",
+  "routes": {
+    "/": [
+      {
+        "key": "eyebrow",
+        "text": ""
+      },
+      {
+        "key": "headline",
+        "text": "Rare Metals from Asteroid Origins"
+      },
+      {
+        "key": "subheadline",
+        "text": "Certified samples of rare metals recovered from asteroids — "
+      },
+      {
+        "key": "headline",
+        "text": "Rare Metals from Asteroid Origins"
+      },
+      {
+        "key": "subheadline",
+        "text": "Certified samples of rare metals recovered from asteroids — "
+      },
+      {
+        "key": "value",
+        "text": "6"
+      },
+      {
+        "key": "label",
+        "text": "verified origins"
+      },
+      {
+        "key": "value",
+        "text": "99.97%"
+      },
+      {
+        "key": "label",
+        "text": "avg. purity"
+      },
+      {
+        "key": "value",
+        "text": "4.5B"
+      },
+      {
+        "key": "label",
+        "text": "years old"
+      },
+      {
+        "key": "headline",
+        "text": "Browse the complete collection"
+      },
+      {
+        "key": "text",
+        "text": "Filter by metal type or asteroid of origin. Every sample shi"
+      },
+      {
+        "key": "ctaText",
+        "text": "View products"
+      }
+    ],
+    "/shop": [
+      {
+        "key": "headline",
+        "text": "Metal Samples Catalog"
+      },
+      {
+        "key": "subheadline",
+        "text": "Browse and filter certified asteroid metal samples by metal "
+      },
+      {
+        "key": "eyebrow",
+        "text": "METEORIC & ASTEROIDAL SAMPLES"
+      },
+      {
+        "key": "title",
+        "text": "Certified Asteroid Metal Samples"
+      },
+      {
+        "key": "subtitle",
+        "text": "Filter by metal type or asteroid origin. All samples include"
+      },
+      {
+        "key": "metalFilterLabel",
+        "text": "Metal type:"
+      },
+      {
+        "key": "originFilterLabel",
+        "text": "Origin asteroid:"
+      },
+      {
+        "key": "showingLabel",
+        "text": "SHOWING:"
+      },
+      {
+        "key": "footnoteText",
+        "text": "SECURE DISPATCH AND ASTEROIDAL PROVENANCE DOCUMENTATION ACCO"
+      }
+    ],
+    "/about": [
+      {
+        "key": "headline",
+        "text": "About Asteroid Metals Co."
+      },
+      {
+        "key": "subheadline",
+        "text": "How we source, verify, and deliver certified samples of rare"
+      },
+      {
+        "key": "title",
+        "text": "Contact Us"
+      },
+      {
+        "key": "meta",
+        "text": ""
+      },
+      {
+        "key": "ctaText",
+        "text": "View"
+      },
+      {
+        "key": "headline",
+        "text": "Verified origin. Documented purity. Measurable rarity."
+      },
+      {
+        "key": "subheadline",
+        "text": "From asteroid to laboratory to your collection."
+      },
+      {
+        "key": "contentHTML",
+        "text": "Asteroid Metals Co. partners with space agencies and certifi"
+      },
+      {
+        "key": "title",
+        "text": "Common questions"
+      },
+      {
+        "key": "q",
+        "text": "How do you verify asteroid origin?"
+      },
+      {
+        "key": "a",
+        "text": "We use isotopic analysis and spectral fingerprinting to matc"
+      },
+      {
+        "key": "q",
+        "text": "What purity standards do you guarantee?"
+      },
+      {
+        "key": "a",
+        "text": "Every sample is assayed by inductively coupled plasma mass s"
+      },
+      {
+        "key": "q",
+        "text": "Can these samples be used for research?"
+      },
+      {
+        "key": "a",
+        "text": "Yes. Our documentation package includes spectral data, mass "
+      }
+    ],
+    "/about/contact": [
+      {
+        "key": "eyebrow"
+      },
+      {
+        "key": "headline"
+      },
+      {
+        "key": "subheadline"
+      },
+      {
+        "key": "headline"
+      },
+      {
+        "key": "subheadline"
+      },
+      {
+        "key": "title"
+      },
+      {
+        "key": "subtitle"
+      },
+      {
+        "key": "label"
+      },
+      {
+        "key": "label"
+      },
+      {
+        "key": "messageLabel"
+      },
+      {
+        "key": "submitLabel"
+      }
+    ],
+    "/cart": [
+      {
+        "key": "headline",
+        "text": "Your Cart"
+      },
+      {
+        "key": "subheadline",
+        "text": "Review your selected samples and proceed to request a quote."
+      },
+      {
+        "key": "title",
+        "text": "Your selected samples"
+      },
+      {
+        "key": "subtitle",
+        "text": ""
+      },
+      {
+        "key": "emptyText",
+        "text": "Your cart is empty. Add samples from the catalog to request "
+      },
+      {
+        "key": "subtotalLabel",
+        "text": "Subtotal"
+      },
+      {
+        "key": "checkoutLabel",
+        "text": "Proceed to checkout"
+      },
+      {
+        "key": "headline",
+        "text": "Cart and quote request"
+      },
+      {
+        "key": "subheadline",
+        "text": ""
+      },
+      {
+        "key": "contentHTML",
+        "text": "Review your selected samples below. Because asteroid metal v"
+      },
+      {
+        "key": "headline",
+        "text": "Continue browsing the collection"
+      },
+      {
+        "key": "text",
+        "text": "Add more samples or return to the catalog to refine your sel"
+      },
+      {
+        "key": "ctaText",
+        "text": "Back to products"
+      }
+    ]
+  },
+  "clickThrough": {
+    "eyebrowInPanel": false,
+    "valueInPanel": false,
+    "editorOpen": true
+  },
+  "contactRecheck": {
+    "at1500ms": [
+      "eyebrow",
+      "headline",
+      "subheadline",
+      "headline",
+      "subheadline",
+      "title",
+      "subtitle",
+      "label",
+      "label",
+      "messageLabel",
+      "submitLabel"
+    ],
+    "at6000ms": [
+      "eyebrow",
+      "headline",
+      "subheadline",
+      "headline",
+      "subheadline",
+      "title",
+      "subtitle",
+      "label",
+      "label",
+      "messageLabel",
+      "submitLabel"
+    ]
+  }
+}

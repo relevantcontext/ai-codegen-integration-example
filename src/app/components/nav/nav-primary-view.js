@@ -9,7 +9,7 @@ export class NavPrimaryView extends ViewStream {
     props['aria-label'] = 'Main Navigation';
     props.template = UIHeaderNavTmpl;
     props.traits = [NavPrimaryViewTraits];
-    props.channels = ['CHANNEL_ROUTE', 'CHANNEL_APP', 'CHANNEL_LOCAL_STORAGE'];
+    props.channels = ['CHANNEL_ROUTE', 'CHANNEL_APP', 'CHANNEL_LOCAL_STORAGE', 'CHANNEL_CART'];
     super(props);
   }
 
@@ -26,6 +26,7 @@ export class NavPrimaryView extends ViewStream {
       ],
 
       ['CHANNEL_APP_SETTING_EVENT', 'nav$UIHeaderNavViewOnSettingsEvent'],
+      ['CHANNEL_CART_UPDATED_EVENT', 'nav$OnCartEvent'],
     ];
   }
 

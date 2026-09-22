@@ -35,6 +35,12 @@ export class ChannelCartTraits extends SpyneTrait {
       this.channelCart$OnAddToCart.bind(this),
     );
 
+    // the cart page's line controls: quantity up/down and remove
+    const lineActionFilter = new ChannelPayloadFilter({ action: 'cart-line' });
+    this.getChannel('CHANNEL_UI', lineActionFilter).subscribe(
+      this.channelCart$OnLineAction.bind(this),
+    );
+
     // the storage channel replays the persisted store at boot; a saved cart
     // id means a cart to rehydrate
     const storageInitFilter = new ChannelPayloadFilter({
@@ -63,6 +69,19 @@ export class ChannelCartTraits extends SpyneTrait {
       return;
     }
     this.channelCart$Enqueue({ type: 'add', variantId, productId, quantity: 1 });
+  }
+
+  /** A line control's dataset names the line and the move; the held cart supplies the quantity. */
+  static channelCart$OnLineAction(e) {
+    const { lineId, lineAction } = e.payload;
+    const line = this.props.cart.lines.find((l) => l.lineId === lineId);
+    if (!line) return;
+    if (lineAction === 'remove' || (lineAction === 'decrement' && line.quantity <= 1)) {
+      this.channelCart$Enqueue({ type: 'remove', lineId });
+      return;
+    }
+    const quantity = lineAction === 'increment' ? line.quantity + 1 : line.quantity - 1;
+    this.channelCart$Enqueue({ type: 'update', lineId, quantity });
   }
 
   // ---- structural: one mutation at a time ---------------------------------
@@ -142,6 +161,26 @@ export class ChannelCartTraits extends SpyneTrait {
         variables: { id: intent.cartId },
       };
     }
+    if (intent.type === 'update') {
+      return {
+        query: `mutation ($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
+          cartLinesUpdate(cartId: $cartId, lines: $lines) {
+            cart { ${CART_FIELDS} } userErrors { field message }
+          }
+        }`,
+        variables: { cartId, lines: [{ id: intent.lineId, quantity: intent.quantity }] },
+      };
+    }
+    if (intent.type === 'remove') {
+      return {
+        query: `mutation ($cartId: ID!, $lineIds: [ID!]!) {
+          cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
+            cart { ${CART_FIELDS} } userErrors { field message }
+          }
+        }`,
+        variables: { cartId, lineIds: [intent.lineId] },
+      };
+    }
     const lines = [{ merchandiseId: intent.variantId, quantity: intent.quantity ?? 1 }];
     if (cartId) {
       return {
@@ -173,7 +212,9 @@ export class ChannelCartTraits extends SpyneTrait {
       };
     }
     const data = response.data ?? {};
-    const result = data.cartCreate ?? data.cartLinesAdd ?? { cart: data.cart, userErrors: [] };
+    const result =
+      data.cartCreate ?? data.cartLinesAdd ?? data.cartLinesUpdate ?? data.cartLinesRemove ??
+      { cart: data.cart, userErrors: [] };
     if (Array.isArray(result.userErrors) && result.userErrors.length) {
       return {
         status: 'error',

@@ -122,3 +122,17 @@ Format: artifact — what it is — origin — model / prompt / version — stag
 - `RECORD/screenshots/A4/*.png` — five routes plus four Behavior Console frames, captured by the script — A4
 - `RECORD/verification/A4/A4.diff` — the stage diff, `alpha-A3-r2`..`alpha-A4`, src/ only — A4
 
+## B0 — content pass, ARIA, UI fixes (model-written; agent: Claude Code, claude-fable-5-1; prompt `prompts/B0-1.md`)
+
+- `src/app/components/page-items/templates/contact-us.tmpl.html` (`{{submitLabel}}` bound), `form-contact-us-view.js` + `traits/form/form-contact-us-traits.js` (success copy from data), `src/static/data/app.model.json` (contact `successTitle`/`successMessage`; catalog `addingLabel`/`addedLabel`) — B0
+- `src/app/components/ui-elements/templates/ui-footer-view.tmpl.html` (dead copy removed), `src/index.tmpl.html` (tab title) — B0
+- `src/app/components/page-items/templates/product-tile.tmpl.html`, `product-tile-item.js`, `traits/page/product-tile-traits.js`, `traits/page/products-catalog-traits.js` — ARIA names, live count, add-to-cart feedback states — B0
+- `src/app/components/page-items/cart-line-item.js`, `templates/cart-line.tmpl.html`, `traits/page/cart-line-traits.js` — new: cart lines as views with quantity/remove controls — B0
+- `src/app/components/page-items/cart-view.js`, `traits/page/cart-view-traits.js`, `templates/cart.tmpl.html` — lines nested, developer-owned UI strings on props, live regions — B0
+- `src/app/traits/channel/channel-cart-traits.js` — line actions (`cartLinesUpdate`, `cartLinesRemove`) — B0
+- `src/app/components/nav/nav-primary-view.js`, `traits/nav/nav-primary-view-traits.js` — cart count badge — B0
+- `src/scss/03-components/ui/_a11y.scss` (new, `.sr-only`), `app.scss`, `_products.scss`, `_cart.scss` — B0
+- `RECORD/tools/b0-flow-check.mjs` — headless flow check on the production build — tooling — B0
+- `RECORD/verification/B0/cms-editable-keys.json` — CMS-wrapped strings per route (development build) — B0
+- `RECORD/screenshots/B0/*.png` — five routes, four console frames, the CMS click-through frame — B0
+

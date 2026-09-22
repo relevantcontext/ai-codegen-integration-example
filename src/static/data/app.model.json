@@ -137,6 +137,8 @@
               "showingUnit": "archived lots",
               "priceLabel": "Valuation",
               "addToCartLabel": "Acquire",
+              "addingLabel": "Adding…",
+              "addedLabel": "Added",
               "attrAddToCartIconSrc": "imgs/icon-plus.svg",
               "footnoteText": "Secure dispatch and asteroidal provenance documentation accompany each order.",
               "products": [
@@ -353,6 +355,8 @@
                     }
                   ],
                   "submitLabel": "Send Message",
+                  "successTitle": "Thanks",
+                  "successMessage": "Your message has been sent. We will get back to you shortly.",
                   "messageLabel": "Message",
                   "attrMessagePlaceholder": "How can we help?"
                 }

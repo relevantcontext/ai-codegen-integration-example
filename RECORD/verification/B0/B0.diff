@@ -1,0 +1,679 @@
+diff --git a/src/app/components/nav/nav-primary-view.js b/src/app/components/nav/nav-primary-view.js
+index 11532b4..2382050 100644
+--- a/src/app/components/nav/nav-primary-view.js
++++ b/src/app/components/nav/nav-primary-view.js
+@@ -9,7 +9,7 @@ export class NavPrimaryView extends ViewStream {
+     props['aria-label'] = 'Main Navigation';
+     props.template = UIHeaderNavTmpl;
+     props.traits = [NavPrimaryViewTraits];
+-    props.channels = ['CHANNEL_ROUTE', 'CHANNEL_APP', 'CHANNEL_LOCAL_STORAGE'];
++    props.channels = ['CHANNEL_ROUTE', 'CHANNEL_APP', 'CHANNEL_LOCAL_STORAGE', 'CHANNEL_CART'];
+     super(props);
+   }
+ 
+@@ -26,6 +26,7 @@ export class NavPrimaryView extends ViewStream {
+       ],
+ 
+       ['CHANNEL_APP_SETTING_EVENT', 'nav$UIHeaderNavViewOnSettingsEvent'],
++      ['CHANNEL_CART_UPDATED_EVENT', 'nav$OnCartEvent'],
+     ];
+   }
+ 
+diff --git a/src/app/components/page-items/cart-view.js b/src/app/components/page-items/cart-view.js
+index 4b46fc4..a73f671 100644
+--- a/src/app/components/page-items/cart-view.js
++++ b/src/app/components/page-items/cart-view.js
+@@ -1,16 +1,27 @@
+ import { ViewStream } from 'spyne';
+ import { CartViewTraits } from 'traits/page/cart-view-traits.js';
+ 
+-// The Cart page's cart: renders its chrome from the page-item data and
+-// mirrors the cart channel — lines, subtotal, checkout link, empty state.
+-// Lines carry no behavior of their own here, so they are a rendered region,
+-// not nested views. The cart channel replays, so a freshly mounted cart page
+-// shows the current cart at once.
++// The Cart page's cart: renders its chrome from the page-item data (author
++// copy) and mirrors the cart channel — lines as nested CartLineItem views
++// (each with its own quantity/remove controls), subtotal, checkout link,
++// empty state. The cart channel replays, so a freshly mounted cart page
++// shows the current cart at once. UI strings that are not author copy
++// (control names for assistive technology, the error notice) are
++// developer-owned defaults on props.
+ export class CartView extends ViewStream {
+   constructor(props = {}) {
+     props.class = 'cart-view';
+     props.traits = [CartViewTraits];
+     props.channels = ['CHANNEL_CART'];
++    props.ui = {
++      removeLabel: 'Remove',
++      quantityGroup: 'Quantity',
++      decrement: 'Decrease quantity',
++      increment: 'Increase quantity',
++      remove: 'Remove from cart',
++      errorText: 'The cart could not be updated. Please try again.',
++      ...(props.ui ?? {}),
++    };
+     super(props);
+   }
+ 
+diff --git a/src/app/components/page-items/form-contact-us-view.js b/src/app/components/page-items/form-contact-us-view.js
+index 0e51412..f06744e 100644
+--- a/src/app/components/page-items/form-contact-us-view.js
++++ b/src/app/components/page-items/form-contact-us-view.js
+@@ -15,8 +15,12 @@ export class FormContactUsView extends ViewStream {
+      */
+     props.apiUrl = 'http://localhost:52931/mock/contact';
+ 
+-    // Shown beneath the greeting once a submission succeeds.
++    // Shown once a submission succeeds — author copy, so it lives in the page
++    // item's data (successTitle, successMessage); these are the developer
++    // defaults when the data carries none.
++    props.successTitle = props.data?.successTitle || props.successTitle || 'Thanks';
+     props.successMessage =
++      props.data?.successMessage ||
+       props.successMessage ||
+       'Your message has been sent. We will get back to you shortly.';
+ 
+diff --git a/src/app/components/page-items/product-tile-item.js b/src/app/components/page-items/product-tile-item.js
+index 3713b8e..b788fa2 100644
+--- a/src/app/components/page-items/product-tile-item.js
++++ b/src/app/components/page-items/product-tile-item.js
+@@ -1,4 +1,4 @@
+-import { ViewStream } from 'spyne';
++import { ViewStream, ChannelPayloadFilter } from 'spyne';
+ import { ProductTileTraits } from 'traits/page/product-tile-traits.js';
+ import ProductTileTmpl from './templates/product-tile.tmpl.html';
+ 
+@@ -8,8 +8,9 @@ import ProductTileTmpl from './templates/product-tile.tmpl.html';
+ // listens to the catalog channel to show or hide itself under the current
+ // filters and to retire when a catalog from a different source arrives —
+ // skipping the replay of the event that spawned it (its visibility under
+-// that event rides its birth data) — and to the cart channel to mark itself
+-// when its variant is in the cart.
++// that event rides its birth data) — to the cart channel to mark itself
++// when its variant is in the cart and to confirm an add, and to its own
++// Acquire click (reclaimed by product id) to show that the add is under way.
+ export class ProductTileItem extends ViewStream {
+   constructor(props = {}) {
+     props.tagName = 'article';
+@@ -22,15 +23,21 @@ export class ProductTileItem extends ViewStream {
+       source: props.data.source,
+     };
+     props.traits = [ProductTileTraits];
+-    props.channels = [['CHANNEL_SHOPIFY', true], 'CHANNEL_CART'];
++    props.channels = [['CHANNEL_SHOPIFY', true], 'CHANNEL_CART', 'CHANNEL_UI'];
+     props.template = ProductTileTmpl;
+     super(props);
+   }
+ 
+   addActionListeners() {
++    const ownAcquireFilter = new ChannelPayloadFilter({
++      action: 'add-to-cart',
++      productId: this.props.data.attrProductId,
++    });
+     return [
+       ['CHANNEL_SHOPIFY_CATALOG_EVENT', 'productTile$OnCatalogEvent'],
+       ['CHANNEL_CART_UPDATED_EVENT', 'productTile$OnCartEvent'],
++      ['CHANNEL_CART_ERROR_EVENT', 'productTile$OnCartError'],
++      ['CHANNEL_UI_CLICK_EVENT', 'productTile$OnAcquireClick', ownAcquireFilter],
+     ];
+   }
+ 
+diff --git a/src/app/components/page-items/templates/cart.tmpl.html b/src/app/components/page-items/templates/cart.tmpl.html
+index 00249b1..8f85a76 100644
+--- a/src/app/components/page-items/templates/cart.tmpl.html
++++ b/src/app/components/page-items/templates/cart.tmpl.html
+@@ -6,15 +6,15 @@
+ 
+   <p class="cart-empty">{{emptyText}}</p>
+ 
+-  <ul class="cart-lines"></ul>
++  <ul class="cart-lines" aria-live="polite"></ul>
+ 
+   <footer class="cart-summary">
+-    <p class="cart-total">
++    <p class="cart-total" role="status" aria-live="polite">
+       <span class="cart-total__label">{{subtotalLabel}}</span>
+       <span class="cart-total__value"></span>
+     </p>
+     <a class="cart-checkout btn btn-primary" href="#" rel="noopener">{{checkoutLabel}}</a>
+   </footer>
+ 
+-  <p class="cart-error" role="status" aria-live="polite"></p>
++  <p class="cart-error" role="alert"></p>
+ </div>
+diff --git a/src/app/components/page-items/templates/contact-us.tmpl.html b/src/app/components/page-items/templates/contact-us.tmpl.html
+index 1e2537a..4fbd6af 100644
+--- a/src/app/components/page-items/templates/contact-us.tmpl.html
++++ b/src/app/components/page-items/templates/contact-us.tmpl.html
+@@ -34,7 +34,7 @@
+     </div>
+ 
+     <div class="contact-us__actions">
+-      <button class="btn btn-primary" type="submit">Send Message</button>
++      <button class="btn btn-primary" type="submit">{{submitLabel}}</button>
+     </div>
+   </form>
+ </div>
+diff --git a/src/app/components/page-items/templates/product-tile.tmpl.html b/src/app/components/page-items/templates/product-tile.tmpl.html
+index 758e1d8..deab099 100644
+--- a/src/app/components/page-items/templates/product-tile.tmpl.html
++++ b/src/app/components/page-items/templates/product-tile.tmpl.html
+@@ -12,7 +12,9 @@
+       <span class="product-valuation__label">{{priceLabel}}</span>
+       <span class="product-price">{{price}}</span>
+       {{#sale}}
+-      <s class="product-price product-price--was">{{compareAtPrice}}</s>
++      <s class="product-price product-price--was"
++        ><span class="sr-only">was </span>{{compareAtPrice}}</s
++      >
+       {{/sale}}
+     </p>
+     <button
+@@ -21,6 +23,7 @@
+       data-action="add-to-cart"
+       data-product-id="{{%attrProductId%}}"
+       data-variant-id="{{%attrVariantId%}}"
++      aria-label="{{%attrAcquireLabel%}}"
+     >
+       <img class="product-acquire__icon" src="{{attrAddToCartIconSrc}}" alt="" />
+       <span class="product-acquire__label">{{addToCartLabel}}</span>
+diff --git a/src/app/components/page-items/templates/products.tmpl.html b/src/app/components/page-items/templates/products.tmpl.html
+index b091f78..b4f0f36 100644
+--- a/src/app/components/page-items/templates/products.tmpl.html
++++ b/src/app/components/page-items/templates/products.tmpl.html
+@@ -30,7 +30,7 @@
+         </select>
+       </label>
+     </div>
+-    <p class="products-count">
++    <p class="products-count" role="status" aria-live="polite">
+       <span class="products-count__label">{{showingLabel}}</span>
+       <span class="products-count__value"></span>
+     </p>
+diff --git a/src/app/components/ui-elements/templates/ui-footer-view.tmpl.html b/src/app/components/ui-elements/templates/ui-footer-view.tmpl.html
+index 237bb02..9748a8f 100644
+--- a/src/app/components/ui-elements/templates/ui-footer-view.tmpl.html
++++ b/src/app/components/ui-elements/templates/ui-footer-view.tmpl.html
+@@ -1,4 +1,3 @@
+ <div class="footer-content">
+-  <p>&copy; 2025 Your Company Name</p>
+   <!-- Additional links or disclaimers could go here -->
+ </div>
+diff --git a/src/app/traits/channel/channel-cart-traits.js b/src/app/traits/channel/channel-cart-traits.js
+index da992f4..08e5187 100644
+--- a/src/app/traits/channel/channel-cart-traits.js
++++ b/src/app/traits/channel/channel-cart-traits.js
+@@ -35,6 +35,12 @@ export class ChannelCartTraits extends SpyneTrait {
+       this.channelCart$OnAddToCart.bind(this),
+     );
+ 
++    // the cart page's line controls: quantity up/down and remove
++    const lineActionFilter = new ChannelPayloadFilter({ action: 'cart-line' });
++    this.getChannel('CHANNEL_UI', lineActionFilter).subscribe(
++      this.channelCart$OnLineAction.bind(this),
++    );
++
+     // the storage channel replays the persisted store at boot; a saved cart
+     // id means a cart to rehydrate
+     const storageInitFilter = new ChannelPayloadFilter({
+@@ -65,6 +71,19 @@ export class ChannelCartTraits extends SpyneTrait {
+     this.channelCart$Enqueue({ type: 'add', variantId, productId, quantity: 1 });
+   }
+ 
++  /** A line control's dataset names the line and the move; the held cart supplies the quantity. */
++  static channelCart$OnLineAction(e) {
++    const { lineId, lineAction } = e.payload;
++    const line = this.props.cart.lines.find((l) => l.lineId === lineId);
++    if (!line) return;
++    if (lineAction === 'remove' || (lineAction === 'decrement' && line.quantity <= 1)) {
++      this.channelCart$Enqueue({ type: 'remove', lineId });
++      return;
++    }
++    const quantity = lineAction === 'increment' ? line.quantity + 1 : line.quantity - 1;
++    this.channelCart$Enqueue({ type: 'update', lineId, quantity });
++  }
++
+   // ---- structural: one mutation at a time ---------------------------------
+ 
+   /**
+@@ -142,6 +161,26 @@ export class ChannelCartTraits extends SpyneTrait {
+         variables: { id: intent.cartId },
+       };
+     }
++    if (intent.type === 'update') {
++      return {
++        query: `mutation ($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
++          cartLinesUpdate(cartId: $cartId, lines: $lines) {
++            cart { ${CART_FIELDS} } userErrors { field message }
++          }
++        }`,
++        variables: { cartId, lines: [{ id: intent.lineId, quantity: intent.quantity }] },
++      };
++    }
++    if (intent.type === 'remove') {
++      return {
++        query: `mutation ($cartId: ID!, $lineIds: [ID!]!) {
++          cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
++            cart { ${CART_FIELDS} } userErrors { field message }
++          }
++        }`,
++        variables: { cartId, lineIds: [intent.lineId] },
++      };
++    }
+     const lines = [{ merchandiseId: intent.variantId, quantity: intent.quantity ?? 1 }];
+     if (cartId) {
+       return {
+@@ -173,7 +212,9 @@ export class ChannelCartTraits extends SpyneTrait {
+       };
+     }
+     const data = response.data ?? {};
+-    const result = data.cartCreate ?? data.cartLinesAdd ?? { cart: data.cart, userErrors: [] };
++    const result =
++      data.cartCreate ?? data.cartLinesAdd ?? data.cartLinesUpdate ?? data.cartLinesRemove ??
++      { cart: data.cart, userErrors: [] };
+     if (Array.isArray(result.userErrors) && result.userErrors.length) {
+       return {
+         status: 'error',
+diff --git a/src/app/traits/form/form-contact-us-traits.js b/src/app/traits/form/form-contact-us-traits.js
+index b094d43..3d3c96f 100644
+--- a/src/app/traits/form/form-contact-us-traits.js
++++ b/src/app/traits/form/form-contact-us-traits.js
+@@ -60,14 +60,14 @@ export class FormContactUsTraits extends SpyneTrait {
+    * moving focus. Values are written via innerText, never markup.
+    */
+   static contactUs$OnSuccess(e, props = this.props) {
+-    const { successMessage, submittedData } = props;
++    const { successTitle, successMessage, submittedData } = props;
+     const name = submittedData?.name?.trim();
+ 
+     const titleEl = this.props.el$('.contact-us__status-title').el;
+     const msgEl = this.props.el$('.contact-us__status-msg').el;
+ 
+     if (titleEl !== null) {
+-      titleEl.innerText = name ? `Thanks, ${name}.` : 'Thanks.';
++      titleEl.innerText = name ? `${successTitle}, ${name}.` : `${successTitle}.`;
+     }
+ 
+     if (msgEl !== null) {
+diff --git a/src/app/traits/nav/nav-primary-view-traits.js b/src/app/traits/nav/nav-primary-view-traits.js
+index 007acde..0d78153 100644
+--- a/src/app/traits/nav/nav-primary-view-traits.js
++++ b/src/app/traits/nav/nav-primary-view-traits.js
+@@ -27,4 +27,30 @@ export class NavPrimaryViewTraits extends SpyneTrait {
+     const activeSel = `a.nav[data-page-id='${pageId}']`;
+     this.props.el$('a.nav').setActiveItem('selected', activeSel);
+   }
++
++  /**
++   * The cart link carries a count badge from the cart channel's state — a
++   * live mirror on the link the nav already renders; the badge is created
++   * on first use and hidden at zero. The link's accessible name says the
++   * count too.
++   */
++  static nav$OnCartEvent(e) {
++    const { totalQuantity = 0 } = e.payload;
++    const link = this.props.el$('a.nav[data-page-id="cart"]').el;
++    if (!link) return;
++    let badge = link.querySelector('.nav-cart-count');
++    if (!badge) {
++      badge = document.createElement('span');
++      badge.className = 'nav-cart-count';
++      badge.setAttribute('aria-hidden', 'true');
++      link.appendChild(badge);
++    }
++    badge.innerText = String(totalQuantity);
++    badge.hidden = totalQuantity === 0;
++    const title = link.dataset.text || link.textContent.trim();
++    link.setAttribute(
++      'aria-label',
++      totalQuantity === 0 ? title : `${title}, ${totalQuantity} ${totalQuantity === 1 ? 'item' : 'items'}`,
++    );
++  }
+ }
+diff --git a/src/app/traits/page/cart-view-traits.js b/src/app/traits/page/cart-view-traits.js
+index b53e081..68ffeed 100644
+--- a/src/app/traits/page/cart-view-traits.js
++++ b/src/app/traits/page/cart-view-traits.js
+@@ -1,13 +1,5 @@
+-import { SpyneTrait, DomElementTemplate } from 'spyne';
+-
+-const LINES_TMPL = `{{#lines}}
+-<li class="cart-line" data-line-id="{{lineId}}">
+-  <span class="cart-line__title">{{title}}</span>
+-  <span class="cart-line__variant">{{variantTitle}}</span>
+-  <span class="cart-line__qty">× {{quantity}}</span>
+-  <span class="cart-line__price">{{price}}</span>
+-</li>
+-{{/lines}}`;
++import { SpyneTrait } from 'spyne';
++import { CartLineItem } from 'components/page-items/cart-line-item.js';
+ 
+ export class CartViewTraits extends SpyneTrait {
+   constructor(context) {
+@@ -20,24 +12,45 @@ export class CartViewTraits extends SpyneTrait {
+     this.props.el.classList.add('is-empty');
+   }
+ 
++  /**
++   * Lines are views: the ones already rendered update or retire themselves
++   * from the same event; this view nests only the lines it has not seen.
++   * Totals, checkout link and the empty state are this view's own regions.
++   */
+   static cartView$OnCartEvent(e) {
+     const { lines = [], subtotal = '', checkoutUrl = '', isEmpty } = e.payload;
+-    const root = this.props.el;
+ 
+-    this.props.el$('.cart-lines').el.innerHTML = new DomElementTemplate(
+-      LINES_TMPL,
+-      { lines },
+-    ).renderToString();
+-    this.props.el$('.cart-total__value').el.innerText = subtotal;
++    const rendered = new Set(this.props.el$('.cart-line').els.map((el) => el.dataset.lineId));
++    lines
++      .filter((line) => !rendered.has(line.lineId))
++      .forEach((line) => {
++        const data = CartViewTraits.cartView$ShapeLine(line, this.props.ui);
++        this.appendView(new CartLineItem({ data }), '.cart-lines');
++      });
+ 
++    this.props.el$('.cart-total__value').el.innerText = subtotal;
+     const checkout = this.props.el$('.cart-checkout').el;
+     if (checkout) checkout.href = checkoutUrl || '#';
+-
+     this.props.el$('.cart-error').el.innerText = '';
+-    root.classList.toggle('is-empty', isEmpty === true || lines.length === 0);
++    this.props.el.classList.toggle('is-empty', isEmpty === true || lines.length === 0);
++  }
++
++  /** The visitor sees the developer-owned notice; the channel's message stays on the console. */
++  static cartView$OnCartError() {
++    this.props.el$('.cart-error').el.innerText = this.props.ui.errorText;
+   }
+ 
+-  static cartView$OnCartError(e) {
+-    this.props.el$('.cart-error').el.innerText = e.payload.message ?? '';
++  // ---- pure ----------------------------------------------------------------
++
++  /** A line's data plus the control names assistive technology reads. */
++  static cartView$ShapeLine(line, ui = {}) {
++    return {
++      ...line,
++      removeLabel: ui.removeLabel,
++      attrQuantityGroupLabel: `${ui.quantityGroup}: ${line.title}`,
++      attrDecrementLabel: `${ui.decrement}: ${line.title}`,
++      attrIncrementLabel: `${ui.increment}: ${line.title}`,
++      attrRemoveLabel: `${ui.remove}: ${line.title}`,
++    };
+   }
+ }
+diff --git a/src/app/traits/page/product-tile-traits.js b/src/app/traits/page/product-tile-traits.js
+index ec606ea..dfb3873 100644
+--- a/src/app/traits/page/product-tile-traits.js
++++ b/src/app/traits/page/product-tile-traits.js
+@@ -1,5 +1,7 @@
+ import { SpyneTrait } from 'spyne';
+ 
++const ADDED_STATE_MS = 1600;
++
+ export class ProductTileTraits extends SpyneTrait {
+   constructor(context) {
+     let traitPrefix = 'productTile$';
+@@ -30,10 +32,51 @@ export class ProductTileTraits extends SpyneTrait {
+     this.props.el.classList.toggle('is-filtered-out', !isVisible);
+   }
+ 
+-  /** The cart is state; the tile mirrors whether its variant is in it. */
++  // ---- add-to-cart feedback: adding -> added -> in cart ------------------
++
++  /** The tile's own Acquire click, reclaimed by product id: the add is under way. */
++  static productTile$OnAcquireClick() {
++    this.productTile$SetButtonState('adding');
++  }
++
++  /**
++   * The cart is state; the tile mirrors whether its variant is in it. If this
++   * tile was mid-add, the cart's arrival is the confirmation: a short "added"
++   * state, then back to the resting label with the in-cart mark kept.
++   */
+   static productTile$OnCartEvent(e) {
+     const lines = e.payload.lines ?? [];
+     const inCart = lines.some((line) => line.variantId === this.props.data.attrVariantId);
+     this.props.el.classList.toggle('is-in-cart', inCart);
++
++    if (this.props.el.classList.contains('is-adding')) {
++      this.productTile$SetButtonState(inCart ? 'added' : 'idle');
++      if (inCart) {
++        // the tile may be disposed (route change) before the timer fires
++        setTimeout(() => {
++          if (this.props?.el?.isConnected) this.productTile$SetButtonState('idle');
++        }, ADDED_STATE_MS);
++      }
++    }
++  }
++
++  static productTile$OnCartError() {
++    if (this.props.el.classList.contains('is-adding')) {
++      this.productTile$SetButtonState('idle');
++    }
++  }
++
++  /** Button state is a class on the tile plus the label the data provides for it. */
++  static productTile$SetButtonState(state = 'idle') {
++    const { addToCartLabel, addingLabel, addedLabel } = this.props.data;
++    const labels = { idle: addToCartLabel, adding: addingLabel || addToCartLabel, added: addedLabel || addToCartLabel };
++    const el = this.props.el;
++    el.classList.toggle('is-adding', state === 'adding');
++    el.classList.toggle('is-added', state === 'added');
++    const button = this.props.el$('.product-acquire').el;
++    if (!button) return;
++    button.setAttribute('aria-busy', state === 'adding' ? 'true' : 'false');
++    button.disabled = state === 'adding';
++    this.props.el$('.product-acquire__label').el.innerText = labels[state] ?? addToCartLabel;
+   }
+ }
+diff --git a/src/app/traits/page/products-catalog-traits.js b/src/app/traits/page/products-catalog-traits.js
+index 0c2a1af..000cc36 100644
+--- a/src/app/traits/page/products-catalog-traits.js
++++ b/src/app/traits/page/products-catalog-traits.js
+@@ -88,6 +88,8 @@ export class ProductsCatalogTraits extends SpyneTrait {
+     const labels = {
+       priceLabel: data.priceLabel,
+       addToCartLabel: data.addToCartLabel,
++      addingLabel: data.addingLabel,
++      addedLabel: data.addedLabel,
+       attrAddToCartIconSrc: data.attrAddToCartIconSrc,
+     };
+     return products.map((product) => {
+@@ -95,6 +97,8 @@ export class ProductsCatalogTraits extends SpyneTrait {
+       Object.assign(tile, labels, {
+         source,
+         isVisible: visibleIds.includes(product.attrProductId),
++        // assistive name for the button: the action label plus the product
++        attrAcquireLabel: `${data.addToCartLabel ?? ''} ${product.name ?? ''}`.trim(),
+       });
+       return tile;
+     });
+diff --git a/src/index.tmpl.html b/src/index.tmpl.html
+index 05a1b2b..c271231 100644
+--- a/src/index.tmpl.html
++++ b/src/index.tmpl.html
+@@ -1,7 +1,7 @@
+ <!doctype html>
+ <html data-theme="light" lang="en">
+   <head>
+-    <title>code-assembly-alpha</title>
++    <title>Asteroid Metals Co.</title>
+     <meta charset="utf-8" />
+     <meta name="viewport" content="width=device-width, initial-scale=1" />
+ 
+diff --git a/src/scss/03-components/pages/page-items/_cart.scss b/src/scss/03-components/pages/page-items/_cart.scss
+index 4593c1c..ea88553 100644
+--- a/src/scss/03-components/pages/page-items/_cart.scss
++++ b/src/scss/03-components/pages/page-items/_cart.scss
+@@ -36,28 +36,72 @@
+ 
+   .cart-line {
+     display: grid;
+-    grid-template-columns: 1fr auto auto auto;
++    grid-template-columns: 1fr auto auto auto auto;
+     gap: 1rem;
+-    align-items: baseline;
++    align-items: center;
+     margin: 0;
+     padding: 0.75rem 0;
+     border-block-end: 1px solid var(--border);
++
++    @media (max-width: 520px) {
++      grid-template-columns: 1fr auto;
++      row-gap: 0.5rem;
++    }
+   }
+ 
+-  .cart-line__variant {
+-    color: var(--text-muted);
++  .cart-line__qty {
++    display: inline-flex;
++    align-items: center;
++    gap: 0.25rem;
++    border: 1px solid var(--border);
++    border-radius: 4px;
++  }
+ 
+-    &:empty {
+-      display: none;
++  .cart-line__qty-btn {
++    inline-size: 2rem;
++    block-size: 2rem;
++    border: 0;
++    background: transparent;
++    color: var(--text);
++    font-size: 1rem;
++    line-height: 1;
++    cursor: pointer;
++
++    &:disabled {
++      opacity: 0.4;
++      cursor: not-allowed;
+     }
+   }
+ 
+-  .cart-line__qty {
+-    color: var(--text-muted);
++  .cart-line__qty-value {
++    min-inline-size: 1.5rem;
++    text-align: center;
+     font-family: var(--font-mono);
+     font-size: 0.875rem;
+   }
+ 
++  .cart-line__remove {
++    border: 0;
++    background: transparent;
++    color: var(--text-muted);
++    font-size: 0.875rem;
++    text-decoration: underline;
++    cursor: pointer;
++
++    &:hover,
++    &:focus-visible {
++      color: var(--text);
++    }
++  }
++
++  .cart-line__variant {
++    color: var(--text-muted);
++
++    &:empty {
++      display: none;
++    }
++  }
++
+   .cart-line__price {
+     font-family: var(--font-mono);
+     font-weight: var(--fw-semibold);
+@@ -109,3 +153,23 @@
+ .cart-view:not(.is-empty) .cart-empty {
+   display: none;
+ }
++
++// the nav's cart link carries a live count from the cart channel
++.site-nav .nav-cart-count {
++  display: inline-block;
++  min-inline-size: 1.25rem;
++  margin-inline-start: 0.35rem;
++  padding: 0 0.35rem;
++  border-radius: 999px;
++  background: var(--brand);
++  color: var(--brand-contrast);
++  font-size: 0.7rem;
++  font-weight: var(--fw-semibold);
++  line-height: 1.25rem;
++  text-align: center;
++  vertical-align: middle;
++
++  &[hidden] {
++    display: none;
++  }
++}
+diff --git a/src/scss/03-components/pages/page-items/_products.scss b/src/scss/03-components/pages/page-items/_products.scss
+index 525f835..243d484 100644
+--- a/src/scss/03-components/pages/page-items/_products.scss
++++ b/src/scss/03-components/pages/page-items/_products.scss
+@@ -169,6 +169,22 @@
+     box-shadow: inset 0 0 0 2px var(--c-text);
+   }
+ 
++  // add-to-cart feedback: the button is busy while the cart round-trips,
++  // then confirms briefly before returning to its resting label
++  .product-tile.is-adding .product-acquire {
++    opacity: 0.7;
++    cursor: progress;
++  }
++
++  .product-tile.is-added .product-acquire {
++    background: var(--c-text);
++    color: var(--c-bg);
++  }
++
++  .product-acquire:disabled {
++    pointer-events: none;
++  }
++
+   .product-tile {
+     display: flex;
+     flex-direction: column;
+diff --git a/src/scss/app.scss b/src/scss/app.scss
+index 01ec388..c370646 100644
+--- a/src/scss/app.scss
++++ b/src/scss/app.scss
+@@ -20,6 +20,7 @@
+ @use '03-components/ui/footer.scss';
+ @use '03-components/ui/breadcrumbs.scss';
+ @use '03-components/ui/_codeblock';
++@use '03-components/ui/a11y';
+ 
+ @use '03-components/cards/cards';
+ @use '03-components/cards/cards-grid';
+diff --git a/src/static/data/app.model.json b/src/static/data/app.model.json
+index 66de14d..b31d1a9 100644
+--- a/src/static/data/app.model.json
++++ b/src/static/data/app.model.json
+@@ -137,6 +137,8 @@
+               "showingUnit": "archived lots",
+               "priceLabel": "Valuation",
+               "addToCartLabel": "Acquire",
++              "addingLabel": "Adding…",
++              "addedLabel": "Added",
+               "attrAddToCartIconSrc": "imgs/icon-plus.svg",
+               "footnoteText": "Secure dispatch and asteroidal provenance documentation accompany each order.",
+               "products": [
+@@ -353,6 +355,8 @@
+                     }
+                   ],
+                   "submitLabel": "Send Message",
++                  "successTitle": "Thanks",
++                  "successMessage": "Your message has been sent. We will get back to you shortly.",
+                   "messageLabel": "Message",
+                   "attrMessagePlaceholder": "How can we help?"
+                 }

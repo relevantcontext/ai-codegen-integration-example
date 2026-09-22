@@ -12,7 +12,9 @@
       <span class="product-valuation__label">{{priceLabel}}</span>
       <span class="product-price">{{price}}</span>
       {{#sale}}
-      <s class="product-price product-price--was">{{compareAtPrice}}</s>
+      <s class="product-price product-price--was"
+        ><span class="sr-only">was </span>{{compareAtPrice}}</s
+      >
       {{/sale}}
     </p>
     <button
@@ -21,6 +23,7 @@
       data-action="add-to-cart"
       data-product-id="{{%attrProductId%}}"
       data-variant-id="{{%attrVariantId%}}"
+      aria-label="{{%attrAcquireLabel%}}"
     >
       <img class="product-acquire__icon" src="{{attrAddToCartIconSrc}}" alt="" />
       <span class="product-acquire__label">{{addToCartLabel}}</span>

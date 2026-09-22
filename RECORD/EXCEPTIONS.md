@@ -12,3 +12,4 @@ Framework, grammar, CLI, Shell, and `/RECORD/tools/` are material/tooling and ar
 | A3 | — | none | — |
 | A3-r2 | — | none (fix model-written from Frank's defect report) | — |
 | A4 | — | none | — |
+| B0 | — | none | — |

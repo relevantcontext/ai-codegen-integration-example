@@ -88,6 +88,8 @@ export class ProductsCatalogTraits extends SpyneTrait {
     const labels = {
       priceLabel: data.priceLabel,
       addToCartLabel: data.addToCartLabel,
+      addingLabel: data.addingLabel,
+      addedLabel: data.addedLabel,
       attrAddToCartIconSrc: data.attrAddToCartIconSrc,
     };
     return products.map((product) => {
@@ -95,6 +97,8 @@ export class ProductsCatalogTraits extends SpyneTrait {
       Object.assign(tile, labels, {
         source,
         isVisible: visibleIds.includes(product.attrProductId),
+        // assistive name for the button: the action label plus the product
+        attrAcquireLabel: `${data.addToCartLabel ?? ''} ${product.name ?? ''}`.trim(),
       });
       return tile;
     });

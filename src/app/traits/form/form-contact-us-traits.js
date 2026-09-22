@@ -60,14 +60,14 @@ export class FormContactUsTraits extends SpyneTrait {
    * moving focus. Values are written via innerText, never markup.
    */
   static contactUs$OnSuccess(e, props = this.props) {
-    const { successMessage, submittedData } = props;
+    const { successTitle, successMessage, submittedData } = props;
     const name = submittedData?.name?.trim();
 
     const titleEl = this.props.el$('.contact-us__status-title').el;
     const msgEl = this.props.el$('.contact-us__status-msg').el;
 
     if (titleEl !== null) {
-      titleEl.innerText = name ? `Thanks, ${name}.` : 'Thanks.';
+      titleEl.innerText = name ? `${successTitle}, ${name}.` : `${successTitle}.`;
     }
 
     if (msgEl !== null) {

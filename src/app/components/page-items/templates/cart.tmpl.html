@@ -6,15 +6,15 @@
 
   <p class="cart-empty">{{emptyText}}</p>
 
-  <ul class="cart-lines"></ul>
+  <ul class="cart-lines" aria-live="polite"></ul>
 
   <footer class="cart-summary">
-    <p class="cart-total">
+    <p class="cart-total" role="status" aria-live="polite">
       <span class="cart-total__label">{{subtotalLabel}}</span>
       <span class="cart-total__value"></span>
     </p>
     <a class="cart-checkout btn btn-primary" href="#" rel="noopener">{{checkoutLabel}}</a>
   </footer>
 
-  <p class="cart-error" role="status" aria-live="polite"></p>
+  <p class="cart-error" role="alert"></p>
 </div>

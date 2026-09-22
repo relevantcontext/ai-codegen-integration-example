@@ -1,13 +1,5 @@
-import { SpyneTrait, DomElementTemplate } from 'spyne';
-
-const LINES_TMPL = `{{#lines}}
-<li class="cart-line" data-line-id="{{lineId}}">
-  <span class="cart-line__title">{{title}}</span>
-  <span class="cart-line__variant">{{variantTitle}}</span>
-  <span class="cart-line__qty">× {{quantity}}</span>
-  <span class="cart-line__price">{{price}}</span>
-</li>
-{{/lines}}`;
+import { SpyneTrait } from 'spyne';
+import { CartLineItem } from 'components/page-items/cart-line-item.js';
 
 export class CartViewTraits extends SpyneTrait {
   constructor(context) {
@@ -20,24 +12,45 @@ export class CartViewTraits extends SpyneTrait {
     this.props.el.classList.add('is-empty');
   }
 
+  /**
+   * Lines are views: the ones already rendered update or retire themselves
+   * from the same event; this view nests only the lines it has not seen.
+   * Totals, checkout link and the empty state are this view's own regions.
+   */
   static cartView$OnCartEvent(e) {
     const { lines = [], subtotal = '', checkoutUrl = '', isEmpty } = e.payload;
-    const root = this.props.el;
 
-    this.props.el$('.cart-lines').el.innerHTML = new DomElementTemplate(
-      LINES_TMPL,
-      { lines },
-    ).renderToString();
+    const rendered = new Set(this.props.el$('.cart-line').els.map((el) => el.dataset.lineId));
+    lines
+      .filter((line) => !rendered.has(line.lineId))
+      .forEach((line) => {
+        const data = CartViewTraits.cartView$ShapeLine(line, this.props.ui);
+        this.appendView(new CartLineItem({ data }), '.cart-lines');
+      });
+
     this.props.el$('.cart-total__value').el.innerText = subtotal;
-
     const checkout = this.props.el$('.cart-checkout').el;
     if (checkout) checkout.href = checkoutUrl || '#';
-
     this.props.el$('.cart-error').el.innerText = '';
-    root.classList.toggle('is-empty', isEmpty === true || lines.length === 0);
+    this.props.el.classList.toggle('is-empty', isEmpty === true || lines.length === 0);
   }
 
-  static cartView$OnCartError(e) {
-    this.props.el$('.cart-error').el.innerText = e.payload.message ?? '';
+  /** The visitor sees the developer-owned notice; the channel's message stays on the console. */
+  static cartView$OnCartError() {
+    this.props.el$('.cart-error').el.innerText = this.props.ui.errorText;
+  }
+
+  // ---- pure ----------------------------------------------------------------
+
+  /** A line's data plus the control names assistive technology reads. */
+  static cartView$ShapeLine(line, ui = {}) {
+    return {
+      ...line,
+      removeLabel: ui.removeLabel,
+      attrQuantityGroupLabel: `${ui.quantityGroup}: ${line.title}`,
+      attrDecrementLabel: `${ui.decrement}: ${line.title}`,
+      attrIncrementLabel: `${ui.increment}: ${line.title}`,
+      attrRemoveLabel: `${ui.remove}: ${line.title}`,
+    };
   }
 }

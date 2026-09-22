@@ -36,12 +36,62 @@
 
   .cart-line {
     display: grid;
-    grid-template-columns: 1fr auto auto auto;
+    grid-template-columns: 1fr auto auto auto auto;
     gap: 1rem;
-    align-items: baseline;
+    align-items: center;
     margin: 0;
     padding: 0.75rem 0;
     border-block-end: 1px solid var(--border);
+
+    @media (max-width: 520px) {
+      grid-template-columns: 1fr auto;
+      row-gap: 0.5rem;
+    }
+  }
+
+  .cart-line__qty {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+
+  .cart-line__qty-btn {
+    inline-size: 2rem;
+    block-size: 2rem;
+    border: 0;
+    background: transparent;
+    color: var(--text);
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+
+  .cart-line__qty-value {
+    min-inline-size: 1.5rem;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+  }
+
+  .cart-line__remove {
+    border: 0;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--text);
+    }
   }
 
   .cart-line__variant {
@@ -50,12 +100,6 @@
     &:empty {
       display: none;
     }
-  }
-
-  .cart-line__qty {
-    color: var(--text-muted);
-    font-family: var(--font-mono);
-    font-size: 0.875rem;
   }
 
   .cart-line__price {
@@ -108,4 +152,24 @@
 
 .cart-view:not(.is-empty) .cart-empty {
   display: none;
+}
+
+// the nav's cart link carries a live count from the cart channel
+.site-nav .nav-cart-count {
+  display: inline-block;
+  min-inline-size: 1.25rem;
+  margin-inline-start: 0.35rem;
+  padding: 0 0.35rem;
+  border-radius: 999px;
+  background: var(--brand);
+  color: var(--brand-contrast);
+  font-size: 0.7rem;
+  font-weight: var(--fw-semibold);
+  line-height: 1.25rem;
+  text-align: center;
+  vertical-align: middle;
+
+  &[hidden] {
+    display: none;
+  }
 }

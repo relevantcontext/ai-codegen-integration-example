@@ -228,16 +228,52 @@ changed by the model; copy review happens through the CMS.
 
 | # | Where | String | Status | Target / note |
 |---|---|---|---|---|
-| 1 | `contact-us.tmpl.html` | "Send Message" (submit button) | | The page item's data already carries `submitLabel`; the template does not bind it. |
-| 2 | `page-404.tmpl.html` | "It appears that something has gone awry. 404." | | The 404 page has no model node (`add404s: true`); the copy would have to reach it through the app's `text` block via the route/app payload. |
-| 3 | `form-contact-us-traits.js` | "Thanks, {name}." / "Thanks." (success title) | | Composed in code after submit. |
-| 4 | `form-contact-us-view.js` | "Your message has been sent. We will get back to you shortly." (default `successMessage`) | | Read from `props`, not from the page item's data; the data carries no such key. |
-| 5 | `channel-cart-traits.js` → Cart page `.cart-error` | "The cart could not be updated." / "Product "x" has no Shopify variant to add." / Shopify `userErrors` text | | System messages rendered to the visitor verbatim. |
-| 6 | `index.tmpl.html` | `<title>code-assembly-alpha</title>` (browser tab) | | Build-time HTML; `uiProps.appTitle` exists in data but nothing sets `document.title`. |
-| 7 | `index.tmpl.html` | `<noscript>` "You need to enable JavaScript to run this app." | | Build-time HTML for non-JS visitors. |
-| 8 | `ui-footer-view.tmpl.html` | "© 2025 Your Company Name" | | Template literal; at runtime the footer trait renders `text.footer` from data over it — not visible, but dead copy in a template. |
-| 9 | `ui-header-view.tmpl.html`, `nav-primary-view.tmpl.html`, `cards-container-view.js` | `aria-label="Home"`, `aria-label="Toggle Theme"`, `ariaLabel = 'cards'` | | Assistive text — read by screen readers, not shown. |
-| 10 | `page-item-core-traits.js` | "Missing Template" | | Developer fallback for an unresolved template name; never shown in a correct build. |
-| 11 | `products-catalog-traits.js` | count line `"${count} ${showingUnit}"` | | Number from state + unit from data — already editable. |
-| 12 | `cart-view-traits.js` lines | "× {{quantity}}" | | Punctuation + data. |
+| 1 | `contact-us.tmpl.html` | "Send Message" (submit button) | bound | `{{submitLabel}}` bound; the key already existed in the page item's data (a generator inconsistency). UI field per Frank's ruling, but the data was already there. |
+| 2 | `page-404.tmpl.html` | "It appears that something has gone awry. 404." | left (ruled) | 404 copy is developer-owned (Frank's ruling); stays in the Shell template. |
+| 3 | `form-contact-us-traits.js` | "Thanks, {name}." / "Thanks." (success title) | moved | `successTitle` in the contact page item's data ("Thanks"); code composes "Thanks, {name}." from it. Author copy. |
+| 4 | `form-contact-us-view.js` | "Your message has been sent. We will get back to you shortly." (default `successMessage`) | moved | `successMessage` in the contact page item's data; the code default remains as the developer fallback. Author copy. |
+| 5 | `channel-cart-traits.js` → Cart page `.cart-error` | "The cart could not be updated." / "Product "x" has no Shopify variant to add." / Shopify `userErrors` text | left (ruled) | Developer-owned: `CartView.props.ui.errorText` replaces the raw channel/Shopify text in the visitor's view; the channel's message stays on the console. UI field. |
+| 6 | `index.tmpl.html` | `<title>code-assembly-alpha</title>` (browser tab) | fixed in code (ruled) | `<title>Asteroid Metals Co.</title>` in `index.tmpl.html`; developer-owned, not moved to data. |
+| 7 | `index.tmpl.html` | `<noscript>` "You need to enable JavaScript to run this app." | left | Build-time HTML for non-JS visitors; developer-owned. |
+| 8 | `ui-footer-view.tmpl.html` | "© 2025 Your Company Name" | deleted | Dead copy removed from the footer template; `text.footer` is what renders. |
+| 9 | `ui-header-view.tmpl.html`, `nav-primary-view.tmpl.html`, `cards-container-view.js` | `aria-label="Home"`, `aria-label="Toggle Theme"`, `ariaLabel = 'cards'` | kept + extended | Assistive text is in scope (Frank: "show the quality of the code") — see the ARIA pass below. |
+| 10 | `page-item-core-traits.js` | "Missing Template" | left | Developer fallback, never shown in a correct build. |
+| 11 | `products-catalog-traits.js` | count line `"${count} ${showingUnit}"` | already editable | — |
+| 12 | `cart-view-traits.js` lines | "× {{quantity}}" | replaced | The "×" marker became real quantity controls (UI fix 2). |
+
+### B0 rulings, ARIA pass and UI fixes (from `prompts/B0-1.md`)
+
+**Scope ruling.** CMS-editability is for content-author copy; UI field labels, the 404 page and
+the browser tab title stay developer-owned. Applied above: two moves (contact success copy),
+one binding, one deletion, one code fix; the rest left with reasons.
+
+**ARIA pass** (developer-owned strings, composed in traits from data where a label exists):
+
+| # | Element | Added |
+|---|---|---|
+| 13 | Acquire button | `aria-label` = action label + product name ("Acquire Osmium Bead"); `aria-busy` while adding; `disabled` while adding. |
+| 14 | Struck compare-at price | `<s>` with a screen-reader-only "was " prefix (`.sr-only`, new utility). |
+| 15 | Catalog count | `role="status" aria-live="polite"` — filter changes are announced. |
+| 16 | Cart lines list / subtotal / error | `aria-live="polite"` on the list and the subtotal; `role="alert"` on the error line. |
+| 17 | Cart line controls | quantity group `role="group"` named "Quantity: {title}"; "Decrease quantity: {title}", "Increase quantity: {title}", "Remove from cart: {title}". |
+| 18 | Nav cart link | accessible name "CART, 1 item" / "CART, 3 items"; the badge itself `aria-hidden`. |
+
+**UI fix 1 — add-to-cart feedback** (inferred shape):
+
+| # | Element | Status | Note |
+|---|---|---|---|
+| 19 | Tile button states | mapped | The tile reclaims its own Acquire click from `CHANNEL_UI` (filter by `productId`, `recognize-own-emission`) → `is-adding` (label `addingLabel` "Adding…", busy, disabled) → on `CHANNEL_CART_UPDATED_EVENT` with its variant present → `is-added` (label `addedLabel` "Added") for 1.6 s → resting label with the `is-in-cart` mark kept; on `CHANNEL_CART_ERROR_EVENT` → resting. The two labels are catalog data beside `addToCartLabel`. |
+| 20 | Nav cart count | inferred | `NavPrimaryView` listens to `CHANNEL_CART` and mirrors `totalQuantity` on the cart link as a badge (created on first use, hidden at zero) — a `live-mirror-via-el$` on the link the nav already renders. Not asked for; the expected response to adding to a cart includes it. |
+
+**UI fix 2 — cart line controls** (mapped):
+
+| # | Element | Status | Note |
+|---|---|---|---|
+| 21 | Lines as views | mapped | `CartLineItem` (`li.cart-line`) per line, `['CHANNEL_CART', true]` (skip birth replay), own `button` click broadcast; updates its quantity/price on later cart events, retires when its line is gone. `CartView` nests only lines it has not rendered (by `lineId`). |
+| 22 | Quantity −/+ and Remove | mapped | Buttons carry `data-action="cart-line"`, `data-line-action`, `data-line-id`; `ChannelCart` admits `{ action: "cart-line" }`, reads the current quantity from its held cart, and enqueues `cartLinesUpdate` or `cartLinesRemove` (decrement at 1 = remove); decrement is disabled at 1. |
+| 23 | Empty state after the last removal | mapped | `is-empty` toggled from the cart event; badge hidden at zero. |
+
+**Counts:** B0 elements 1–23: 5 moved/bound/fixed, 6 left with reason, 1 deleted, 1 replaced,
+6 ARIA additions, 5 UI-fix elements (1 inferred extra). Human corrections: the three B0
+instructions are the stage's prompt, not corrections.
 
