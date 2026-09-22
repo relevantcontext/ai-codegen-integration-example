@@ -7,3 +7,4 @@ Framework, grammar, CLI, Shell, and `/RECORD/tools/` are material/tooling and ar
 |-------|------|--------|---------------|
 | A0 | — | none | — |
 | A1 | — | none (all A1 code model-written from `prompts/A1-1.md`; Frank made no corrections) | — |
+| A1-r2 | — | none (redo driven by `prompts/A1-2.md`; no human code edits) | — |

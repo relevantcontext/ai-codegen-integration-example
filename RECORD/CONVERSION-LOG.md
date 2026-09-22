@@ -46,7 +46,7 @@ same structure. "Layer name" is the Figma layer name exactly as it appears.
 | 12 | Two-row grid structure (3 tiles per row, 24 gap) | 4:25, 4:80 | `grid-row-1`, `grid-row-2` | inferred | The design's two explicit rows are one `{{#products}}` loop on a 3-column grid; row count follows the data. Responsive 2/1 columns below 900/520px added (design is desktop-only). |
 | 13 | Tile | 4:26 | `product-card` | mapped | `<article class="product-tile" data-product-id data-metal data-origin>` — dataset carries identity and filter keys for A3. |
 | 14 | Tile image container (square) | 4:27 | `image-container` | mapped | `.product-media` — square, 4px radius, clipped. |
-| 15 | Tile image (with 25% black overlay) | 4:28 | `product-image` | inferred | `{{attrImageSrc}}` — the app's six Pexels placeholders, not the Figma agent's images (per the input note; asset URLs expire in 7 days; images-by-search-intent-not-url). The 25% black overlay is a CSS `::after`. `{{attrImageAlt}}` = product name (new key; A0 bound `alt` to `name`). |
+| 15 | Tile image (with 25% black overlay) | 4:28 | `product-image` | mapped (r2) | `{{attrImageSrc}}` → the frame's own product images (Figma in-file agent output, exact bytes from the MCP asset export, `src/static/imgs/figma-*.jpg`), matched to app products by metal. A1 had kept the Pexels placeholders (inferred) — overruled by A1-2. The 25% black overlay is a CSS `::after`. |
 | 16 | Tile meta block | 4:29 | `product-meta` | mapped | `.product-meta`. |
 | 17 | Product name | 4:31 | `product-name` | mapped | `{{name}}` — existing key. |
 | 18 | Origin | 4:33 | `101955 BENNU` | inferred | `{{origin}}` — new key (ruling 1). Layer named by content (`101955 BENNU`); read as origin from the prompt's "variant line (origin and mass)" and the asteroid names. Values for the six app products taken from the first word of the A0 `variant` string ("Ryugu fragment, 2.3g" → Ryugu). Uppercased in CSS. The design's catalog numbers (101955) are not in app data and were not invented. |
@@ -75,3 +75,28 @@ same structure. "Layer name" is the Figma layer name exactly as it appears.
 - **CMS opt-out tokens** `{{%key%}}` used on every attribute-position binding and on `<option>` text, where a CMS wrapper element would break the markup. Text-content bindings stay plain.
 - **CMS editability** verified structurally (every visible string is a key under the shop node; shaping is `safeClone` in place). A click-through edit test was not run in A1 — B0 is the content pass.
 - **Skill deviation (deliberate):** the Figma design-to-code skill requires a fresh `get_design_context` call before coding; the record rule (pin every input) wins, so the conversion worked from `inputs/A1-figma-catalog.*` only.
+
+### A1-r2 — redo after Frank's review (2026-09-21; `prompts/A1-2.md`)
+
+Why a second tag: `alpha-A1` stands as tagged. Frank's review overruled two *inferred*
+decisions — the Figma-generated images were not brought in, and none of the Figma styles
+were. Both were the model's calls under the general-intent prompt; the ruling makes them
+*mapped*. Nothing else in the conversion changed (data, view, trait, template structure,
+Shopify-ready shape all stand — Frank: "worked out great in terms of data and initial
+shopify integration").
+
+| Element / decision | A1 status | A1-r2 status | What changed |
+|---|---|---|---|
+| 15 tile image | inferred (Pexels kept) | **mapped** | Six Figma images in `src/static/imgs/figma-<design-product>.jpg`; `image-manifest.json` rows added (provider `figma-agent`). Matched by metal: Iridium, Osmium, Platinum, Palladium, Ruthenium 1:1; the design's **Rhodium** Filament image serves the app's **Rhenium** Flake (nearest; no rhodium in app data) — *inferred*. |
+| Fonts | inferred (mapped to app fonts) | **mapped** | DM Serif Text 400, Geist 400/500/600, Geist Mono 400/500/600 self-hosted as woff2 from `@fontsource/*` 5.3.0 (OFL; licences in `src/static/fonts/licenses/`), declared in `_products-assets.scss`, wired in `app.scss` with `$STATIC_DIR`. Scoped to the catalog via `--catalog-font-*` custom properties; the rest of the app keeps its theme fonts. Ruled by Frank (self-host over CDN). |
+| Colours / surface | inferred (tokens; follows light/dark) | **mapped** | The frame's literal values (#08080a section, #111115 card, #222228 hairlines, #f3f4f6 / #8e8e93 text, #d4c3a3 accent, #33333c dot) held as `--c-*` on the section root; the catalog is dark in both app colour schemes. |
+| 1 section frame | inferred (page-item contract) | **mapped** | `container.classOptions.variant: "catalog"` (the trait's existing API) → `.page-item--catalog` carries the frame's #08080a surface and 100/80 padding (64/32 and 48/16 below 900/520px — *inferred*, the frame is desktop-only). |
+| 8, 9 chevron | inferred (app select chevron) | **mapped** | The frame's `chevron-down` asset (`src/static/imgs/icon-chevron-down.svg`) as the select background. |
+| 24 button | mapped (app button tokens) | **mapped** | `btn btn-primary` dropped; the button is styled from the frame (#d4c3a3 / #08080a, 8×16, 4px, Geist 600 12px). |
+| Type sizes | mapped | **mapped** | 48/20/16/13/12/11/10 px as drawn, `line-height: normal` as exported; 36px title below 520px — *inferred*. |
+
+Frank's review note, recorded: the model kept the app's asteroid-metals content over the
+frame's "Rare Earth & Heavy Metals" copy — confirmed as the intended reading ("the
+asteroid concept overrode the metals text in figma").
+
+Counts after r2: 20 mapped, 8 inferred, 1 undefined (the footnote PDF link, still unruled).

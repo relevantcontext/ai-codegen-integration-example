@@ -32,6 +32,8 @@
 
 @use '03-components/ui/containers' as *;
 @use '03-components/generated/theme-fonts' with ($STATIC_DIR: $STATIC_DIR);
+@use '03-components/pages/page-items/products-assets' with
+  ($STATIC_DIR: $STATIC_DIR);
 
 // TO DISABLE THE DESIGN SYSTEM COMMENT ON THE DESIGN INJECTION
 @include designSystem.inject-design-system('main#app');

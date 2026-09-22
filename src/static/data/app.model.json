@@ -148,7 +148,7 @@
                   "origin": "Ryugu",
                   "mass": "2.3g",
                   "price": "$4,200",
-                  "attrImageSrc": "imgs/pexels-35497189.jpeg",
+                  "attrImageSrc": "imgs/figma-iridium-crystal-node.jpg",
                   "attrImageAlt": "Iridium Nugget"
                 },
                 {
@@ -158,7 +158,7 @@
                   "origin": "Bennu",
                   "mass": "5.0g",
                   "price": "$3,800",
-                  "attrImageSrc": "imgs/pexels-10187646.jpeg",
+                  "attrImageSrc": "imgs/figma-platinum-drusy-plate.jpg",
                   "attrImageAlt": "Platinum Sponge"
                 },
                 {
@@ -168,7 +168,7 @@
                   "origin": "Psyche",
                   "mass": "1.8g",
                   "price": "$2,950",
-                  "attrImageSrc": "imgs/pexels-35497314.jpeg",
+                  "attrImageSrc": "imgs/figma-palladium-dendrite.jpg",
                   "attrImageAlt": "Palladium Crystal"
                 },
                 {
@@ -178,7 +178,7 @@
                   "origin": "Itokawa",
                   "mass": "3.5g",
                   "price": "$1,875",
-                  "attrImageSrc": "imgs/pexels-9259962.jpeg",
+                  "attrImageSrc": "imgs/figma-ruthenium-aggregated-matrix.jpg",
                   "attrImageAlt": "Ruthenium Powder"
                 },
                 {
@@ -188,7 +188,7 @@
                   "origin": "Vesta",
                   "mass": "0.9g",
                   "price": "$5,600",
-                  "attrImageSrc": "imgs/pexels-4198921.jpeg",
+                  "attrImageSrc": "imgs/figma-osmium-spherule.jpg",
                   "attrImageAlt": "Osmium Bead"
                 },
                 {
@@ -198,7 +198,7 @@
                   "origin": "Ceres",
                   "mass": "4.2g",
                   "price": "$2,150",
-                  "attrImageSrc": "imgs/pexels-28215401.jpeg",
+                  "attrImageSrc": "imgs/figma-rhodium-filament.jpg",
                   "attrImageAlt": "Rhenium Flake"
                 }
               ]
@@ -206,7 +206,10 @@
           },
           "container": {
             "isEnabled": true,
-            "spacing": "default"
+            "spacing": "default",
+            "classOptions": {
+              "variant": "catalog"
+            }
           }
         }
       ]

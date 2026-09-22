@@ -1,18 +1,39 @@
 // Products catalog — converted from the Figma frame `rare-metal-catalog`
-// (RECORD/inputs/A1-figma-catalog.*). The design's absolute values map onto
-// the app's tokens so the section follows the theme in light and dark mode:
-// card surface -> --paper, hairlines -> --border, accent (#d4c3a3) -> --brand,
-// DM Serif Text -> --font-serif, Geist -> --font-sans, Geist Mono -> --font-mono.
-// Card chrome is deliberate here (the design draws bordered tiles); the
-// page-item wrapper still owns the section surface and padding.
+// (RECORD/inputs/A1-figma-catalog.*). Per the A1-2 ruling the styles ARE the
+// design's: its colours, type, spacing and dark surface are used as drawn, in
+// both app colour schemes. The design values are held as custom properties
+// on the section root; the typefaces come from _products-assets.scss.
+.page-view .page-item--catalog {
+  // the page-item wrapper carries the frame's own surface and padding
+  --pi-padding: 100px 80px;
+  --pi-radius: 0;
+  --pi-shadow: none;
+  background: #08080a;
+  color: #f3f4f6;
+
+  @media (max-width: 900px) {
+    --pi-padding: 64px 32px;
+  }
+  @media (max-width: 520px) {
+    --pi-padding: 48px 16px;
+  }
+}
+
 .page-item--products {
+  --c-bg: #08080a;
+  --c-card: #111115;
+  --c-border: #222228;
+  --c-dot: #33333c;
+  --c-text: #f3f4f6;
+  --c-muted: #8e8e93;
+  --c-accent: #d4c3a3;
   --cols: 3;
-  --products-gap: 24px;
-  --tile-radius: 8px;
 
   display: flex;
   flex-direction: column;
   gap: 48px;
+  color: var(--c-text);
+  font-family: var(--catalog-font-sans);
 
   // ---- header block ---------------------------------------------------
   .products-header {
@@ -20,33 +41,34 @@
     flex-direction: column;
     gap: 8px;
     padding-block-end: 24px;
-    border-block-end: 1px solid var(--border);
+    border-block-end: 1px solid var(--c-border);
   }
 
   .products-eyebrow {
     margin: 0;
-    font-family: var(--font-sans);
+    font-family: var(--catalog-font-sans);
     font-size: 12px;
-    font-weight: var(--fw-semibold);
-    letter-spacing: 0.04em;
+    font-weight: 600;
     text-transform: uppercase;
-    color: var(--brand);
+    color: var(--c-accent);
   }
 
   .products-title {
     margin: 0;
-    font-family: var(--font-serif);
-    font-size: clamp(2rem, 1.5rem + 2vw, 3rem); // 48px at the design width
-    font-weight: var(--fw-regular);
-    line-height: 1.15;
-    color: var(--text);
+    font-family: var(--catalog-font-serif);
+    font-size: 48px;
+    font-weight: 400;
+    line-height: normal;
+    color: var(--c-text);
   }
 
   .products-subtitle {
     margin: 0;
-    font-size: 1rem;
-    line-height: 1.4;
-    color: var(--text-muted);
+    font-family: var(--catalog-font-sans);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: normal;
+    color: var(--c-muted);
   }
 
   // ---- filter row -----------------------------------------------------
@@ -69,33 +91,43 @@
     align-items: center;
     gap: 12px;
     block-size: 40px;
-    padding-inline: 16px;
-    border: 1px solid var(--border);
+    padding: 10px 16px;
+    border: 1px solid var(--c-border);
     border-radius: 4px;
-    font-size: 13px;
     white-space: nowrap;
   }
 
   .products-filter__label {
-    color: var(--text-muted);
+    font-family: var(--catalog-font-sans);
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--c-muted);
   }
 
-  // the dropdown value + chevron live in a native select; the design's
-  // bordered box is the label, so the select itself is chrome-less
+  // the dropdown value + chevron are a native select; the bordered box is
+  // the label, so the select itself is chrome-less and shows the frame's
+  // 12px chevron
   .products-filter__select {
     inline-size: auto;
     margin: 0;
-    padding: 0 1.25rem 0 0;
+    padding: 0 24px 0 0;
     border: 0;
     border-radius: 0;
     background-color: transparent;
+    background-image: var(--catalog-chevron);
+    background-repeat: no-repeat;
     background-position: right center;
-    background-size: 0.75rem;
+    background-size: 12px 12px;
+    font-family: var(--catalog-font-sans);
     font-size: 13px;
-    font-weight: var(--fw-medium);
+    font-weight: 500;
     line-height: 1;
-    color: var(--text);
+    color: var(--c-text);
     cursor: pointer;
+
+    option {
+      color: #08080a;
+    }
 
     &:focus {
       box-shadow: none;
@@ -106,25 +138,26 @@
     display: flex;
     gap: 8px;
     margin: 0;
-    font-family: var(--font-mono);
+    font-family: var(--catalog-font-mono);
     font-size: 12px;
+    font-weight: 400;
     text-transform: uppercase;
     white-space: nowrap;
   }
 
   .products-count__label {
-    color: var(--text-muted);
+    color: var(--c-muted);
   }
 
   .products-count__value {
-    color: var(--text);
+    color: var(--c-text);
   }
 
   // ---- grid + tile ----------------------------------------------------
   .products-grid {
     display: grid;
     grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
-    gap: var(--products-gap);
+    gap: 24px;
   }
 
   .product-tile {
@@ -132,9 +165,9 @@
     flex-direction: column;
     gap: 16px;
     padding: 16px;
-    background: var(--paper);
-    border: 1px solid var(--border);
-    border-radius: var(--tile-radius);
+    background: var(--c-card);
+    border: 1px solid var(--c-border);
+    border-radius: 8px;
     text-align: left;
   }
 
@@ -143,9 +176,9 @@
     aspect-ratio: 1 / 1;
     border-radius: 4px;
     overflow: hidden;
-    background: var(--bg);
+    background: var(--c-bg);
 
-    // the design darkens every product image by 25%
+    // the frame darkens every product image by 25%
     &::after {
       content: '';
       position: absolute;
@@ -170,11 +203,11 @@
 
   .product-name {
     margin: 0;
-    font-family: var(--font-serif);
+    font-family: var(--catalog-font-serif);
     font-size: 20px;
-    font-weight: var(--fw-regular);
-    line-height: 1.35;
-    color: var(--text);
+    font-weight: 400;
+    line-height: normal;
+    color: var(--c-text);
   }
 
   .product-provenance {
@@ -182,9 +215,10 @@
     align-items: center;
     gap: 8px;
     margin: -8px 0 0;
-    font-family: var(--font-mono);
+    font-family: var(--catalog-font-mono);
     font-size: 11px;
-    line-height: 1.3;
+    font-weight: 400;
+    line-height: normal;
 
     // the 3px separator dot between origin and mass
     .product-origin::after {
@@ -194,18 +228,18 @@
       block-size: 3px;
       margin-inline-start: 8px;
       border-radius: 1.5px;
-      background: var(--border);
+      background: var(--c-dot);
       vertical-align: middle;
     }
   }
 
   .product-origin {
-    color: var(--text-muted);
+    color: var(--c-muted);
     text-transform: uppercase;
   }
 
   .product-mass {
-    color: var(--brand);
+    color: var(--c-accent);
   }
 
   .product-row {
@@ -214,7 +248,7 @@
     justify-content: space-between;
     gap: 12px;
     padding-block-start: 12px;
-    border-block-start: 1px solid var(--border);
+    border-block-start: 1px solid var(--c-border);
   }
 
   .product-valuation {
@@ -226,16 +260,18 @@
   }
 
   .product-valuation__label {
+    font-family: var(--catalog-font-sans);
     font-size: 10px;
+    font-weight: 400;
     text-transform: uppercase;
-    color: var(--text-muted);
+    color: var(--c-muted);
   }
 
   .product-price {
-    font-family: var(--font-mono);
+    font-family: var(--catalog-font-mono);
     font-size: 16px;
-    font-weight: var(--fw-semibold);
-    color: var(--text);
+    font-weight: 600;
+    color: var(--c-text);
   }
 
   .product-acquire {
@@ -243,10 +279,15 @@
     align-items: center;
     gap: 6px;
     padding: 8px 16px;
+    border: 0;
     border-radius: 4px;
+    background: var(--c-accent);
+    font-family: var(--catalog-font-sans);
     font-size: 12px;
-    font-weight: var(--fw-semibold);
-    line-height: 1.3;
+    font-weight: 600;
+    line-height: normal;
+    color: #08080a;
+    cursor: pointer;
   }
 
   .product-acquire__icon {
@@ -263,8 +304,9 @@
     gap: 16px;
     flex-wrap: wrap;
     padding-block-start: 24px;
-    font-family: var(--font-mono);
+    font-family: var(--catalog-font-mono);
     font-size: 11px;
+    font-weight: 400;
     text-transform: uppercase;
 
     p {
@@ -273,11 +315,11 @@
   }
 
   .products-footnote__text {
-    color: var(--text-muted);
+    color: var(--c-muted);
   }
 
   .products-footnote__link {
-    color: var(--brand);
+    color: var(--c-accent);
     text-decoration: underline;
     text-underline-position: from-font;
   }
@@ -287,18 +329,23 @@
   }
   @media (max-width: 520px) {
     --cols: 1;
+
+    .products-title {
+      font-size: 36px;
+    }
   }
 }
 
-/* House gotcha: main#app h2/h3/p typography (ID specificity) overrides the
-   class-level type treatment — the catalog's type rules must match that scope. */
+/* House gotcha: main#app h2/h3/p/label/select rules (ID specificity) override
+   the class-level treatment — restate the design's type at that scope. */
 main#app .page-item--products {
   .products-title {
-    font-family: var(--font-serif);
-    font-size: clamp(2rem, 1.5rem + 2vw, 3rem);
-    font-weight: var(--fw-regular);
-    line-height: 1.15;
+    font-family: var(--catalog-font-serif);
+    font-size: 48px;
+    font-weight: 400;
+    line-height: normal;
     margin: 0;
+    color: var(--c-text);
   }
 
   .products-eyebrow,
@@ -311,17 +358,36 @@ main#app .page-item--products {
   }
 
   .products-subtitle {
-    font-size: 1rem;
-    line-height: 1.4;
-    color: var(--text-muted);
+    font-family: var(--catalog-font-sans);
+    font-size: 16px;
+    line-height: normal;
+    color: var(--c-muted);
+  }
+
+  // `main#app p` sets a colour; restate the frame's per-element colours
+  .products-eyebrow {
+    color: var(--c-accent);
+  }
+
+  .products-count,
+  .products-footnote__text {
+    color: var(--c-muted);
+  }
+
+  .products-footnote__link {
+    color: var(--c-accent);
+  }
+
+  .product-valuation__label {
+    color: var(--c-muted);
   }
 
   .product-name {
-    font-family: var(--font-serif);
+    font-family: var(--catalog-font-serif);
     font-size: 20px;
-    font-weight: var(--fw-regular);
-    line-height: 1.35;
-    color: var(--text);
+    font-weight: 400;
+    line-height: normal;
+    color: var(--c-text);
     margin: 0;
   }
 
@@ -329,28 +395,35 @@ main#app .page-item--products {
     margin-block-start: -8px;
   }
 
-  // the design-system select rule (`main#app select`) outranks the class
-  // rule above; restate the chrome-less select at the same specificity so
-  // the label box is the only border
   label.products-filter {
     display: inline-flex;
     align-items: center;
     gap: 12px;
     margin: 0;
     font-size: 13px;
-    font-weight: var(--fw-regular);
+    font-weight: 400;
   }
 
   select.products-filter__select {
     inline-size: auto;
     margin: 0;
-    padding: 0 1.25rem 0 0;
+    padding: 0 24px 0 0;
     border: 0;
     border-radius: 0;
     background-color: transparent;
+    background-image: var(--catalog-chevron);
     background-position: right center;
-    background-size: 0.75rem;
+    background-size: 12px 12px;
+    font-family: var(--catalog-font-sans);
     font-size: 13px;
+    font-weight: 500;
     line-height: 1;
+    color: var(--c-text);
+  }
+
+  @media (max-width: 520px) {
+    .products-title {
+      font-size: 36px;
+    }
   }
 }
