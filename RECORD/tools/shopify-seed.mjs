@@ -53,10 +53,9 @@ if (!grant.ok || !grantBody.access_token) fail('client-credentials grant', { sta
 const adminToken = grantBody.access_token;
 const scopes = (grantBody.scope || '').split(',');
 console.log(`admin token: ok (scopes: ${scopes.join(', ')})`);
-for (const need of ['read_products', 'write_products']) {
-  if (!scopes.includes(need)) {
-    fail('scope check', `the app lacks Admin scope "${need}". Add read_products + write_products (and write_publications) to asteroid-metals-app in the Dev Dashboard, release the version, reinstall on ${store}, re-run.`);
-  }
+// write_products implies read_products; the grant lists only the write scope
+if (!scopes.includes('write_products')) {
+  fail('scope check', `the app lacks Admin scope "write_products". Add it (and write_publications) to asteroid-metals-app in the Dev Dashboard, release the version, reinstall on ${store}, re-run.`);
 }
 
 const admin = async (query, variables = {}) => {
