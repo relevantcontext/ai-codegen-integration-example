@@ -1,16 +1,19 @@
 // Products catalog — converted from the Figma frame `rare-metal-catalog`
 // (RECORD/inputs/A1-figma-catalog.*, updated at B0-2 from
-// RECORD/inputs/B0-figma-catalog-v2.*). Per the A1-2 ruling the styles ARE
-// the design's: its colours, type, spacing and dark surface are used as
-// drawn, in both app colour schemes. The design values are held as custom
-// properties on the section root; the typeface comes from _products-assets.scss.
+// RECORD/inputs/B0-figma-catalog-v2.*; light mode at B3-2 from
+// RECORD/inputs/B3-figma-catalog-light.*). Per the A1-2 ruling the styles
+// ARE the design's. Two frames, two modes: the light frame's values are the
+// defaults (the app's default scheme is light), the dark frame's values
+// apply under the app's [data-theme='dark'] — the catalog follows the
+// theme toggle like the rest of the app. Values are custom properties on
+// the section root; the typeface comes from _products-assets.scss.
 .page-view .page-item--catalog {
   // the page-item wrapper carries the frame's own surface and padding
   --pi-padding: 100px 80px;
   --pi-radius: 0;
   --pi-shadow: none;
-  background: #091725;
-  color: #f3f4f6;
+  background: #f0f4f8;
+  color: #111827;
 
   @media (max-width: 900px) {
     --pi-padding: 64px 32px;
@@ -20,15 +23,26 @@
   }
 }
 
+[data-theme='dark'] .page-view .page-item--catalog {
+  background: #091725;
+  color: #f3f4f6;
+}
+
 .page-item--products {
-  --c-section: #091725;
-  --c-bg: #08080a;
-  --c-card: #111115;
-  --c-border: #222228;
-  --c-dot: #33333c;
-  --c-text: #f3f4f6;
-  --c-muted: #8e8e93;
+  // light frame (28:2)
+  --c-section: #f0f4f8;
+  --c-bg: #f3f4f6;
+  --c-card: #ffffff;
+  --c-filter-bg: #ffffff;
+  --c-border: #d1d5db;
+  --c-dot: #d1d5db;
+  --c-text: #111827;
+  --c-muted: #6b7280;
   --c-accent: #d4c3a3;
+  --c-eyebrow: #6b7280;
+  --c-mass: #6b7280;
+  --c-price-sale: #111827;
+  --c-footnote-link: #6b7280;
   --cols: 3;
 
   display: flex;
@@ -36,6 +50,22 @@
   gap: 48px;
   color: var(--c-text);
   font-family: var(--catalog-font-sans);
+
+  // dark frame (4:4)
+  [data-theme='dark'] & {
+    --c-section: #091725;
+    --c-bg: #08080a;
+    --c-card: #111115;
+    --c-filter-bg: transparent;
+    --c-border: #222228;
+    --c-dot: #33333c;
+    --c-text: #f3f4f6;
+    --c-muted: #8e8e93;
+    --c-eyebrow: #d4c3a3;
+    --c-mass: #d4c3a3;
+    --c-price-sale: #d4c3a3;
+    --c-footnote-link: #d4c3a3;
+  }
 
   // ---- header block ---------------------------------------------------
   .products-header {
@@ -52,7 +82,7 @@
     font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
-    color: var(--c-accent);
+    color: var(--c-eyebrow);
   }
 
   .products-title {
@@ -94,6 +124,7 @@
     gap: 12px;
     block-size: 40px;
     padding: 10px 16px;
+    background: var(--c-filter-bg);
     border: 1px solid var(--c-border);
     border-radius: 4px;
     white-space: nowrap;
@@ -128,7 +159,7 @@
     cursor: pointer;
 
     option {
-      color: #08080a;
+      color: #111827;
     }
 
     &:focus {
@@ -266,7 +297,7 @@
   }
 
   .product-mass {
-    color: var(--c-accent);
+    color: var(--c-mass);
   }
 
   .product-row {
@@ -303,7 +334,7 @@
   }
 
   .product-tile.is-on-sale .product-price:not(.product-price--was) {
-    color: var(--c-accent);
+    color: var(--c-price-sale);
   }
 
   .product-valuation__label {
@@ -407,7 +438,7 @@ main#app .page-item--products {
 
   // `main#app p` sets a colour; restate the frame's per-element colours
   .products-eyebrow {
-    color: var(--c-accent);
+    color: var(--c-eyebrow);
   }
 
   .products-count,

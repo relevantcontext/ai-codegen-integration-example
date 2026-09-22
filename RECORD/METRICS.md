@@ -11,6 +11,7 @@
 | B1 | ruled satisfied 2026-09-22 (no work) | — | — | 0 | 0 | n/a — record-only tag |
 | B0-r2 | 12:05–12:42 (2026-09-22): Figma re-pull, Inter self-hosted, route order, verification | not metered | not metered | 1 model prompt (`prompts/B0-2.md`) | 0 (a post-confirmation update, not a correction; the shop title was Frank's own CMS edit) | PASS — all checks, smoke + in-app, console receipt, flow check (`verification/B0-r2/`) |
 | B3 | 12:44–13:10 cleanup, verification, CloudFront, deploy, live checks; 13:20–13:28 DNS + re-verification; 13:35 record fix (2026-09-22) | not metered | not metered | 1 model prompt (`prompts/B3-1.md`) | 0 | PASS locally and live at https://justmetu.com (`verification/B3/`, `verification/B3-live/`); checkout reachable, test order behind the store password is Frank's step |
+| B3-r4 | 13:40–14:08 (2026-09-22): Figma light frame pulled + pinned, theme scoping, both-scheme captures, redeploy, live re-check | not metered | not metered | 1 model prompt (`prompts/B3-2.md`) | 0 | PASS locally and live (`verification/B3-r4/`, `B3-r4-live/`) |
 
 A0: spyne-cli did not log time, tokens, cost, or generator model for the create-app run. From A1 on every field is captured before the stage closes.
 A1: tokens and cost were not metered — the conversion ran inside an interactive Claude Code session that exposes no per-task token or cost log. Recorded as "not metered" rather than estimated.

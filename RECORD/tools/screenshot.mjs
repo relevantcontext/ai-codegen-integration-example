@@ -191,6 +191,22 @@ for (const href of hrefs) {
   console.log(`${errors.length ? 'FAIL' : 'ok  '}  ${href} -> ${file}`);
 }
 
+// the shop page in the app's other colour scheme (theme toggle in the nav)
+{
+  const errors = [];
+  const page = await context.newPage();
+  watch(page, errors);
+  await page.goto(`${origin}/shop`, { waitUntil: 'networkidle' });
+  const toggled = await page.evaluate(() => { const b = document.querySelector('#theme-toggle'); b?.click(); return Boolean(b); });
+  await page.waitForTimeout(800);
+  const theme = await page.evaluate(() => document.querySelector('main#app')?.dataset.theme);
+  const file = `shop-${theme ?? 'toggled'}.png`;
+  await page.screenshot({ path: path.join(shotDir, file), fullPage: true });
+  await page.close();
+  results.push({ href: `/shop (theme toggled → ${theme})`, file, title: '', ok: toggled && errors.length === 0, errors });
+  console.log(`${!toggled || errors.length ? 'FAIL' : 'ok  '}  /shop theme ${theme} -> ${file}`);
+}
+
 // in-app navigation pass: one page, every nav link clicked in order, twice
 const navErrors = [];
 const navPage = await context.newPage();

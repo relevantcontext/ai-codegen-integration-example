@@ -158,3 +158,11 @@ Format: artifact — what it is — origin — model / prompt / version — stag
 - `RECORD/verification/B3-live/`, `RECORD/screenshots/B3-live/` — re-run against https://justmetu.com — B3-r2
 - `RECORD/verification/B3/README.md` — written at B3-r3 (missed at B3 by a failed shell chain) — B3-r3
 
+## B3-r4 — light mode (model-written; agent: Claude Code, claude-fable-5-1; prompt `prompts/B3-2.md`)
+
+- `RECORD/inputs/B3-figma-catalog-light.md`, `.png` — frame `28:2` pull (`get_design_context`, `get_screenshot`) — B3-r4
+- `src/scss/03-components/pages/page-items/_products.scss` — theme-scoped custom properties — B3-r4
+- `RECORD/tools/screenshot.mjs` — theme-toggled shop capture added — tooling — B3-r4
+- Deploy: `aws s3 sync` (additive) + invalidation `IDBKAYU80DOJPRCPJ3UTJC7CRH` — B3-r4
+- `RECORD/screenshots/B3-r4/`, `B3-r4-live/` — five routes + `shop-dark.png`, local and live — B3-r4
+

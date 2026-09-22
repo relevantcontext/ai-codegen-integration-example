@@ -312,3 +312,14 @@ changed and what the deploy found.
 | 7 | Deploy to the real URL | mapped (r2) | Live at **https://justmetu.com** after the Route53 alias moved from the S3 website endpoint to the distribution on Frank's word. |
 | 8 | Cart and checkout end to end | partial (ruled) | Add → cart → hosted checkout reach verified on the live domain; the store keeps its password by Frank's ruling, so the test order past that page is his step. |
 
+### B3-2 — light mode (Frank, 2026-09-22; `prompts/B3-2.md`)
+
+| # | Element | Status | Note |
+|---|---|---|---|
+| 9 | Light-mode frame `28:2` | mapped | Pinned (`inputs/B3-figma-catalog-light.*`). Same structure as `4:4`; only colours differ. No Figma variables — two frames. |
+| 10 | Catalog follows the app theme | mapped | Light values default, dark under `[data-theme='dark']` (the app's own theme attribute, toggled in the nav). Previously dark in both schemes (A1-r2 decision, now superseded by the design). |
+| 11 | Per-role colours split | mapped | The two frames disagree on which elements take the accent (eyebrow, mass, footnote: accent in dark, muted in light), so those got their own custom properties (`--c-eyebrow`, `--c-mass`, `--c-footnote-link`) alongside `--c-filter-bg` (white vs transparent). |
+| 12 | Sale price colour in light | inferred | The light frame has no sale state; accent on white fails contrast, so the sale price uses the text colour in light and the accent in dark (`--c-price-sale`). |
+| 13 | Select popup option colour | inferred | Was hard-coded for the dark popup; now the light text colour (native popups are light on both). |
+| 14 | Redeploy | mapped | Sync + invalidation; live checks green incl. a new dark-scheme capture. |
+
