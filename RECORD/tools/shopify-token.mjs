@@ -3,7 +3,7 @@
 //   set -a && source .env && set +a && node RECORD/tools/shopify-token.mjs
 //
 // Env: SHOPIFY_CLIENT_ID, SHOPIFY_CLIENT_SECRET (Dev Dashboard app credentials),
-//      optional SHOPIFY_STORE (default 81et1p-m2.myshopify.com),
+//      optional SHOPIFY_STORE (default asteroid-metals.myshopify.com),
 //      optional SHOPIFY_API_VERSION (default 2026-04).
 //
 // 1. Client-credentials grant -> short-lived Admin API token (never printed).
@@ -14,7 +14,7 @@
 // The Storefront token is public by design and is what the app's fetch channel
 // carries; the client secret never leaves this process.
 
-const store = process.env.SHOPIFY_STORE || '81et1p-m2.myshopify.com';
+const store = process.env.SHOPIFY_STORE || 'asteroid-metals.myshopify.com';
 const version = process.env.SHOPIFY_API_VERSION || '2026-04';
 const clientId = process.env.SHOPIFY_CLIENT_ID;
 const clientSecret = process.env.SHOPIFY_CLIENT_SECRET;
