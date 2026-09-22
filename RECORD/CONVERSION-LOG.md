@@ -277,3 +277,12 @@ one binding, one deletion, one code fix; the rest left with reasons.
 6 ARIA additions, 5 UI-fix elements (1 inferred extra). Human corrections: the three B0
 instructions are the stage's prompt, not corrections.
 
+## B1 — Generated images (satisfied by ruling)
+
+Frank's ruling, 2026-09-22: the six Figma-generated product images brought in at A1-r2
+(`src/static/imgs/figma-*.jpg`, Figma in-file agent, model not disclosed by Figma, prompt in
+`prompts/A1-0-figma.md`) satisfy B1 for the catalog. No regeneration pass. The page images
+(home hero, shop banner, about, cart) remain Pexels stock, attributed in `image-manifest.json`;
+they are not catalog placeholders and were not in B1's scope as ruled. B2 (generated product
+set) stays deferred.
+
