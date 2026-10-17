@@ -166,3 +166,11 @@ Format: artifact — what it is — origin — model / prompt / version — stag
 - Deploy: `aws s3 sync` (additive) + invalidation `IDBKAYU80DOJPRCPJ3UTJC7CRH` — B3-r4
 - `RECORD/screenshots/B3-r4/`, `B3-r4-live/` — five routes + `shop-dark.png`, local and live — B3-r4
 
+## B4 — follow-ups (model-written unless noted; agent: Claude Code, claude-fable-5-1; prompt `prompts/B4-1.md`)
+
+- `src/dev-tools.js`, `src/app/components/ui-elements/null-views/cms-ready-null-view.js`, `src/app/traits/ui/cms-ready-null-view-traits.js` — ported verbatim from application-shell commit `a84647b` (Shell material, adopted as app code) — B4
+- `src/index.js` — `config.shopify.storefrontPassword`, `config.shopify.testMode` — B4
+- `src/app/traits/channel/channel-cart-traits.js` — `channelCart$CheckoutUrl` conform — B4
+- `src/app/components/page-items/templates/cart.tmpl.html`, `traits/page/cart-view-traits.js`, `_cart.scss`, `app.model.json` (cart `testModeText`) — test-mode notice — B4
+- `noisemap.html`, `noisemap.json` — noisemap analysis of `src/`, placed by Frank, committed on his word — B4
+

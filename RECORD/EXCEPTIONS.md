@@ -17,3 +17,4 @@ Framework, grammar, CLI, Shell, and `/RECORD/tools/` are material/tooling and ar
 | B0-r2 | — | none (Frank's shop-title removal was a CMS content change, not a code edit) | — |
 | B3 | — | none | — |
 | B3-r4 | — | none | — |
+| B4 | `src/dev-tools.js` | Frank hand-added a 100 ms `setTimeout` after the animation-frame resolve to delay data-channel registration (a first attempt at the CMS race). No prompt; superseded by the ported application-shell fix in the same stage. | — |

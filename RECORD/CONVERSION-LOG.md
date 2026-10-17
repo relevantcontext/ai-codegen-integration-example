@@ -323,3 +323,15 @@ changed and what the deploy found.
 | 13 | Select popup option colour | inferred | Was hard-coded for the dark popup; now the light text colour (native popups are light on both). |
 | 14 | Redeploy | mapped | Sync + invalidation; live checks green incl. a new dark-scheme capture. |
 
+## B4 — Follow-ups after the live deploy (2026-10-17; `prompts/B4-1.md`)
+
+| # | Element | Status | Note |
+|---|---|---|---|
+| 1 | CMS registry race fix | mapped (port) | application-shell `a84647b` (2026-10-17) ported as-is: `CmsReadyNullView` + `CmsReadyNullViewTraits` listen for `CHANNEL_FETCH_REGISTRY_INFO`'s response or error and resolve `devToolsReady`; data channels register behind that answer (5 s fallback when the adapter is down). Replaces the `requestAnimationFrame` resolve — and also removes the hidden-pane boot gotcha noted at A4, since nothing waits on an animation frame any more. |
+| 2 | Frank's interim edit to `dev-tools.js` | superseded | A hand edit (a 100 ms `setTimeout` after the animation frame) was in the working tree; logged in EXCEPTIONS as a human code edit, replaced by the port. |
+| 3 | Checkout lands on the store home after the password | inferred | Traced in a browser: `/cart/c/…` → 302 → `/checkouts/cn/…` (200) → client redirect to `/password`; the password form carries only `authenticity_token`, no return target, so Shopify sends the visitor to `/` after unlocking. The cart channel now conforms `checkoutUrl` to `https://<store>/password?return_to=<checkout path>` when `config.shopify.storefrontPassword` is true. Whether Shopify honours `return_to` on that page can only be seen by entering the password — Frank's test. If it does not, the remaining fixes are Shopify-side (remove the storefront password, or share the preview-unlock link). |
+| 4 | Payments test-only | partial | The app cannot read the gateway. Frank confirms in Settings → Payments (Shopify's test gateway / test mode). The app states it: `config.shopify.testMode` shows a cart-page notice whose copy is author data (`testModeText`). |
+| 5 | Hosting move to a relevantcontext.io subdomain | deferred | Later step per Frank. |
+| 6 | `app.model.json` in the working tree | reverted (ruled) | The B0-r2 title removal had come back and `fontFamilyStr` was restored. Frank's explanation: a hashed `app.model.<hash>.json` (webpack's production cache-busting name) had been copied into `src/static/data` for development, so the CMS adapter edited and wrote back from that stale copy. The copy is gone; the file is reverted to `beta-B3-r4` content plus the new `testModeText` key. Checked: the webpack JSON rule already emits the un-hashed `[name].[ext]` in development, so no build change was needed. |
+| 7 | `noisemap.html`, `noisemap.json` | committed (ruled) | A noisemap analysis of this app's `src/` (VBLC noise analyzer output) that Frank placed in the repo root; project artifacts, not app code. |
+

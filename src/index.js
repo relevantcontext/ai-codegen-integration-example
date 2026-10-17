@@ -86,6 +86,12 @@ const config = {
   shopify: {
     store: 'asteroid-metals.myshopify.com',
     apiVersion: '2026-04',
+    // the dev store keeps its storefront password: route the checkout link
+    // through the password page with a return target, so a visitor who
+    // unlocks the store lands on the checkout rather than the store home
+    storefrontPassword: true,
+    // payments are test-only (Shopify test gateway); the cart page says so
+    testMode: true,
     storefrontAccessToken: '1dbd6bb0d39df2850e10e42cf3f1eac2',
   },
 };

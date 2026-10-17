@@ -1,4 +1,4 @@
-import { SpyneTrait } from 'spyne';
+import { SpyneTrait, SpyneAppProperties } from 'spyne';
 import { CartLineItem } from 'components/page-items/cart-line-item.js';
 
 export class CartViewTraits extends SpyneTrait {
@@ -7,9 +7,15 @@ export class CartViewTraits extends SpyneTrait {
     super(context, traitPrefix);
   }
 
-  /** Empty until the channel says otherwise (replay makes that immediate). */
+  /**
+   * Empty until the channel says otherwise (replay makes that immediate).
+   * The test-mode notice is author copy, shown only while the config says
+   * payments are test-only.
+   */
   static cartView$OnRendered() {
     this.props.el.classList.add('is-empty');
+    const note = this.props.el$('.cart-test-mode').el;
+    if (note) note.hidden = SpyneAppProperties.config?.shopify?.testMode !== true;
   }
 
   /**

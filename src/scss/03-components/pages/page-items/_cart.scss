@@ -132,6 +132,19 @@
     font-weight: var(--fw-semibold);
   }
 
+  .cart-test-mode {
+    margin: 0;
+    padding: 0.6rem 0.85rem;
+    border: 1px dashed var(--border);
+    border-radius: 4px;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+
+    &[hidden] {
+      display: none;
+    }
+  }
+
   .cart-error {
     margin: 0;
     color: var(--error);
