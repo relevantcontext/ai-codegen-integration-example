@@ -1,0 +1,14 @@
+{
+ "checkoutHref": "https://asteroid-metals.myshopify.com/password?return_to=%2Fcart%2Fc%2FhWNI5FFi0vmr7OdfODU191BC%3Fkey%3DUkkTh0onZ3qp0yTg",
+ "hops": [
+  "200 https://asteroid-metals.myshopify.com/password?return_to=%2Fcart%2Fc%2FhWNI5FFi0vmr7OdfODU191BC%3Fkey%3DUkkTh0"
+ ],
+ "final": "https://asteroid-metals.myshopify.com/password?return_to=%2Fcart%2Fc%2FhWNI5FFi0vmr7OdfODU191BC%3Fkey%3DUkkTh0onZ3qp0yTgRzkPgZ-NY5wc9x2a6IurS64KLHjubMdvpIkny81lRGIxHC4VYloYcwJ6VCIRzjO7x6bwbm7jN4fNzKZF4uPFMccpZ955347YXvuuf4pb_Ya2Vrb6iKxkifE_pxWvBpWXBcqkwg%253D%253D",
+ "hasReturn": {
+  "url": "https://asteroid-metals.myshopify.com/password?return_to=%2Fcart%2Fc%2FhWNI5FFi0",
+  "hiddenInputs": [
+   "authenticity_token"
+  ],
+  "title": "asteroid metals"
+ }
+}

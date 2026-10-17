@@ -1,0 +1,9 @@
+> remote: https://justmetu.com (no build)
+ok    / -> home.png
+ok    /shop -> shop.png
+ok    /cart -> cart.png
+ok    /about -> about.png
+ok    /about/contact -> about-contact.png
+ok    /shop theme dark -> shop-dark.png
+ok    in-app navigation (8 clicks)
+exit: 0
