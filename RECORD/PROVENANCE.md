@@ -175,4 +175,5 @@ Format: artifact — what it is — origin — model / prompt / version — stag
 - `noisemap.html`, `noisemap.json` — noisemap analysis of `src/`, placed by Frank, committed on his word — B4
 - `RECORD/inputs/B4-shopify-sidekick-reply.md` — Shopify assistant's reply to the connection brief, pasted by Frank — B4-r2
 - `src/app/traits/channel/channel-cart-traits.js` (return_to conform removed), `src/index.js`, `cart.tmpl.html`, `cart-view-traits.js`, `_cart.scss`, `app.model.json` (password hint copy + unlock link) — B4-r2
+- `src/app/components/page-items/cart-view.js`, `traits/page/cart-view-traits.js`, `templates/cart.tmpl.html`, `src/index.js` (`storefrontUnlockPassword`), `RECORD/tools/shopify-config.mjs` (copies `SHOPIFY_STOREFRONT_PASSWORD`) — unlock on checkout — B4-r3
 

@@ -1,4 +1,4 @@
-import { ViewStream } from 'spyne';
+import { ViewStream, ChannelPayloadFilter } from 'spyne';
 import { CartViewTraits } from 'traits/page/cart-view-traits.js';
 
 // The Cart page's cart: renders its chrome from the page-item data (author
@@ -7,12 +7,14 @@ import { CartViewTraits } from 'traits/page/cart-view-traits.js';
 // empty state. The cart channel replays, so a freshly mounted cart page
 // shows the current cart at once. UI strings that are not author copy
 // (control names for assistive technology, the error notice) are
-// developer-owned defaults on props.
+// developer-owned defaults on props. The checkout link is this view's own
+// broadcast: on a password-protected development store the trait unlocks
+// the storefront in a new window before sending it to Shopify's checkout.
 export class CartView extends ViewStream {
   constructor(props = {}) {
     props.class = 'cart-view';
     props.traits = [CartViewTraits];
-    props.channels = ['CHANNEL_CART'];
+    props.channels = ['CHANNEL_CART', 'CHANNEL_UI'];
     props.ui = {
       removeLabel: 'Remove',
       quantityGroup: 'Quantity',
@@ -26,14 +28,16 @@ export class CartView extends ViewStream {
   }
 
   addActionListeners() {
+    const checkoutFilter = new ChannelPayloadFilter({ action: 'checkout' });
     return [
       ['CHANNEL_CART_UPDATED_EVENT', 'cartView$OnCartEvent'],
       ['CHANNEL_CART_ERROR_EVENT', 'cartView$OnCartError'],
+      ['CHANNEL_UI_CLICK_EVENT', 'cartView$OnCheckoutClick', checkoutFilter],
     ];
   }
 
   broadcastEvents() {
-    return [];
+    return [['.cart-checkout', 'click']];
   }
 
   onRendered() {

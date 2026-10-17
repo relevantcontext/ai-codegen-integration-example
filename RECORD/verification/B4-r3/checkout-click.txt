@@ -1,0 +1,13 @@
+{
+ "before": {
+  "hintHidden": false,
+  "href": "https://asteroid-metals.myshopify.com/cart/c/hWNI5NTaJnDVxpbEGeLMh4hW?key=…",
+  "action": "checkout",
+  "pd": "true"
+ },
+ "opened": [],
+ "submitted": [],
+ "navigatedTo": [
+  "https://asteroid-metals.myshopify.com/password"
+ ]
+}

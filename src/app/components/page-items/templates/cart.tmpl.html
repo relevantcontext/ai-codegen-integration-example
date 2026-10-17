@@ -19,7 +19,14 @@
       <span class="cart-total__label">{{subtotalLabel}}</span>
       <span class="cart-total__value"></span>
     </p>
-    <a class="cart-checkout btn btn-primary" href="#" rel="noopener">{{checkoutLabel}}</a>
+    <a
+      class="cart-checkout btn btn-primary"
+      href="#"
+      rel="noopener"
+      data-action="checkout"
+      data-event-prevent-default="true"
+      >{{checkoutLabel}}</a
+    >
   </footer>
 
   <p class="cart-error" role="alert"></p>

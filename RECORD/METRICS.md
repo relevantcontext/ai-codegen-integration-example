@@ -14,6 +14,7 @@
 | B3-r4 | 13:40–14:08 (2026-09-22): Figma light frame pulled + pinned, theme scoping, both-scheme captures, redeploy, live re-check | not metered | not metered | 1 model prompt (`prompts/B3-2.md`) | 0 | PASS locally and live (`verification/B3-r4/`, `B3-r4-live/`) |
 | B4 | 2026-10-17, ~45 min: shell fix port, checkout-link conform, test-mode notice, stale-model diagnosis, verification, deploy | not metered | not metered | 1 model prompt (`prompts/B4-1.md`) | 1 human code edit (dev-tools.js, superseded — see EXCEPTIONS) | PASS locally and live (`verification/B4/`, `B4-live/`); password-return test is Frank's |
 | B4-r2 | 2026-10-17, ~15 min: Shopify's reply applied, verification, redeploy | not metered | not metered | 0 (ruling from Shopify's assistant via Frank) | 0 | PASS locally and live (`verification/B4-r2/`, `B4-r2-live/`); test order with the Bogus Gateway card is Frank's |
+| B4-r3 | 2026-10-17, ~25 min: unlock-on-checkout, stubbed click check, record | not metered | not metered | 1 model prompt (`prompts/B4-2.md`) | 0 | PASS locally (`verification/B4-r3/`); the live unlock path needs Frank's env value and his test |
 
 A0: spyne-cli did not log time, tokens, cost, or generator model for the create-app run. From A1 on every field is captured before the stage closes.
 A1: tokens and cost were not metered — the conversion ran inside an interactive Claude Code session that exposes no per-task token or cost log. Recorded as "not metered" rather than estimated.

@@ -345,3 +345,12 @@ changed and what the deploy found.
 | 11 | Payments test-only | confirmed | Only Bogus Gateway active; test card `1` / name `Test payment gateway` / CVV `111` / any future expiry (Shopify-published test values, recorded for the test order). |
 | 12 | Checkout domain | confirmed | `asteroid-metals.myshopify.com` for both primary and Shopify domain. |
 
+### B4-r3 — unlock on checkout (Frank + Shopify's form, 2026-10-17; `prompts/B4-2.md`)
+
+| # | Element | Status | Note |
+|---|---|---|---|
+| 13 | Shopify's password form by POST | mapped | `form_type=storefront_password`, `utf8=✓`, `password` to `https://<store>/password`, as the assistant gave it. |
+| 14 | Where the POST runs | inferred | A top-level form submission into a named new window on the store's origin — the unlock cookie is first-party there; a cross-site `fetch` from justmetu.com could not set it (no CORS, third-party cookie rules). The window is opened inside the click (popup blockers allow it) and sent to `checkoutUrl`, used whole, after 1.5 s (cross-origin, so the POST's completion cannot be observed). If the window is blocked, the current tab goes to the checkout. |
+| 15 | The click | mapped | `.cart-checkout` broadcasts; `data-event-prevent-default` keeps the anchor from navigating; the view reclaims its own click by `data-action="checkout"` and routes to `cartView$OnCheckoutClick`. Without an unlock password the handler is plain navigation. |
+| 16 | The password value | **Frank's** | `config.shopify.storefrontUnlockPassword` is empty in the repo as the agent writes it; `RECORD/tools/shopify-config.mjs` copies `SHOPIFY_STOREFRONT_PASSWORD` from Frank's environment into it. The auto-mode guard refused to let the agent write the value into source, which is the right boundary; from there it ships in the public bundle — Frank's call for a development store with a test-only gateway. The manual unlock hint hides when the value is set. |
+

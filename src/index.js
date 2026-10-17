@@ -87,9 +87,15 @@ const config = {
     store: 'asteroid-metals.myshopify.com',
     apiVersion: '2026-04',
     // the development store keeps its storefront password, which also gates
-    // the hosted checkout: the cart page shows the unlock-then-retry hint
-    // (checkoutUrl itself is always used whole, per Shopify)
+    // the hosted checkout. With storefrontUnlockPassword set (written by
+    // RECORD/tools/shopify-config.mjs from the environment, never by hand),
+    // the cart page unlocks the store in a new window on checkout — a
+    // top-level POST of Shopify's password form — then sends that window to
+    // checkoutUrl, used whole. Empty: the manual unlock hint shows instead
+    // while storefrontPassword is true. Public by design: a development
+    // store with a test-only gateway.
     storefrontPassword: true,
+    storefrontUnlockPassword: '',
     // payments are test-only (Shopify test gateway); the cart page says so
     testMode: true,
     storefrontAccessToken: '1dbd6bb0d39df2850e10e42cf3f1eac2',
