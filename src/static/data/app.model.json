@@ -389,6 +389,9 @@
               "subtitle": "",
               "emptyText": "Your cart is empty. Add samples from the catalog to request a quote.",
               "testModeText": "Test store: checkout runs on Shopify’s test gateway and no real payment is taken.",
+              "passwordHintText": "This development store is password-protected, and so is its checkout. Unlock the store in a new tab first, then come back and proceed to checkout.",
+              "passwordHintLinkText": "Unlock the store",
+              "attrStoreUnlockHref": "https://asteroid-metals.myshopify.com/password",
               "subtotalLabel": "Subtotal",
               "checkoutLabel": "Proceed to checkout"
             }

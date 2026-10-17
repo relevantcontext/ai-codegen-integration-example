@@ -9,6 +9,10 @@
   <ul class="cart-lines" aria-live="polite"></ul>
 
   <p class="cart-test-mode" role="note" hidden>{{testModeText}}</p>
+  <p class="cart-password-hint" role="note" hidden>
+    {{passwordHintText}}
+    <a class="cart-password-hint__link" href="{{attrStoreUnlockHref}}" target="_blank" rel="noopener">{{passwordHintLinkText}}</a>
+  </p>
 
   <footer class="cart-summary">
     <p class="cart-total" role="status" aria-live="polite">

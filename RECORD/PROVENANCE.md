@@ -173,4 +173,6 @@ Format: artifact — what it is — origin — model / prompt / version — stag
 - `src/app/traits/channel/channel-cart-traits.js` — `channelCart$CheckoutUrl` conform — B4
 - `src/app/components/page-items/templates/cart.tmpl.html`, `traits/page/cart-view-traits.js`, `_cart.scss`, `app.model.json` (cart `testModeText`) — test-mode notice — B4
 - `noisemap.html`, `noisemap.json` — noisemap analysis of `src/`, placed by Frank, committed on his word — B4
+- `RECORD/inputs/B4-shopify-sidekick-reply.md` — Shopify assistant's reply to the connection brief, pasted by Frank — B4-r2
+- `src/app/traits/channel/channel-cart-traits.js` (return_to conform removed), `src/index.js`, `cart.tmpl.html`, `cart-view-traits.js`, `_cart.scss`, `app.model.json` (password hint copy + unlock link) — B4-r2
 

@@ -14,8 +14,14 @@ export class CartViewTraits extends SpyneTrait {
    */
   static cartView$OnRendered() {
     this.props.el.classList.add('is-empty');
+    const shopify = SpyneAppProperties.config?.shopify ?? {};
     const note = this.props.el$('.cart-test-mode').el;
-    if (note) note.hidden = SpyneAppProperties.config?.shopify?.testMode !== true;
+    if (note) note.hidden = shopify.testMode !== true;
+    // the hosted checkout sits behind the store's password on a development
+    // store: say so, and link the password page in a new tab so the visitor
+    // can unlock the store and come back to the checkout link
+    const hint = this.props.el$('.cart-password-hint').el;
+    if (hint) hint.hidden = shopify.storefrontPassword !== true;
   }
 
   /**

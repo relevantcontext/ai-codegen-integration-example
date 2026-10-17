@@ -86,9 +86,9 @@ const config = {
   shopify: {
     store: 'asteroid-metals.myshopify.com',
     apiVersion: '2026-04',
-    // the dev store keeps its storefront password: route the checkout link
-    // through the password page with a return target, so a visitor who
-    // unlocks the store lands on the checkout rather than the store home
+    // the development store keeps its storefront password, which also gates
+    // the hosted checkout: the cart page shows the unlock-then-retry hint
+    // (checkoutUrl itself is always used whole, per Shopify)
     storefrontPassword: true,
     // payments are test-only (Shopify test gateway); the cart page says so
     testMode: true,

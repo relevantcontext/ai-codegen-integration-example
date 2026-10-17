@@ -234,7 +234,8 @@ export class ChannelCartTraits extends SpyneTrait {
   static channelCart$ConformCart(cart = {}) {
     return {
       cartId: cart.id ?? '',
-      checkoutUrl: ChannelCartTraits.channelCart$CheckoutUrl(cart.checkoutUrl ?? ''),
+      // Shopify's rule: use checkoutUrl whole — never reconstruct its path or drop its query
+      checkoutUrl: cart.checkoutUrl ?? '',
       totalQuantity: cart.totalQuantity ?? 0,
       subtotal: ChannelCartTraits.channelCart$FormatMoney(cart.cost?.subtotalAmount),
       lines: (cart.lines?.nodes ?? []).map((line) => ({
@@ -247,24 +248,6 @@ export class ChannelCartTraits extends SpyneTrait {
         price: ChannelCartTraits.channelCart$FormatMoney(line.merchandise?.price),
       })),
     };
-  }
-
-  /**
-   * Shopify's checkoutUrl is a storefront URL; on a password-protected
-   * storefront it is redirected to /password and the return target is lost.
-   * When the config says the storefront is passworded, the link goes to the
-   * password page with the checkout path as return_to (pure; config-driven).
-   */
-  static channelCart$CheckoutUrl(checkoutUrl = '') {
-    const { storefrontPassword, store } = SpyneAppProperties.config?.shopify ?? {};
-    if (!checkoutUrl || storefrontPassword !== true) return checkoutUrl;
-    try {
-      const url = new URL(checkoutUrl);
-      const returnTo = encodeURIComponent(url.pathname + url.search);
-      return `https://${store || url.host}/password?return_to=${returnTo}`;
-    } catch {
-      return checkoutUrl;
-    }
   }
 
   static channelCart$FormatMoney(money) {
