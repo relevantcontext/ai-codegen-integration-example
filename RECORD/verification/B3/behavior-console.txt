@@ -1,3 +1,4 @@
+# Sanitized for publication: Shopify cart keys replaced with <redacted>. The capture is otherwise verbatim.
 # after selecting the first metal option — console tab UI -> behavior-console-filter-ui.png
 
 CHANNELS CONSOLE
@@ -273,7 +274,7 @@ SPYNE_JSON_CMS_DATA
 {
     "action": "CHANNEL_CART_UPDATED_EVENT",
     "payload": {
-        "cartId": "gid://shopify/Cart/hWNH8HZHUliHtDbzGE1XxcSA?key=f69c1b16d3ff4530fd17d736af632531",
+        "cartId": "gid://shopify/Cart/hWNH8HZHUliHtDbzGE1XxcSA?key=<redacted>",
         "checkoutUrl": "https://asteroid-metals.myshopify.com/cart/c/hWNH8HZHUliHtDbzGE1XxcSA?key=Yswgv33BglxG2HM62F2krabUfGbeQnoO0SnCM84G_ZChHoBlpAn0pRhVjHhEq_bWVxkSxd-nikJ6WJPWfu_2y7k74qrZ1ZXkhcIGuj49CcizugVB0JbuuuyOriqsGTLizxGizBeF9QYa_Iovd0kGig%3D%3D",
         "totalQuantity": 1,
         "subtotal": "$4,200",
