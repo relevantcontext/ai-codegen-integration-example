@@ -382,3 +382,15 @@ changed and what the deploy found.
 | 22 | Dependencies mirrored from the shell | mapped (port) | `spyne-cli ^0.6.2 → ^0.7.3` (shell `19465c4`, clears the simple-git critical chain) and a lockfile refresh with the non-breaking `npm audit fix` (shell `ebe28ce`). Audit: 27 findings (4 critical, 21 high) → 14 high, 0 critical — identical to the shell's count; the rest sit in the test runner, `webpack-dev-server` and `eslint-webpack-plugin` and need major-version moves. `npm test` 27/27, build and smoke green on the new lockfile. |
 | 23 | Theme toggle 1–2 px below the links | fixed (both repos) | Measured: `.site-nav` had no `align-items`, so links stretched to the toggle's 2rem box and their text line sat at its top (text centre 21.5 px vs icon 23.5 px). `align-items: center` on `.site-nav`; after: 23 vs 23.5 px (sub-pixel). The same line is applied to application-shell's `header.scss` (committed there, not pushed). |
 
+### B4-r6 — unlock flow refined after Frank's first live test (2026-10-18)
+
+Frank's test with the password in the config: the new window showed the store home first, then
+the checkout — the timed hand-off working as designed, with the home page as a visible flash.
+
+| # | Element | Status | Note |
+|---|---|---|---|
+| 24 | `return_to` on the password form | inferred (test pending) | The form now carries `return_to` = the checkout path, asking Shopify to land on the checkout straight after the unlock. Unverified by Shopify's assistant; Frank's next test decides. The 1.5 s hand-off stays as the fallback. |
+| 25 | Interstitial | inferred | The new window shows "Opening checkout…" (developer-owned UI string) instead of a blank page while Shopify answers. |
+| 26 | Double dispatch | fixed | The stubbed check showed the handler running twice per click: the control was an `<a>`, and the page view broadcasts every anchor click, so the one click reached the channel twice. The control is now a `<button>` carrying `data-checkout-url` (dataset-as-payload); the trait reads the URL from the payload. One open, one submission, one hand-off. |
+| 27 | Record tools | updated | `b0-flow-check.mjs`, `b3-checkout-reach.mjs` read the button's dataset. |
+

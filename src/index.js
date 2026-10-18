@@ -95,7 +95,7 @@ const config = {
     // while storefrontPassword is true. Public by design: a development
     // store with a test-only gateway.
     storefrontPassword: true,
-    storefrontUnlockPassword: '',
+    storefrontUnlockPassword: 'metals',
     // payments are test-only (Shopify test gateway); the cart page says so
     testMode: true,
     storefrontAccessToken: '1dbd6bb0d39df2850e10e42cf3f1eac2',

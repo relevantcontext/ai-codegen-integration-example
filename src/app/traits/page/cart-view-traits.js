@@ -41,8 +41,8 @@ export class CartViewTraits extends SpyneTrait {
    * still blocks it, the current tab goes to the checkout instead.
    */
   static cartView$OnCheckoutClick(e) {
-    const checkoutUrl = e.srcElement?.el?.href ?? '';
-    if (!checkoutUrl || checkoutUrl.endsWith('#')) return;
+    const checkoutUrl = e.payload?.checkoutUrl ?? '';
+    if (!checkoutUrl) return;
 
     const { store, storefrontUnlockPassword } = SpyneAppProperties.config?.shopify ?? {};
     if (typeof storefrontUnlockPassword !== 'string' || !storefrontUnlockPassword || !store) {
@@ -55,8 +55,14 @@ export class CartViewTraits extends SpyneTrait {
       window.location.assign(checkoutUrl);
       return;
     }
+    CartViewTraits.cartView$WriteInterstitial(win, this.props.ui.openingCheckout);
 
-    const form = CartViewTraits.cartView$UnlockForm(store, storefrontUnlockPassword, CHECKOUT_WINDOW);
+    const form = CartViewTraits.cartView$UnlockForm(
+      store,
+      storefrontUnlockPassword,
+      CHECKOUT_WINDOW,
+      CartViewTraits.cartView$ReturnPath(checkoutUrl),
+    );
     document.body.appendChild(form);
     form.submit();
     form.remove();
@@ -72,14 +78,44 @@ export class CartViewTraits extends SpyneTrait {
 
   // ---- pure ----------------------------------------------------------------
 
-  /** Shopify's storefront password form, built off-template so it never passes through the CMS. */
-  static cartView$UnlockForm(store, password, target) {
+  /** The checkout URL's path and query, relative to the store — what return_to expects. */
+  static cartView$ReturnPath(checkoutUrl = '') {
+    try {
+      const url = new URL(checkoutUrl);
+      return url.pathname + url.search;
+    } catch {
+      return '';
+    }
+  }
+
+  /** The new window shows one line while Shopify answers, instead of a blank page. */
+  static cartView$WriteInterstitial(win, text = '') {
+    try {
+      win.document.write(
+        `<!doctype html><title>${text}</title><body style="font-family:system-ui,sans-serif;padding:2rem;color:#111827"><p>${text}</p></body>`,
+      );
+      win.document.close();
+    } catch {
+      // cross-origin or closed window: nothing to write
+    }
+  }
+
+  /**
+   * Shopify's storefront password form, built off-template so it never
+   * passes through the CMS. `return_to` asks Shopify to land on the checkout
+   * straight after the unlock instead of the store home; whether the password
+   * endpoint honours it is Shopify's call — the timed hand-off above covers
+   * the case where it does not.
+   */
+  static cartView$UnlockForm(store, password, target, returnTo = '') {
     const form = document.createElement('form');
     form.method = 'POST';
     form.action = `https://${store}/password`;
     form.target = target;
     form.hidden = true;
-    Object.entries({ form_type: 'storefront_password', utf8: '✓', password }).forEach(([name, value]) => {
+    const fields = { form_type: 'storefront_password', utf8: '✓', password };
+    if (returnTo) fields.return_to = returnTo;
+    Object.entries(fields).forEach(([name, value]) => {
       const input = document.createElement('input');
       input.type = 'hidden';
       input.name = name;
@@ -106,8 +142,12 @@ export class CartViewTraits extends SpyneTrait {
       });
 
     this.props.el$('.cart-total__value').el.innerText = subtotal;
+    // the button's dataset carries the live checkout URL — it rides the click's payload
     const checkout = this.props.el$('.cart-checkout').el;
-    if (checkout) checkout.href = checkoutUrl || '#';
+    if (checkout) {
+      checkout.dataset.checkoutUrl = checkoutUrl || '';
+      checkout.disabled = !checkoutUrl;
+    }
     this.props.el$('.cart-error').el.innerText = '';
     this.props.el.classList.toggle('is-empty', isEmpty === true || lines.length === 0);
   }

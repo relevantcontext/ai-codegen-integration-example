@@ -1,0 +1,25 @@
+{
+ "button": {
+  "tag": "BUTTON",
+  "disabled": false,
+  "url": "https://asteroid-metals.myshopify.com/cart/c/hWNI7G1EKFQ6Kxc"
+ },
+ "opened": [
+  "asteroid-metals-checkout"
+ ],
+ "submitted": [
+  {
+   "action": "https://asteroid-metals.myshopify.com/password",
+   "target": "asteroid-metals-checkout",
+   "fields": [
+    "form_type",
+    "utf8",
+    "password",
+    "return_to"
+   ]
+  }
+ ],
+ "handoffAfterDelay": [
+  "https://asteroid-metals.myshopify.com/cart/c/hWNI7G1EKFQ6KxcIUJRIa26c?"
+ ]
+}

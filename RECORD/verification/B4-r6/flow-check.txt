@@ -1,0 +1,114 @@
+{
+ "title": "Asteroid Metals Co.",
+ "acquireAria": "Acquire Osmium Bead",
+ "srOnlyWas": "was $4,800",
+ "afterClick": {
+  "cls": "product-tile is-on-sale is-adding",
+  "label": "Adding…",
+  "busy": "true",
+  "disabled": true
+ },
+ "added": {
+  "cls": "product-tile is-on-sale is-in-cart is-added",
+  "label": "Added"
+ },
+ "settled": {
+  "cls": "product-tile is-on-sale is-in-cart",
+  "label": "Acquire",
+  "disabled": false
+ },
+ "navBadge": {
+  "badge": "1",
+  "hidden": false,
+  "aria": "CART, 1 item"
+ },
+ "cart1": {
+  "lines": [
+   {
+    "id": "vNzFwI",
+    "title": "Iridium Nugget",
+    "qty": "1",
+    "price": "$4,200",
+    "decDisabled": true,
+    "removeAria": "Remove from cart: Iridium Nugget"
+   },
+   {
+    "id": "vNzFwI",
+    "title": "Osmium Bead",
+    "qty": "1",
+    "price": "$5,600",
+    "decDisabled": true,
+    "removeAria": "Remove from cart: Osmium Bead"
+   }
+  ],
+  "subtotal": "$9,800",
+  "badge": "2"
+ },
+ "cartAfterInc": {
+  "lines": [
+   {
+    "id": "vNzFwI",
+    "title": "Iridium Nugget",
+    "qty": "2",
+    "price": "$4,200",
+    "decDisabled": false,
+    "removeAria": "Remove from cart: Iridium Nugget"
+   },
+   {
+    "id": "vNzFwI",
+    "title": "Osmium Bead",
+    "qty": "1",
+    "price": "$5,600",
+    "decDisabled": true,
+    "removeAria": "Remove from cart: Osmium Bead"
+   }
+  ],
+  "subtotal": "$14,000",
+  "badge": "3"
+ },
+ "cartAfterDec": {
+  "lines": [
+   {
+    "id": "vNzFwI",
+    "title": "Iridium Nugget",
+    "qty": "1",
+    "price": "$4,200",
+    "decDisabled": true,
+    "removeAria": "Remove from cart: Iridium Nugget"
+   },
+   {
+    "id": "vNzFwI",
+    "title": "Osmium Bead",
+    "qty": "1",
+    "price": "$5,600",
+    "decDisabled": true,
+    "removeAria": "Remove from cart: Osmium Bead"
+   }
+  ],
+  "badge": "2"
+ },
+ "cartAfterRemove": {
+  "lines": [
+   {
+    "id": "vNzFwI",
+    "title": "Iridium Nugget",
+    "qty": "1",
+    "price": "$4,200",
+    "decDisabled": true,
+    "removeAria": "Remove from cart: Iridium Nugget"
+   }
+  ],
+  "badge": "1",
+  "isEmpty": false
+ },
+ "cartEmpty": {
+  "lines": [],
+  "isEmpty": true,
+  "badgeHidden": true,
+  "emptyTextVisible": "block"
+ },
+ "contactSubmit": "Send Message",
+ "footer": "Asteroid Metals Co. — Certified origin, verified purity, measurable rarity.",
+ "errors": []
+}
+exit: 0

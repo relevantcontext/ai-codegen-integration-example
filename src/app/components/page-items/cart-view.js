@@ -22,6 +22,7 @@ export class CartView extends ViewStream {
       increment: 'Increase quantity',
       remove: 'Remove from cart',
       errorText: 'The cart could not be updated. Please try again.',
+      openingCheckout: 'Opening checkout…',
       ...(props.ui ?? {}),
     };
     super(props);

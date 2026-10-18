@@ -10,7 +10,7 @@ await page.goto(origin+'/shop',{waitUntil:'networkidle'}); await page.waitForSel
 await page.$eval('.product-tile[data-product-id="palladium-crystal"] .product-acquire', b=>b.click());
 await page.waitForFunction(()=>document.querySelector('.product-tile[data-product-id="palladium-crystal"]')?.classList.contains('is-in-cart'),{timeout:10000});
 await page.$eval('a.nav[data-page-id="cart"]', a=>a.click()); await page.waitForSelector('.cart-line',{timeout:10000});
-const cart = await page.evaluate(()=>({lines:[...document.querySelectorAll('.cart-line__title')].map(e=>e.textContent), subtotal:document.querySelector('.cart-total__value').textContent, checkoutUrl:document.querySelector('.cart-checkout').href}));
+const cart = await page.evaluate(()=>({lines:[...document.querySelectorAll('.cart-line__title')].map(e=>e.textContent), subtotal:document.querySelector('.cart-total__value').textContent, checkoutUrl:document.querySelector('.cart-checkout').dataset.checkoutUrl}));
 const resp = await page.goto(cart.checkoutUrl,{waitUntil:'domcontentloaded',timeout:30000});
 await page.waitForTimeout(4000);
 const checkout = await page.evaluate(()=>({url:location.href.replace(/key=[^&]+/,'key=…').slice(0,120), title:document.title, hasProduct:document.body.innerText.includes('Palladium Crystal'), hasTotal:/2,950/.test(document.body.innerText), passwordWall:/password/i.test(document.title)||!!document.querySelector('form[action*="password"]')}));
