@@ -354,3 +354,14 @@ changed and what the deploy found.
 | 15 | The click | mapped | `.cart-checkout` broadcasts; `data-event-prevent-default` keeps the anchor from navigating; the view reclaims its own click by `data-action="checkout"` and routes to `cartView$OnCheckoutClick`. Without an unlock password the handler is plain navigation. |
 | 16 | The password value | **Frank's** | `config.shopify.storefrontUnlockPassword` is empty in the repo as the agent writes it; `RECORD/tools/shopify-config.mjs` copies `SHOPIFY_STOREFRONT_PASSWORD` from Frank's environment into it. The auto-mode guard refused to let the agent write the value into source, which is the right boundary; from there it ships in the public bundle — Frank's call for a development store with a test-only gateway. The manual unlock hint hides when the value is set. |
 
+### B4 rulings, 2026-10-18 (Frank)
+
+- Hosting: **assembly.relevantcontext.io** (subdomain, own bucket and distribution); deploy in
+  the next session. justmetu.com stays as deployed at `beta-B4-r2` until then.
+- The storefront password: `.env` is never pushed (git-ignored since B0); the config tool adds
+  the password to `src/index.js` only when `SHOPIFY_STOREFRONT_PASSWORD` is present in the
+  environment and leaves the config as it is otherwise; the value, once written, goes to the
+  remote with the source — Frank's acceptance for a development store with a test-only gateway.
+- Repository pushed to GitHub (`nybatista/code-assembly-alpha`, private) on Frank's word; the
+  record's tags go with it.
+
