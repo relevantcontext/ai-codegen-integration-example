@@ -181,4 +181,5 @@ Format: artifact — what it is — origin — model / prompt / version — stag
 - `src/scss/03-components/ui/header.scss` — `.site-nav { align-items: center }` (same change made in application-shell) — B4-r5
 - `RECORD/inputs/B4-shopify-sidekick-reply-2.md` — Shopify assistant's reply on the password redirect, pasted by Frank — B4-r7
 - `src/app/traits/page/cart-view-traits.js` — `return_to` removed; documented fields only — B4-r7
+- Shopify store `asteroid-metals.myshopify.com`, online theme: password page copy set to "loading checkout" by Frank in the Shopify admin (no repo artifact) — B4-r7 addendum
 

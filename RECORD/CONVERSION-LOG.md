@@ -399,5 +399,7 @@ the checkout — the timed hand-off working as designed, with the home page as a
 | # | Element | Status | Note |
 |---|---|---|---|
 | 28 | Single-step unlock + checkout | **not available** (Shopify) | No documented redirect parameter on `/password`, no supported bypass or preview link with a destination, no password submission to the checkout URL. `return_to` removed; the form sends only the documented fields. |
-| 29 | The store-home flash | accepted | The end state on this store: unlock in a new window, store home for about a second, then the app's hand-off to `checkoutUrl`. The flash is the cost of the storefront password, which this "Basic App Development" store cannot drop while it stays a development store; a flash-free hand-off needs an eligible store (Frank to confirm with Shopify Support whether this one can convert). |
+| 29 | The store-home flash | resolved (store side) | The end state on this store: unlock in a new window, store home for about a second, then the app's hand-off to `checkoutUrl`. The flash is the cost of the storefront password, which this "Basic App Development" store cannot drop while it stays a development store; a flash-free hand-off needs an eligible store (Frank to confirm with Shopify Support whether this one can convert). |
+
+Addendum (2026-10-18, Frank): the store's online theme was edited in Shopify so the password-protected home page shows only "loading checkout". The unlock window therefore reads as one continuous hand-off — interstitial, "loading checkout", hosted checkout — with no generic storefront in between. This is a store configuration change, not app code; nothing in the repo changed. Resolves element 29 without converting the store.
 
