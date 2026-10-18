@@ -365,3 +365,13 @@ changed and what the deploy found.
 - Repository pushed to GitHub (`nybatista/code-assembly-alpha`, private) on Frank's word; the
   record's tags go with it.
 
+### B4-r4 — shell nav tweaks (2026-10-18; `prompts/B4-3.md`)
+
+| # | Element | Status | Note |
+|---|---|---|---|
+| 17 | Theme toggle icons | mapped (port) | application-shell `08b49fc`: Material Symbols moon/sun (Apache 2.0), showing the mode a click switches to; state keyed on `data-settings-value`, which the nav trait already keeps current. Template copied whole (this app had no changes in it). |
+| 18 | Toggle styling and focus ring; `:focus-visible` on links | mapped (port) | `header.scss` and `_links.scss` copied whole — this app's copies had no local changes. Checked on the build: 32 px hit area, moon in light/auto, sun in dark, ring on keyboard focus. |
+| 19 | Shell theme/token files | not ported | `_colors.scss`, `_light.scss`, `_dark.scss` differ from the shell because this app's are the generator's WCAG-validated "slate" theme; the shell's generic palette would replace it. |
+| 20 | Cart badge in the nav | kept | This app's addition (B0) on top of the shell's nav view and trait; the port left it in place. |
+| 21 | CMS registry race fix | already identical | The `beta-B4` port equals the shell's `a84647b` byte for byte (`dev-tools.js`, `CmsReadyNullView`, its trait). |
+

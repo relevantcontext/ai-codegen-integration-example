@@ -1,0 +1,25 @@
+{
+ "initial": {
+  "theme": "auto",
+  "settingsValue": "auto",
+  "moon": "block",
+  "sun": "none",
+  "size": "32pxx32px"
+ },
+ "afterClick": {
+  "theme": "dark",
+  "settingsValue": "dark",
+  "moon": "none",
+  "sun": "block",
+  "size": "32pxx32px"
+ },
+ "afterSecondClick": {
+  "theme": "light",
+  "settingsValue": "light",
+  "moon": "block",
+  "sun": "none",
+  "size": "32pxx32px"
+ },
+ "mouseFocusRing": "color(srgb 0.0784314 0.490196 0.392157 / 0.4) 0px 0px 0px 3px",
+ "keyboardFocus": "color(srgb 0.0784314 0.490196 0.392157 / on nav"
+}
