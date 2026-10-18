@@ -177,4 +177,6 @@ Format: artifact — what it is — origin — model / prompt / version — stag
 - `src/app/traits/channel/channel-cart-traits.js` (return_to conform removed), `src/index.js`, `cart.tmpl.html`, `cart-view-traits.js`, `_cart.scss`, `app.model.json` (password hint copy + unlock link) — B4-r2
 - `src/app/components/page-items/cart-view.js`, `traits/page/cart-view-traits.js`, `templates/cart.tmpl.html`, `src/index.js` (`storefrontUnlockPassword`), `RECORD/tools/shopify-config.mjs` (copies `SHOPIFY_STOREFRONT_PASSWORD`) — unlock on checkout — B4-r3
 - `src/app/components/nav/templates/nav-primary-view.tmpl.html`, `src/scss/03-components/ui/header.scss`, `src/scss/00-spynejs-design-system/elements/_links.scss` — copied from application-shell `08b49fc` (Shell material adopted as app code) — B4-r4
+- `package.json`, `package-lock.json` — spyne-cli ^0.7.3; lockfile refresh + `npm audit fix` (mirrors shell `19465c4`, `ebe28ce`) — B4-r5
+- `src/scss/03-components/ui/header.scss` — `.site-nav { align-items: center }` (same change made in application-shell) — B4-r5
 

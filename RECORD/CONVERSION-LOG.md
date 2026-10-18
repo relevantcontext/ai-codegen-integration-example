@@ -375,3 +375,10 @@ changed and what the deploy found.
 | 20 | Cart badge in the nav | kept | This app's addition (B0) on top of the shell's nav view and trait; the port left it in place. |
 | 21 | CMS registry race fix | already identical | The `beta-B4` port equals the shell's `a84647b` byte for byte (`dev-tools.js`, `CmsReadyNullView`, its trait). |
 
+### B4-r5 — dependency mirror and nav alignment (Frank, 2026-10-18)
+
+| # | Element | Status | Note |
+|---|---|---|---|
+| 22 | Dependencies mirrored from the shell | mapped (port) | `spyne-cli ^0.6.2 → ^0.7.3` (shell `19465c4`, clears the simple-git critical chain) and a lockfile refresh with the non-breaking `npm audit fix` (shell `ebe28ce`). Audit: 27 findings (4 critical, 21 high) → 14 high, 0 critical — identical to the shell's count; the rest sit in the test runner, `webpack-dev-server` and `eslint-webpack-plugin` and need major-version moves. `npm test` 27/27, build and smoke green on the new lockfile. |
+| 23 | Theme toggle 1–2 px below the links | fixed (both repos) | Measured: `.site-nav` had no `align-items`, so links stretched to the toggle's 2rem box and their text line sat at its top (text centre 21.5 px vs icon 23.5 px). `align-items: center` on `.site-nav`; after: 23 vs 23.5 px (sub-pixel). The same line is applied to application-shell's `header.scss` (committed there, not pushed). |
+

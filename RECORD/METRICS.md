@@ -16,6 +16,7 @@
 | B4-r2 | 2026-10-17, ~15 min: Shopify's reply applied, verification, redeploy | not metered | not metered | 0 (ruling from Shopify's assistant via Frank) | 0 | PASS locally and live (`verification/B4-r2/`, `B4-r2-live/`); test order with the Bogus Gateway card is Frank's |
 | B4-r3 | 2026-10-17, ~25 min: unlock-on-checkout, stubbed click check, record | not metered | not metered | 1 model prompt (`prompts/B4-2.md`) | 0 | PASS locally (`verification/B4-r3/`); the live unlock path needs Frank's env value and his test |
 | B4-r4 | 2026-10-18, ~20 min: shell nav port, toggle/focus check, record | not metered | not metered | 1 model prompt (`prompts/B4-3.md`) | 0 | PASS locally (`verification/B4-r4/`); not deployed by ruling |
+| B4-r5 | 2026-10-18, ~20 min: deps mirror, toggle measurement + fix in both repos, verification | not metered | not metered | 0 (Frank's instruction, no model prompt) | 0 | PASS locally (`verification/B4-r5/`): npm test 27/27, smoke, flow; audit 14 high / 0 critical (= shell) |
 
 A0: spyne-cli did not log time, tokens, cost, or generator model for the create-app run. From A1 on every field is captured before the stage closes.
 A1: tokens and cost were not metered — the conversion ran inside an interactive Claude Code session that exposes no per-task token or cost log. Recorded as "not metered" rather than estimated.
