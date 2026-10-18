@@ -18,6 +18,11 @@ export default [
         ...globals.browser,
         ...globals.node,
         ...globals.mocha,
+        // webpack DefinePlugin (webpack.config.js)
+        IMG_PATH: 'readonly',
+        NODE_ENV: 'readonly',
+        SHOPIFY_CONFIG: 'readonly',
+        SPYNE_APP_DIR: 'readonly',
       },
     },
 

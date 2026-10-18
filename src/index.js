@@ -80,25 +80,21 @@ const config = {
   // edit theme_id / font_pairing_id and re-run the pipeline to re-theme.
   theme: {"theme_id":"slate","font_pairing_id":"archivo-worksans"},
 
-  // Shopify Storefront API — the catalog's commerce source. The access token
-  // is a public Storefront token (read-only, published data); it ships in the
-  // browser by design.
+  // Shopify Storefront API — the catalog's commerce source. Store, API
+  // version, public Storefront token and the development store's unlock
+  // password are packaged at build time from the environment (SHOPIFY_CONFIG,
+  // see webpack.config.js); none of them live in source. The token is a public
+  // Storefront token (read-only, published data) and ships in the browser by
+  // design. The development store keeps its storefront password, which also
+  // gates the hosted checkout: with a password packaged, the cart page unlocks
+  // the store in a new window on checkout (a top-level POST of Shopify's
+  // password form) then sends that window to checkoutUrl, used whole; without
+  // one, the manual unlock hint shows while storefrontPassword is true.
   shopify: {
-    store: 'asteroid-metals.myshopify.com',
-    apiVersion: '2026-04',
-    // the development store keeps its storefront password, which also gates
-    // the hosted checkout. With storefrontUnlockPassword set (written by
-    // RECORD/tools/shopify-config.mjs from the environment, never by hand),
-    // the cart page unlocks the store in a new window on checkout — a
-    // top-level POST of Shopify's password form — then sends that window to
-    // checkoutUrl, used whole. Empty: the manual unlock hint shows instead
-    // while storefrontPassword is true. Public by design: a development
-    // store with a test-only gateway.
+    ...SHOPIFY_CONFIG,
     storefrontPassword: true,
-    storefrontUnlockPassword: 'metals',
     // payments are test-only (Shopify test gateway); the cart page says so
     testMode: true,
-    storefrontAccessToken: '1dbd6bb0d39df2850e10e42cf3f1eac2',
   },
 };
 

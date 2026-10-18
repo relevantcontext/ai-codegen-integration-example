@@ -57,6 +57,27 @@ Page content is read from `src/static/data/app.model.json` through a
 `ChannelFetch`. Editing that file changes the rendered pages without touching
 component code.
 
+## Shopify
+
+The catalog and cart use the Shopify Storefront API. The store settings are
+read from the environment when webpack runs and packaged into the bundle; they
+are not kept in source.
+
+| Variable | Purpose |
+| --- | --- |
+| `SHOPIFY_STORE` | Store domain, e.g. `example.myshopify.com` |
+| `SHOPIFY_API_VERSION` | Storefront API version (default `2026-04`) |
+| `SHOPIFY_STOREFRONT_TOKEN` | Public Storefront access token |
+| `SHOPIFY_STOREFRONT_PASSWORD` | Storefront password of a password-protected development store, used to unlock the store before checkout |
+
+Without a token the catalog serves the local sample in `app.model.json`;
+without a password the cart shows a manual unlock hint. Load the variables
+before `npm start` or `npm run build`, for example from a git-ignored `.env`:
+
+```bash
+set -a && source .env && set +a && npm run build
+```
+
 ## Deployment
 
 The build output in `dist/` is a static single-page application. All application

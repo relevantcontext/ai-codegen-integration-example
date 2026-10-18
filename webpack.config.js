@@ -205,10 +205,24 @@ function getWebpackPlugins({
   imgPath,
   lint,
 }) {
+  // Shopify Storefront settings come from the environment at build time and
+  // are packaged into the bundle; none of them live in source. Unset values
+  // build as empty strings: with no token the catalog serves the local model,
+  // with no password the cart shows the manual unlock hint instead.
+  const shopifyConfig = {
+    store: process.env.SHOPIFY_STORE || '',
+    apiVersion: process.env.SHOPIFY_API_VERSION || '2026-04',
+    storefrontAccessToken: process.env.SHOPIFY_STOREFRONT_TOKEN || '',
+    storefrontUnlockPassword: process.env.SHOPIFY_STOREFRONT_PASSWORD || '',
+  };
+
   const definePlugin = new webpack.DefinePlugin({
     IMG_PATH: JSON.stringify(imgPath),
     NODE_ENV: JSON.stringify(process.env.NODE_ENV),
-    SPYNE_APP_DIR: JSON.stringify(process.cwd()),
+    SHOPIFY_CONFIG: JSON.stringify(shopifyConfig),
+    // the CMS adapter's registry lookup needs the app directory in
+    // development only; a production bundle carries no local path
+    SPYNE_APP_DIR: JSON.stringify(isProduction ? '' : process.cwd()),
   });
 
   const htmlPlugin = new HtmlWebpackPlugin({
