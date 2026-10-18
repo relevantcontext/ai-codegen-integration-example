@@ -1,7 +1,7 @@
 {
-  "name": "code-assembly-alpha",
+  "name": "assembly-example",
   "version": "0.1.0",
-  "description": "SpyneJS Application Shell — pages, navigation, and UI components",
+  "description": "SpyneJS Application Shell \u2014 pages, navigation, and UI components",
   "main": "src/index.js",
   "type": "module",
   "scripts": {
