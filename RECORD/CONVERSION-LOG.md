@@ -389,8 +389,15 @@ the checkout — the timed hand-off working as designed, with the home page as a
 
 | # | Element | Status | Note |
 |---|---|---|---|
-| 24 | `return_to` on the password form | inferred (test pending) | The form now carries `return_to` = the checkout path, asking Shopify to land on the checkout straight after the unlock. Unverified by Shopify's assistant; Frank's next test decides. The 1.5 s hand-off stays as the fallback. |
+| 24 | `return_to` on the password form | withdrawn (r7) | The form now carries `return_to` = the checkout path, asking Shopify to land on the checkout straight after the unlock. Unverified by Shopify's assistant; Frank's next test decides. The 1.5 s hand-off stays as the fallback. |
 | 25 | Interstitial | inferred | The new window shows "Opening checkout…" (developer-owned UI string) instead of a blank page while Shopify answers. |
 | 26 | Double dispatch | fixed | The stubbed check showed the handler running twice per click: the control was an `<a>`, and the page view broadcasts every anchor click, so the one click reached the channel twice. The control is now a `<button>` carrying `data-checkout-url` (dataset-as-payload); the trait reads the URL from the payload. One open, one submission, one hand-off. |
 | 27 | Record tools | updated | `b0-flow-check.mjs`, `b3-checkout-reach.mjs` read the button's dataset. |
+
+### B4-r7 — Shopify's answer on the redirect (2026-10-18; `inputs/B4-shopify-sidekick-reply-2.md`)
+
+| # | Element | Status | Note |
+|---|---|---|---|
+| 28 | Single-step unlock + checkout | **not available** (Shopify) | No documented redirect parameter on `/password`, no supported bypass or preview link with a destination, no password submission to the checkout URL. `return_to` removed; the form sends only the documented fields. |
+| 29 | The store-home flash | accepted | The end state on this store: unlock in a new window, store home for about a second, then the app's hand-off to `checkoutUrl`. The flash is the cost of the storefront password, which this "Basic App Development" store cannot drop while it stays a development store; a flash-free hand-off needs an eligible store (Frank to confirm with Shopify Support whether this one can convert). |
 

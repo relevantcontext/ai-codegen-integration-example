@@ -179,4 +179,6 @@ Format: artifact — what it is — origin — model / prompt / version — stag
 - `src/app/components/nav/templates/nav-primary-view.tmpl.html`, `src/scss/03-components/ui/header.scss`, `src/scss/00-spynejs-design-system/elements/_links.scss` — copied from application-shell `08b49fc` (Shell material adopted as app code) — B4-r4
 - `package.json`, `package-lock.json` — spyne-cli ^0.7.3; lockfile refresh + `npm audit fix` (mirrors shell `19465c4`, `ebe28ce`) — B4-r5
 - `src/scss/03-components/ui/header.scss` — `.site-nav { align-items: center }` (same change made in application-shell) — B4-r5
+- `RECORD/inputs/B4-shopify-sidekick-reply-2.md` — Shopify assistant's reply on the password redirect, pasted by Frank — B4-r7
+- `src/app/traits/page/cart-view-traits.js` — `return_to` removed; documented fields only — B4-r7
 

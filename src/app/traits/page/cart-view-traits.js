@@ -57,12 +57,7 @@ export class CartViewTraits extends SpyneTrait {
     }
     CartViewTraits.cartView$WriteInterstitial(win, this.props.ui.openingCheckout);
 
-    const form = CartViewTraits.cartView$UnlockForm(
-      store,
-      storefrontUnlockPassword,
-      CHECKOUT_WINDOW,
-      CartViewTraits.cartView$ReturnPath(checkoutUrl),
-    );
+    const form = CartViewTraits.cartView$UnlockForm(store, storefrontUnlockPassword, CHECKOUT_WINDOW);
     document.body.appendChild(form);
     form.submit();
     form.remove();
@@ -78,16 +73,6 @@ export class CartViewTraits extends SpyneTrait {
 
   // ---- pure ----------------------------------------------------------------
 
-  /** The checkout URL's path and query, relative to the store — what return_to expects. */
-  static cartView$ReturnPath(checkoutUrl = '') {
-    try {
-      const url = new URL(checkoutUrl);
-      return url.pathname + url.search;
-    } catch {
-      return '';
-    }
-  }
-
   /** The new window shows one line while Shopify answers, instead of a blank page. */
   static cartView$WriteInterstitial(win, text = '') {
     try {
@@ -101,20 +86,20 @@ export class CartViewTraits extends SpyneTrait {
   }
 
   /**
-   * Shopify's storefront password form, built off-template so it never
-   * passes through the CMS. `return_to` asks Shopify to land on the checkout
-   * straight after the unlock instead of the store home; whether the password
-   * endpoint honours it is Shopify's call — the timed hand-off above covers
-   * the case where it does not.
+   * Shopify's storefront password form — exactly the documented fields,
+   * built off-template so it never passes through the CMS. The endpoint
+   * has no documented redirect parameter (Shopify's assistant, 2026-10-18),
+   * so the response lands on the store home and the timed hand-off above
+   * takes the window on to the checkout; that flash is the cost of the
+   * password on this store type, not something the form can avoid.
    */
-  static cartView$UnlockForm(store, password, target, returnTo = '') {
+  static cartView$UnlockForm(store, password, target) {
     const form = document.createElement('form');
     form.method = 'POST';
     form.action = `https://${store}/password`;
     form.target = target;
     form.hidden = true;
     const fields = { form_type: 'storefront_password', utf8: '✓', password };
-    if (returnTo) fields.return_to = returnTo;
     Object.entries(fields).forEach(([name, value]) => {
       const input = document.createElement('input');
       input.type = 'hidden';

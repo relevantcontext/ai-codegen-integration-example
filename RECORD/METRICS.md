@@ -18,6 +18,7 @@
 | B4-r4 | 2026-10-18, ~20 min: shell nav port, toggle/focus check, record | not metered | not metered | 1 model prompt (`prompts/B4-3.md`) | 0 | PASS locally (`verification/B4-r4/`); not deployed by ruling |
 | B4-r5 | 2026-10-18, ~20 min: deps mirror, toggle measurement + fix in both repos, verification | not metered | not metered | 0 (Frank's instruction, no model prompt) | 0 | PASS locally (`verification/B4-r5/`): npm test 27/27, smoke, flow; audit 14 high / 0 critical (= shell) |
 | B4-r6 | 2026-10-18, ~25 min: return_to, interstitial, double-dispatch fix, tools, verification | not metered | not metered | 0 (Frank's test report) | 0 | PASS locally (`verification/B4-r6/`); live test of return_to is Frank's |
+| B4-r7 | 2026-10-18, ~10 min: Shopify's redirect answer applied | not metered | not metered | 0 (ruling via Frank) | 0 | PASS locally (`verification/B4-r7/`); flow is the end state for this store type |
 
 A0: spyne-cli did not log time, tokens, cost, or generator model for the create-app run. From A1 on every field is captured before the stage closes.
 A1: tokens and cost were not metered — the conversion ran inside an interactive Claude Code session that exposes no per-task token or cost log. Recorded as "not metered" rather than estimated.
