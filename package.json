@@ -1,5 +1,5 @@
 {
-  "name": "assembly-example",
+  "name": "codegen-integration-example",
   "version": "0.1.0",
   "description": "SpyneJS Application Shell \u2014 pages, navigation, and UI components",
   "main": "src/index.js",
