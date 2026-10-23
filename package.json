@@ -1,7 +1,7 @@
 {
   "name": "ai-codegen-integration-example",
   "version": "0.1.0",
-  "description": "SpyneJS Application Shell \u2014 pages, navigation, and UI components",
+  "description": "SpyneJS Application Shell — pages, navigation, and UI components",
   "main": "src/index.js",
   "type": "module",
   "scripts": {
@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@esm-bundle/chai": "^4.3.4-fix.0",
-    "@spynejs/cms": "^0.4.11",
+    "@spynejs/cms": "^0.4.12",
     "@spynejs/cms-adapter": "^0.1.6",
     "@spynejs/grammar": "^0.3.1",
     "@web/dev-server": "^0.4.6",
