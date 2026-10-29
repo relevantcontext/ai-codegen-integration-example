@@ -26,7 +26,9 @@
         "attrImageAlt": "polished metallic meteorite sample on black velvet display, dramatic museum lighting, scientific precision mood",
         "ctaText": "Explore the Collection",
         "ctaDesc": "Each sample includes origin documentation, spectral analysis, and chain-of-custody verification.",
-        "attrCtaHref": "/shop"
+        "attrCtaHref": "/shop",
+        "ribbonText": "Source on GitHub",
+        "attrRibbonHref": "https://github.com/relevantcontext/ai-codegen-integration-example"
       },
       "pageItems": [
         {
