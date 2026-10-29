@@ -18,31 +18,11 @@ export class UIHeaderViewTraits extends SpyneTrait {
     this.props.el$('.branding h1 span').el.innerHTML = logoTxt;
   }
 
-  /** The source-repository line under the nav: shown only when both the text and the href are authored. */
-  static uiHeader$OnSourceLinkData(text = '', href = '') {
-    const line = this.props.el$('.source-link').el;
-    const anchor = this.props.el$('.source-link__anchor').el;
-    const isAuthored =
-      typeof text === 'string' &&
-      text !== '' &&
-      typeof href === 'string' &&
-      href !== '';
-    if (isAuthored) {
-      anchor.innerText = text;
-      anchor.href = href;
-      // set here, not in the template: the template sanitizer drops target
-      anchor.target = '_blank';
-      anchor.rel = 'noopener';
-    }
-    line.hidden = !isAuthored;
-  }
-
   static uiHeader$UIHeaderViewOnAppInitEvent(e) {
     const { initData } = e.payload;
-    const { navLinks, header, sourceLinkText, sourceLinkHref } = initData;
+    const { navLinks, header } = initData;
     this.uiHeader$AddNavLinks(navLinks);
     this.uiHeader$OnAppDataEvent(header);
-    this.uiHeader$OnSourceLinkData(sourceLinkText, sourceLinkHref);
   }
 
   static uiHeader$UIHeaderViewOnRendered() {

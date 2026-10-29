@@ -25,17 +25,8 @@ export class AppStatusTraits extends SpyneTrait {
     this.props.uiText = this.props.data?.text;
 
     const { navLinks, isDeepLink, routeData } = e['CHANNEL_ROUTE'].payload;
-    const { footer, header, sourceLinkText, sourceLinkHref } =
-      e['CHANNEL_FETCH_MODEL'].payload.text;
-    this.props.initData = {
-      navLinks,
-      isDeepLink,
-      routeData,
-      footer,
-      header,
-      sourceLinkText,
-      sourceLinkHref,
-    };
+    const { footer, header } = e['CHANNEL_FETCH_MODEL'].payload.text;
+    this.props.initData = { navLinks, isDeepLink, routeData, footer, header };
 
     try {
       this.appStatus$SendDataEvent(routeData, true);

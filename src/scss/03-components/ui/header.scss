@@ -11,14 +11,9 @@
   inset-block-start: 0;
   inline-size: 100%;
   z-index: 1000; // keep above content
-  // Two rows: the nav row, then the source-repository line. The former fixed
-  // height is now the minimum, so the second row adds to it instead of
-  // overflowing.
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-height: calc($spacing-12);
-  padding-block: 0; // the rows carry their own spacing; the old fixed height hid this padding
+  align-items: center;
+  height: calc($spacing-12);
   border-bottom: 1px solid var(--text-muted);
 
   .header-content {
@@ -166,31 +161,6 @@
     }
   }
 
-  /* The source-repository line: aligned with the content column, under the nav */
-  .source-link {
-    inline-size: min(100%, var(--max-content-width));
-    margin: 0 auto;
-    padding-inline: clamp(0.25rem, 2vw, 1rem);
-    padding-block: 0 0.375rem;
-    font-size: 0.75rem;
-    line-height: 1.2;
-    color: var(--text-muted);
-
-    &[hidden] {
-      display: none;
-    }
-
-    a {
-      color: var(--text-muted);
-      text-decoration: underline;
-      text-underline-offset: 0.2em;
-
-      &:hover {
-        color: var(--text-link);
-      }
-    }
-  }
-
   /* Hamburger / mobile drawer toggle stays visible */
   #menu_toggle {
     display: none;
@@ -209,18 +179,6 @@
       pointer-events: none;
     }
   }
-}
-
-/* The containers layer, compiled after this file, styles
- * `main#app header#site-header`: it re-centres the header as one row and
- * restores a block padding the former fixed height used to hide. One
- * element higher in specificity so the two-row layout wins regardless of
- * import order. */
-body main#app header#site-header {
-  flex-direction: column;
-  justify-content: center;
-  align-items: stretch;
-  padding-block: 0;
 }
 
 /* Sticky header (opt-in)
